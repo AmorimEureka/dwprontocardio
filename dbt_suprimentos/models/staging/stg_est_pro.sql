@@ -26,7 +26,7 @@ WITH source_est_pro
 treats 
     AS(
         SELECT
-            "CD_ESTOQUE"::BIGINTs
+            "CD_ESTOQUE"::BIGINT
             , "CD_PRODUTO"::BIGINT
             , "CD_LOCALIZACAO"::VARCHAR(20)
             , "DS_LOCALIZACAO_PRATELEIRA"::VARCHAR(30)
