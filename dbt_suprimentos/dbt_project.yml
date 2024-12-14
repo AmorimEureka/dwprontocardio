@@ -28,3 +28,7 @@ models:
     intermediate:
       +materialized: view
       +schema: intermediate
+
+    mart:
+      +materialized: table
+      +schema: mart
