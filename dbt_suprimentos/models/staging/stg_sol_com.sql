@@ -9,6 +9,7 @@ WITH source_sol_com
             , NULLIF("CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
             , NULLIF(SPLIT_PART("CD_MOT_CANCEL"::TEXT, '.', 1), 'NaN') AS "CD_MOT_CANCEL"
             , NULLIF("CD_ATENDIME", 'NaN') AS "CD_ATENDIME"
+            , NULLIF("CD_USUARIO", 'NaN') AS "CD_SOLICITANTE"
             , NULLIF("NM_SOLICITANTE", 'NaN') AS "NM_SOLICITANTE"
             , "DT_SOL_COM"
             , "DT_CANCELAMENTO"
@@ -30,6 +31,7 @@ treats
             , "CD_ESTOQUE"::BIGINT
             , "CD_MOT_CANCEL"::BIGINT
             , "CD_ATENDIME"::BIGINT
+            , "CD_SOLICITANTE"::VARCHAR(50)
             , "NM_SOLICITANTE"::VARCHAR(25)
             , "DT_SOL_COM"::DATE
             , "DT_CANCELAMENTO"::TIMESTAMP

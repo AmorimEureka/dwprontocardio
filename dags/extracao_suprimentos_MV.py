@@ -128,6 +128,7 @@ def criar_tabela_raw(tabela: str, conn):
                                 sa.Column('CD_ESTOQUE', sa.String()),
                                 sa.Column('CD_MOT_CANCEL', sa.String()),
                                 sa.Column('CD_ATENDIME', sa.String()),
+                                sa.Column('CD_USUARIO', sa.String()),
                                 sa.Column('NM_SOLICITANTE', sa.String()),
                                 sa.Column('DT_SOL_COM', sa.DateTime),
                                 sa.Column('DT_CANCELAMENTO', sa.DateTime),
