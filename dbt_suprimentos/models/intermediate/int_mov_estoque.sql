@@ -1,6 +1,9 @@
 
 
+{{
+    config( materialized = 'ephemeral' )
 
+}}
 
 
 WITH source_mov_estoque 
