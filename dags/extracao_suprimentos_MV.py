@@ -43,6 +43,7 @@ def criar_tabela_raw(tabela: str, conn):
                                sa.Column('CD_UNIDADE', sa.String()),
                                sa.Column('CD_PRODUTO', sa.String()),
                                sa.Column('VL_FATOR', sa.String()),
+                               sa.Column('DS_UNIDADE', sa.String()),
                                sa.Column('TP_RELATORIOS', sa.String()),
                                sa.Column('SN_ATIVO', sa.String()),
                                sa.Column('DT_EXTRACAO', sa.DateTime, server_default=sa.text("NOW()")),
