@@ -8,6 +8,7 @@ SELECT
     , sc.VL_TOTAL
     , sc.DT_SOL_COM
     , sc.DT_CANCELAMENTO
+    , sc.CD_USUARIO
     , sc.NM_SOLICITANTE
     , sc.TP_SITUACAO
     , sc.TP_SOL_COM
