@@ -18,7 +18,7 @@ WITH source_int_especie
 ),
 mrt_especie
     AS (
-        SELECT
+        SELECT DISTINCT
             *
         FROM source_int_especie
 )
