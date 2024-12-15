@@ -13,7 +13,7 @@ WITH source_especie
 ),
 treats
     AS (
-        SELECT 
+        SELECT
             *
         FROM source_especie
 

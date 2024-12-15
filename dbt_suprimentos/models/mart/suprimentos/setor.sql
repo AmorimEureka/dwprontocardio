@@ -14,7 +14,7 @@ WITH source_int_setor
 ),
 treats
     AS (
-        SELECT 
+        SELECT DISTINCT
             *
         FROM source_int_setor
 

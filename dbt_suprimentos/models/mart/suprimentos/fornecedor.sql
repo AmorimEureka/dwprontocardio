@@ -18,7 +18,7 @@ WITH source_int_fornecedor
 ),
 mrt_fornecedor
     AS (
-        SELECT
+        SELECT DISTINCT
             *
         FROM source_int_fornecedor
 )
