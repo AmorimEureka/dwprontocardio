@@ -87,6 +87,19 @@ source_est_pro
         FROM {{ ref( 'stg_est_pro' ) }}
         
 ),
+source_produto
+    AS (
+        SELECT 
+            "CD_PRODUTO"
+            , "DT_ULTIMA_ENTRADA"
+            , "HR_ULTIMA_ENTRADA"
+            , "QT_ULTIMA_ENTRADA"
+            , "VL_ULTIMA_ENTRADA"
+            , "VL_CUSTO_MEDIO"
+            , "VL_ULTIMA_CUSTO_REAL"
+        FROM {{ ref( 'stg_produto' ) }}
+        
+),
 treats_qt_mov
     AS (
         SELECT 
@@ -106,6 +119,9 @@ treats
             ep."CD_ESTOQUE"
             , ep."CD_PRODUTO"
             , ep."DT_ULTIMA_MOVIMENTACAO"
+            , p."DT_ULTIMA_ENTRADA"
+            , p."HR_ULTIMA_ENTRADA"
+            , p."QT_ULTIMA_ENTRADA"
             , ep."QT_ESTOQUE_ATUAL"
             , ep."QT_ESTOQUE_MAXIMO"
             , ep."QT_ESTOQUE_MINIMO"
@@ -118,10 +134,14 @@ treats
             , ep."QT_ESTOQUE_RESERVADO"
             , ep."QT_CONSUMO_ATUAL"
             , qmv."QT_MOVIMENTO"
+            , p."VL_ULTIMA_ENTRADA"
+            , p."VL_CUSTO_MEDIO"
+            , p."VL_ULTIMA_CUSTO_REAL"
             , ep."TP_CLASSIFICACAO_ABC"
             , qmv."TP_MVTO_ESTOQUE"
         FROM source_est_pro ep
         LEFT JOIN treats_qt_mov qmv ON ep."CD_PRODUTO" = qmv."CD_PRODUTO"
+        LEFT JOIN source_produto p  ON ep."CD_PRODUTO" = p."CD_PRODUTO"
 
 )
 SELECT * FROM treats
