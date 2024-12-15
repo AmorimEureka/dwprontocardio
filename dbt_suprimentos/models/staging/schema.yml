@@ -30,6 +30,8 @@ sources:
             description: "Código do motivo de cancelamento"
           - name: CD_ATENDIME
             description: "Código de atendimento"
+          - name: CD_SOLICITANTE
+            description: "Codigo do usuario solicitante"
           - name: NM_SOLICITANTE
             description: "Nome do solicitante"
           - name: DT_SOL_COM
