@@ -3,6 +3,7 @@ SELECT
     , up.CD_UNIDADE
     , up.CD_PRODUTO
     , up.VL_FATOR
+    , up.DS_UNIDADE
     , up.TP_RELATORIOS
     , up.SN_ATIVO
 FROM DBAMV.UNI_PRO up

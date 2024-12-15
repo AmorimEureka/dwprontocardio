@@ -344,6 +344,8 @@ sources:
             description: "Código do produto"
           - name: VL_FATOR
             description: "Fator de conversão da unidade"
+          - name: DS_UNIDADE
+            description: "Descrição da unidade"
           - name: TP_RELATORIOS
             description: "Tipo de relatórios associados à unidade"
           - name: SN_ATIVO
