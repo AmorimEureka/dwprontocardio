@@ -12,7 +12,13 @@ WITH source_solicitacao
             , "DT_SOL_COM"
             , "DT_CANCELAMENTO"
             , "VL_TOTAL"
-            , "TP_SITUACAO"
+            , CASE 
+                WHEN "TP_SITUACAO"='A' THEN 'Aberta'
+                WHEN "TP_SITUACAO"='F' THEN 'Fechada'
+                WHEN "TP_SITUACAO"='P' THEN 'Parcialmente Atendida'
+                WHEN "TP_SITUACAO"='S' THEN 'Solicitada'
+                WHEN "TP_SITUACAO"='C' THEN 'Cancelada'
+              END AS "TP_SITUACAO"
             , "TP_SOL_COM"
             , "SN_URGENTE"
             , "SN_APROVADA"

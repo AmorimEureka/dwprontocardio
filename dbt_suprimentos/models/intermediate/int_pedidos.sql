@@ -13,7 +13,17 @@ WITH source_pedidos
             , "DT_CANCELAMENTO"
             , "DT_AUTORIZACAO"
             , "DT_ULTIMA_ALTERACAO_OC"
-            , "TP_ORD_COM"
+            , CASE 
+                WHEN "TP_ORD_COM" = 'A' THEN 'Aberta'
+                WHEN "TP_ORD_COM" = 'U' THEN 'Autorizada'
+                WHEN "TP_ORD_COM" = 'N' THEN 'Não Autorizada'
+                WHEN "TP_ORD_COM" = 'P' THEN 'Pendente'
+                WHEN "TP_ORD_COM" = 'L' THEN 'Parcialmente Atendida'
+                WHEN "TP_ORD_COM" = 'T' THEN 'Atendida'
+                WHEN "TP_ORD_COM" = 'C' THEN 'Cancelada'
+                WHEN "TP_ORD_COM" = 'D' THEN 'Adjudicação'
+                WHEN "TP_ORD_COM" = 'O' THEN 'Aguard. Próximo Nível'
+              END AS "TP_ORD_COM"
             , "SN_AUTORIZADO"
         FROM {{ ref( 'stg_ord_com' ) }}
 ),
