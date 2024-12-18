@@ -157,6 +157,7 @@ def criar_tabela_raw(tabela: str, conn):
                                 sa.Column('DT_CANCELAMENTO', sa.DateTime),
                                 sa.Column('DT_AUTORIZACAO', sa.DateTime),
                                 sa.Column('DT_ULTIMA_ALTERACAO_OC', sa.DateTime),
+                                sa.Column('TP_SITUACAO', sa.String()),
                                 sa.Column('TP_ORD_COM', sa.String()),
                                 sa.Column('SN_AUTORIZADO', sa.String()),
                                 sa.Column('DT_EXTRACAO', sa.DateTime, server_default=sa.text("NOW()")),

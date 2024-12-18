@@ -82,6 +82,8 @@ sources:
             description: "Data de autorização da ordem de compra"
           - name: DT_ULTIMA_ALTERACAO_OC
             description: "Data da última alteração na ordem de compra"
+          - name: TP_SITUACAO
+            description: "Status da ordem de compra"
           - name: TP_ORD_COM
             description: "Tipo da ordem de compra"
           - name: SN_AUTORIZADO

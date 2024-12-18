@@ -14,6 +14,7 @@ WITH source_ord_com
             , "DT_CANCELAMENTO"
             , "DT_AUTORIZACAO"
             , "DT_ULTIMA_ALTERACAO_OC"
+            , NULLIF("TP_SITUACAO", 'NaN') AS "TP_SITUACAO"
             , NULLIF("TP_ORD_COM", 'NaN') AS "TP_ORD_COM"
             , NULLIF("SN_AUTORIZADO", 'NaN') AS "SN_AUTORIZADO"
             , "DT_EXTRACAO"
@@ -33,6 +34,7 @@ treats
             , "DT_CANCELAMENTO"::TIMESTAMP
             , "DT_AUTORIZACAO"::TIMESTAMP
             , "DT_ULTIMA_ALTERACAO_OC"::DATE
+            , "TP_SITUACAO"::VARCHAR(1)
             , "TP_ORD_COM"::VARCHAR(1)
             , "SN_AUTORIZADO"::VARCHAR(1)
             , "DT_EXTRACAO"::TIMESTAMP
