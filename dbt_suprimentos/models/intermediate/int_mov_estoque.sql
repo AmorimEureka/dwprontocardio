@@ -138,7 +138,6 @@ treats
             , p."VL_CUSTO_MEDIO"
             , p."VL_ULTIMA_CUSTO_REAL"
             , ep."TP_CLASSIFICACAO_ABC"
-            , qmv."TP_MVTO_ESTOQUE"
         FROM source_est_pro ep
         LEFT JOIN treats_qt_mov qmv ON ep."CD_PRODUTO" = qmv."CD_PRODUTO"
         LEFT JOIN source_produto p  ON ep."CD_PRODUTO" = p."CD_PRODUTO"

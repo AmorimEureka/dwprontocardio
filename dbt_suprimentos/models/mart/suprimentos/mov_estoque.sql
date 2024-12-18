@@ -15,7 +15,7 @@ WITH source_int_mov_estoque
 ),
 mrt_mov_estoque
     AS (
-        SELECT
+        SELECT DISTINCT
             *
         FROM source_int_mov_estoque
 )
