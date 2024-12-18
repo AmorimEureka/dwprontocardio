@@ -14,16 +14,17 @@ WITH source_pedidos
             , "DT_AUTORIZACAO"
             , "DT_ULTIMA_ALTERACAO_OC"
             , CASE 
-                WHEN "TP_ORD_COM" = 'A' THEN 'Aberta'
-                WHEN "TP_ORD_COM" = 'U' THEN 'Autorizada'
-                WHEN "TP_ORD_COM" = 'N' THEN 'Não Autorizada'
-                WHEN "TP_ORD_COM" = 'P' THEN 'Pendente'
-                WHEN "TP_ORD_COM" = 'L' THEN 'Parcialmente Atendida'
-                WHEN "TP_ORD_COM" = 'T' THEN 'Atendida'
-                WHEN "TP_ORD_COM" = 'C' THEN 'Cancelada'
-                WHEN "TP_ORD_COM" = 'D' THEN 'Adjudicação'
-                WHEN "TP_ORD_COM" = 'O' THEN 'Aguard. Próximo Nível'
-              END AS "TP_ORD_COM"
+                WHEN "TP_SITUACAO" = 'A' THEN 'Aberta'
+                WHEN "TP_SITUACAO" = 'U' THEN 'Autorizada'
+                WHEN "TP_SITUACAO" = 'N' THEN 'Não Autorizada'
+                WHEN "TP_SITUACAO" = 'P' THEN 'Pendente'
+                WHEN "TP_SITUACAO" = 'L' THEN 'Parcialmente Atendida'
+                WHEN "TP_SITUACAO" = 'T' THEN 'Atendida'
+                WHEN "TP_SITUACAO" = 'C' THEN 'Cancelada'
+                WHEN "TP_SITUACAO" = 'D' THEN 'Adjudicação'
+                WHEN "TP_SITUACAO" = 'O' THEN 'Aguard. Próximo Nível'
+              END AS "TP_SITUACAO"
+            , "TP_ORD_COM"
             , "SN_AUTORIZADO"
         FROM {{ ref( 'stg_ord_com' ) }}
 ),
@@ -69,6 +70,7 @@ treats
             , itp."VL_TOTAL"
             , itp."VL_CUSTO_REAL"
             , itp."VL_TOTAL_CUSTO_REAL"
+            , p."TP_SITUACAO"
             , p."TP_ORD_COM"
             , p."SN_AUTORIZADO" 
         FROM source_itens_pedidos itp
