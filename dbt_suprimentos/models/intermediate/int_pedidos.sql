@@ -49,7 +49,7 @@ source_itens_pedidos
 ),
 treats
     AS (
-        SELECT 
+        SELECT DISTINCT
             p."CD_ORD_COM"
             , p."CD_SOL_COM"
             , p."CD_ESTOQUE"
