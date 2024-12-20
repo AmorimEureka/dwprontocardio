@@ -43,7 +43,7 @@ source_itens_solicitacao
 ),
 treats
     AS (
-        SELECT 
+        SELECT DISTINCT
             s."CD_SOL_COM"
             , s."CD_ESTOQUE"
             , s."CD_SETOR"
