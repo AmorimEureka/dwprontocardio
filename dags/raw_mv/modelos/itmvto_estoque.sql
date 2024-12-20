@@ -29,6 +29,6 @@ WITH itmvto_estoquee AS (
 	    itmv.VL_UNITARIO,
 	    itmv.TP_ESTOQUE
 	FROM DBAMV.ITMVTO_ESTOQUE itmv
-	WHERE itmv.CD_ITMVTO_ESTOQUE > :MAIOR_ID
+	WHERE itmv.CD_ITMVTO_ESTOQUE >= :MAIOR_ID
 )
 SELECT * FROM itmvto_estoquee
