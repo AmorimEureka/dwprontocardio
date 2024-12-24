@@ -15,7 +15,7 @@ ENV LD_LIBRARY_PATH=/usr/local/airflow/.oracle/instantclient_19_23/
 ENV LD_LIBRARY_PATH_POSTGRES=/usr/local/airflow/.postgresql/data/instantclient_17_0/
 ENV PYTHONUNBUFFERED 1
 
-# Instalar dependências de compilação e desenvolvimento, incluindo o GCC
+# Instalar dependências de compilação e desenvolvimento
 RUN apt-get update && apt-get install -y \
     gcc \
     libaio1 \
@@ -32,20 +32,11 @@ WORKDIR "/usr/local/airflow"
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
 pip install --no-cache-dir -r requirements.txt
-    
 
 RUN chown -R astro:astro /usr/local/airflow && \
 chmod -R 775 /usr/local/airflow
 
-# WORKDIR "/usr/local/airflow/dags/dbt/dbt_nutricao"
-COPY dbt_requirements.txt ./usr/local/airflow/dags/dbt
-RUN pip install --no-cache-dir --upgrade pip && \
-python3 -m venv /usr/local/airflow/dags/dbt/dbt_venv && \
-source /usr/local/airflow/dags/dbt/dbt_venv/bin/activate && \
-pip install --no-cache-dir -r dbt_requirements.txt && deactivate
-
-# Setar o PATH para o ambiente virtual do dbt
-ENV PATH="/usr/local/airflow/dags/dbt/dbt_venv/bin:$PATH"
-
+RUN python3 -m venv dbt_venv && source dbt_venv/bin/activate && \
+pip install --no-cache-dir dbt-core dbt-postgres && deactivate
 
 USER astro
