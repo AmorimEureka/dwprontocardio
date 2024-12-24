@@ -1,9 +1,12 @@
-
-
-from airflow.decorators import dag, task
+from airflow import DAG
+from airflow.decorators import task
 from airflow.hooks.base import BaseHook
 from airflow.providers.oracle.hooks.oracle import OracleHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+
+from cosmos import DbtTaskGroup, ProjectConfig
+from include.profiles import airflow_postgres_db
+from include.constants import suprimentos_path, venv_execution_config
 
 import os
 import sqlalchemy as sa
@@ -18,14 +21,6 @@ engine_postgres = sa.create_engine(postgres_hook.get_uri())
 nome_schema_postgres = 'raw_mv'
 
 oracle_hook = OracleHook(oracle_conn_id='oracle_prontocardio', thick_mode=True)
-
-
-
-
-
-lista_tabelas_postgres = ['uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque', 'setor', 'especie', 'sol_com', 'ord_com', 'ent_pro', 'itsol_com', 'itord_pro',
-                          'itent_pro', 'produto', 'est_pro', 'mvto_estoque', 'itmvto_estoque' ]
-
 
 
 
@@ -374,7 +369,6 @@ def inserir_dados_postgres(tabela:str, colunas:str, place_insert:str, df):
         conn_pg.commit()
 
 
-
 def apagar_tabela(tabela: str, conn):
     
     query = f"TRUNCATE TABLE {nome_schema_postgres}.{tabela} CASCADE"
@@ -388,7 +382,6 @@ def apagar_tabela(tabela: str, conn):
 
 
 
-
 default_args = {
     'owner' : 'airflow_suprimentos',
     'start_date' : datetime(2024, 1, 1),
@@ -396,17 +389,19 @@ default_args = {
     'retry_delay' : timedelta(minutes=1),
 }
 
-@dag(
+with DAG(
     dag_id= "Extracao_Suprimentos_MV",
     default_args=default_args,
     description= "Extracao de Dados da Produção p/ Camada Raw - SUPRIMENTOS",
     schedule_interval=timedelta(minutes=20),
     catchup=False,
-)
-def extracao_oracle_for_postgres():
-    
+) as dag:
 
-    for nome_tabela in lista_tabelas_postgres:
+    lista_tabelas_postgres = ['uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque', 'setor', 'especie', 'sol_com', 'ord_com', 'ent_pro', 'itsol_com', 'itord_pro',
+                          'itent_pro', 'produto', 'est_pro', 'mvto_estoque', 'itmvto_estoque' ]
+
+
+    def extracao_oracle_for_postgres(nome_tabela):
 
         @task(task_id=f"obter_maior_id_{nome_tabela}")
         def obter_maior_id(nome_tabela: str):
@@ -424,8 +419,6 @@ def extracao_oracle_for_postgres():
                     query_max_id = f"SELECT MAX(id_{nome_tabela}) FROM {nome_schema_postgres}.{nome_tabela}"
                     cursor_pg.execute(query_max_id)
                     resultado = cursor_pg.fetchone()[0]
-
-                    # print(f"Function 'obter_maior_id_{nome_tabela}', {resultado}")
 
                     maior_id = resultado if resultado is not None else 0
 
@@ -463,8 +456,23 @@ def extracao_oracle_for_postgres():
                 inserir_dados_postgres(nome_tabela, nome_colunas, placeholders_insert, df)
 
         
-        maior_id = obter_maior_id(nome_tabela)
-        extrair_dados_oracle(nome_tabela, maior_id)
+        maior_id_task = obter_maior_id(nome_tabela)
+        extrair_dados_oracle_task = extrair_dados_oracle(nome_tabela, maior_id_task)
 
+        maior_id_task >> extrair_dados_oracle_task
 
-extracao_oracle_for_postgres()
+        return [maior_id_task, extrair_dados_oracle_task]
+
+    tarefas_extracao = []
+    for nome_tabela in lista_tabelas_postgres:
+        tarefas_extracao.extend(extracao_oracle_for_postgres(nome_tabela))
+
+    cosmos_dag_suprimentos = DbtTaskGroup(
+        group_id="dbt_trf_suprimentos",
+        project_config=ProjectConfig(suprimentos_path),
+        profile_config=airflow_postgres_db,
+        execution_config=venv_execution_config,
+    )
+
+    for tarefa in tarefas_extracao:
+        tarefa >> cosmos_dag_suprimentos
