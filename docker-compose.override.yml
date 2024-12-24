@@ -10,8 +10,7 @@ services:
       - POSTGRES_HOST=dwpostgres
     volumes:
       - ./dags:/usr/local/airflow/dags
-      - ./dbt_nutricao:/usr/local/airflow/dags/dbt/dbt_nutricao:rw
-      - ./dbt_suprimentos:/usr/local/airflow/dags/dbt/dbt_suprimentos:rw
+      - ./dbt_suprimentos:/usr/local/airflow/dbt
       - ./include:/usr/local/airflow/.oracle/instantclient_19_23/
       - ./include:/usr/local/airflow/.postgresql/data/instantclient_17_0/
     healthcheck:
@@ -45,7 +44,6 @@ services:
       - webserver
     networks:
       - airflow
-
 
 volumes:
   postgres-volume:
