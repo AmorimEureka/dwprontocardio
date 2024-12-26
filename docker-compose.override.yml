@@ -38,8 +38,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-        - postgres-volume:/usr/local/airflow/.postgresql/data
-      # - postgres-volume:/var/lib/postgresql/data
+      - postgres-volume:/var/lib/postgresql/data
     depends_on:
       - webserver
     networks:
