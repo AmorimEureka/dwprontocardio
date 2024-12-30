@@ -107,11 +107,29 @@ treats_qt_mov
             , up."VL_FATOR"
             , up."TP_RELATORIOS"
             , mve."TP_MVTO_ESTOQUE"
-            ,  SUM(itmve."QT_MOVIMENTACAO" * up."VL_FATOR" * CASE WHEN mve."TP_MVTO_ESTOQUE" IN ('D', 'C') THEN -1 ELSE 1 END )  / up."VL_FATOR"  AS "QT_MOVIMENTO"
-        FROM source_itens_mov_estoque itmve
-        LEFT JOIN source_mov_estoque  mve ON itmve."CD_MVTO_ESTOQUE" = mve."CD_MVTO_ESTOQUE"
-        LEFT JOIN source_uni_pro      up  ON itmve."CD_UNI_PRO" = up."CD_UNI_PRO"
-        GROUP BY itmve."CD_PRODUTO", up."VL_FATOR", up."TP_RELATORIOS", mve."TP_MVTO_ESTOQUE"
+            , COALESCE(
+                SUM(
+                    itmve."QT_MOVIMENTACAO" 
+                    * up."VL_FATOR"
+                    * CASE
+                        WHEN mve."TP_MVTO_ESTOQUE" IN ('D', 'C') THEN -1
+                        ELSE 1
+                      END 
+                    ) / up."VL_FATOR",
+                    0
+              ) AS "QT_MOVIMENTO"
+        FROM {{ ref( 'stg_itmvto_estoque' ) }} AS itmve
+        LEFT JOIN {{ ref( 'stg_mvto_estoque' ) }} AS mve 
+            ON itmve."CD_MVTO_ESTOQUE" = mve."CD_MVTO_ESTOQUE"
+        LEFT JOIN {{ ref( 'stg_uni_pro' ) }} AS up 
+            ON itmve."CD_UNI_PRO" = up."CD_UNI_PRO"
+        WHERE up."TP_RELATORIOS" = 'G' 
+            AND mve."TP_MVTO_ESTOQUE" IN ('S', 'P', 'D', 'C')
+        GROUP BY 
+            itmve."CD_PRODUTO", 
+            up."VL_FATOR", 
+            up."TP_RELATORIOS", 
+            mve."TP_MVTO_ESTOQUE"
 ),
 treats 
     AS (
