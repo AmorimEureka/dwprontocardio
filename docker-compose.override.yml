@@ -11,24 +11,14 @@ services:
     volumes:
       - ./dags:/usr/local/airflow/dags
       - ./dbt_suprimentos:/usr/local/airflow/dbt
-      - ./include:/usr/local/airflow/.oracle/instantclient_19_23/
-      - ./include:/usr/local/airflow/.postgresql/data/instantclient_17_0/
+      - ./include/oracle:/usr/local/airflow/.oracle/instantclient_19_23/
+      - ./include/postgresql:/usr/local/airflow/.postgresql/data/instantclient_17_0/
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 5
       # start_period: 30s
-  
-  # scheduler:
-  #   volumes:
-  #     - ./dbt_nutricao:/usr/local/airflow/dags/dbt/dbt_nutricao:rw
-  #     - ./dbt_suprimentos:/usr/local/airflow/dags/dbt/dbt_suprimentos:rw
-  
-  # triggerer:
-  #   volumes:
-  #     - ./dbt_nutricao:/usr/local/airflow/dags/dbt/dbt_nutricao:rw
-  #     - ./dbt_suprimentos:/usr/local/airflow/dags/dbt/dbt_suprimentos:rw
 
   dwpostgres:
     image: postgres:17rc1-alpine3.19
@@ -46,7 +36,6 @@ services:
 
 volumes:
   postgres-volume:
-
 
 networks:
   airflow:
