@@ -1,0 +1,74 @@
+version: 2
+
+snapshots:
+  - name: sol_com
+    description: "Snapshot da tabela sol_com"
+    columns:
+      - name: CD_SOL_COM
+        description: "Identificador único para sol_com"
+      - name: CD_MOT_PED
+        description: "Código do motivo do pedido"
+      - name: CD_SETOR
+        description: "Código do setor"
+      - name: CD_ESTOQUE
+        description: "Código do estoque"
+      - name: CD_MOT_CANCEL
+        description: "Código do motivo do cancelamento"
+      - name: CD_ATENDIME
+        description: "Código do atendimento"
+      - name: CD_SOLICITANTE
+        description: "Código do solicitante"
+      - name: NM_SOLICITANTE
+        description: "Nome do solicitante"
+      - name: DT_SOL_COM
+        description: "Data do pedido"
+      - name: DT_CANCELAMENTO
+        description: "Data do cancelamento"
+      - name: VL_TOTAL
+        description: "Valor total"
+      - name: TP_SITUACAO
+        description: "Tipo de situação"
+      - name: TP_SOL_COM
+        description: "Tipo de solicitação"
+      - name: SN_URGENTE
+        description: "Flag de urgência"
+      - name: SN_APROVADA
+        description: "Flag de aprovação"
+      - name: SN_OPME
+        description: "Flag de OPME"
+      - name: DT_EXTRACAO
+        description: "Data de extração"
+
+  - name: ord_com
+    description: "Snapshot da tabela ord_com"
+    columns:
+      - name: CD_ORD_COM
+        description: "Identificador único para ord_com"
+      - name: CD_ESTOQUE
+        description: "Código do estoque"
+      - name: CD_FORNECEDOR
+        description: "Código do fornecedor"
+      - name: CD_SOL_COM
+        description: "Código do pedido"
+      - name: CD_MOT_CANCEL
+        description: "Código do motivo do cancelamento"
+      - name: CD_USUARIO_CRIADOR_OC
+        description: "Código do usuário que criou a ordem"
+      - name: CD_ULTIMO_USU_ALT_OC
+        description: "Código do último usuário que alterou a ordem"
+      - name: DT_ORD_COM
+        description: "Data da ordem"
+      - name: DT_CANCELAMENTO
+        description: "Data do cancelamento"
+      - name: DT_AUTORIZACAO
+        description: "Data da autorização"
+      - name: DT_ULTIMA_ALTERACAO_OC
+        description: "Data da última alteração"
+      - name: TP_SITUACAO
+        description: "Tipo de situação"
+      - name: TP_ORD_COM
+        description: "Tipo de ordem"
+      - name: SN_AUTORIZADO
+        description: "Flag de autorização"
+      - name: DT_EXTRACAO
+        description: "Data de extração"
