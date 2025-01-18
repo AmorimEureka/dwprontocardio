@@ -30,27 +30,27 @@ WITH source_mvto_estoque
 treats
     AS (
         SELECT
-            "CD_MVTO_ESTOQUE"::BIGINT
-            , "CD_ESTOQUE"::BIGINT
-            , "CD_UNI_PRO"::BIGINT
-            , "CD_UNID_INT"::BIGINT
-            , "CD_SETOR"::BIGINT
-            , "CD_ESTOQUE_DESTINO"::BIGINT
-            , "CD_CUSTO_MEDIO"::BIGINT
-            , "CD_AVISO_CIRURGIA"::BIGINT
-            , "CD_ENT_PRO"::BIGINT
-            , "CD_USUARIO"::VARCHAR(50)
-            , "CD_FORNECEDOR"::BIGINT
-            , "CD_PRESTADOR"::BIGINT
-            , "CD_PRE_MED"::BIGINT
-            , "CD_ATENDIMENTO"::BIGINT
-            , "CD_MOT_DEV"::BIGINT
-            , "DT_MVTO_ESTOQUE"::DATE
-            , "HR_MVTO_ESTOQUE"::TIMESTAMP
-            , "VL_TOTAL"::NUMERIC(15,0)
-            , "TP_MVTO_ESTOQUE"::VARCHAR(1)
-            , "NR_DOCUMENTO"::VARCHAR(20)
-            , "CHAVE_NFE"::VARCHAR(44)
+            CAST("CD_MVTO_ESTOQUE" AS BIGINT) AS "CD_MVTO_ESTOQUE"
+            , CAST("CD_ESTOQUE" AS BIGINT) AS "CD_ESTOQUE"
+            , CAST("CD_UNI_PRO" AS BIGINT) AS "CD_UNI_PRO"
+            , CAST("CD_UNID_INT" AS BIGINT) AS "CD_UNID_INT"
+            , CAST("CD_SETOR" AS BIGINT) AS "CD_SETOR"
+            , CAST("CD_ESTOQUE_DESTINO" AS BIGINT) AS "CD_ESTOQUE_DESTINO"
+            , CAST("CD_CUSTO_MEDIO" AS BIGINT) AS "CD_CUSTO_MEDIO"
+            , CAST("CD_AVISO_CIRURGIA" AS BIGINT) AS "CD_AVISO_CIRURGIA"
+            , CAST("CD_ENT_PRO" AS BIGINT) AS "CD_ENT_PRO"
+            , CAST("CD_USUARIO" AS VARCHAR(50)) AS "CD_USUARIO"
+            , CAST("CD_FORNECEDOR" AS BIGINT) AS "CD_FORNECEDOR"
+            , CAST("CD_PRESTADOR" AS BIGINT) AS "CD_PRESTADOR"
+            , CAST("CD_PRE_MED" AS BIGINT) AS "CD_PRE_MED"
+            , CAST("CD_ATENDIMENTO" AS BIGINT) AS "CD_ATENDIMENTO"
+            , CAST("CD_MOT_DEV" AS BIGINT) AS "CD_MOT_DEV"
+            , CAST("DT_MVTO_ESTOQUE" AS DATE) AS "DT_MVTO_ESTOQUE"
+            , CAST("HR_MVTO_ESTOQUE" AS TIMESTAMP) AS "HR_MVTO_ESTOQUE"
+            , CAST("VL_TOTAL" AS NUMERIC(15,0)) AS "VL_TOTAL"
+            , CAST("TP_MVTO_ESTOQUE" AS VARCHAR(1)) AS "TP_MVTO_ESTOQUE"
+            , CAST("NR_DOCUMENTO" AS VARCHAR(20)) AS "NR_DOCUMENTO"
+            , CAST("CHAVE_NFE" AS VARCHAR(44)) AS "CHAVE_NFE"
         FROM source_mvto_estoque
     )
 SELECT * FROM treats

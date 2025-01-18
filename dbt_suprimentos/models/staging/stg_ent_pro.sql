@@ -1,4 +1,7 @@
+{{
+    config( materialized = 'table' )
 
+}}
 
 WITH source_ent_pro 
     AS (

@@ -1,4 +1,7 @@
+{{
+    config( materialized = 'table' )
 
+}}
 
 WITH source_sol_com 
     AS (
