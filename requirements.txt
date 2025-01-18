@@ -3,3 +3,4 @@ apache-airflow-providers-oracle
 oracledb
 apache-airflow-providers-postgres
 astronomer-cosmos[dbt-postgres]
+alembic
