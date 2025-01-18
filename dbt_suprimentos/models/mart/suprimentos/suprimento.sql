@@ -1,14 +1,3 @@
-
-
-
-
-{{
-    config( materialized = 'table' )
-
-}}
-
-
-
 WITH source_int_suprimento
     AS (
         SELECT
