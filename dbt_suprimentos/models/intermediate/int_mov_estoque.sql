@@ -49,7 +49,6 @@ source_itens_mov_estoque
             , "VL_UNITARIO"
             , "TP_ESTOQUE"
         FROM {{ ref( 'stg_itmvto_estoque' ) }}
-        
 ),
 source_uni_pro
     AS (
@@ -61,8 +60,7 @@ source_uni_pro
             , "TP_RELATORIOS"
             , "SN_ATIVO"
         FROM {{ ref( 'stg_uni_pro' ) }}
-        WHERE "TP_RELATORIOS" = 'G'
-        
+        WHERE "TP_RELATORIOS" = 'G'   
 ),
 source_est_pro
     AS (
@@ -85,7 +83,6 @@ source_est_pro
             , "QT_CONSUMO_ATUAL"
             , "TP_CLASSIFICACAO_ABC"
         FROM {{ ref( 'stg_est_pro' ) }}
-        
 ),
 source_produto
     AS (
@@ -97,8 +94,7 @@ source_produto
             , "VL_ULTIMA_ENTRADA"
             , "VL_CUSTO_MEDIO"
             , "VL_ULTIMA_CUSTO_REAL"
-        FROM {{ ref( 'stg_produto' ) }}
-        
+        FROM {{ ref( 'stg_produto' ) }} 
 ),
 treats_qt_mov
     AS (
@@ -159,6 +155,5 @@ treats
         FROM source_est_pro ep
         LEFT JOIN treats_qt_mov qmv ON ep."CD_PRODUTO" = qmv."CD_PRODUTO"
         LEFT JOIN source_produto p  ON ep."CD_PRODUTO" = p."CD_PRODUTO"
-
 )
 SELECT * FROM treats
