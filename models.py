@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import BigInteger, Column, DateTime, String, text
+from sqlalchemy import BigInteger, Column, DateTime, String, Sequence, text
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -9,6 +9,7 @@ Base = declarative_base()
 class EntPro(Base):
     __tablename__ = 'ent_pro'
 
+    id_ent_pro_seq = Sequence('id_ent_pro_seq', schema='public')
     id_ent_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_ent_pro_seq'::regclass)"))
     CD_ENT_PRO = Column(String)
     CD_TIP_ENT = Column(String)
@@ -31,6 +32,7 @@ class EntPro(Base):
 class Especie(Base):
     __tablename__ = 'especie'
 
+    id_especie_seq = Sequence('id_especie_seq', schema='public')
     id_especie = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_especie_seq'::regclass)"))
     CD_ESPECIE = Column(String)
     CD_ITEM_RES = Column(String)
@@ -41,6 +43,7 @@ class Especie(Base):
 class EstPro(Base):
     __tablename__ = 'est_pro'
 
+    id_est_pro_seq = Sequence('id_est_pro_seq', schema='public')
     id_est_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_est_pro_seq'::regclass)"))
     CD_ESTOQUE = Column(String)
     CD_PRODUTO = Column(String)
@@ -65,6 +68,7 @@ class EstPro(Base):
 class Estoque(Base):
     __tablename__ = 'estoque'
 
+    id_estoque_seq = Sequence('id_estoque_seq', schema='public')
     id_estoque = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_estoque_seq'::regclass)"))
     CD_ESTOQUE = Column(String)
     CD_SETOR = Column(String)
@@ -76,6 +80,7 @@ class Estoque(Base):
 class Fornecedor(Base):
     __tablename__ = 'fornecedor'
 
+    id_fornecedor_seq = Sequence('id_fornecedor_seq', schema='public')
     id_fornecedor = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_fornecedor_seq'::regclass)"))
     CD_FORNECEDOR = Column(String)
     NM_FORNECEDOR = Column(String(255))
@@ -89,6 +94,7 @@ class Fornecedor(Base):
 class ItentPro(Base):
     __tablename__ = 'itent_pro'
 
+    id_itent_pro_seq = Sequence('id_itent_pro_seq', schema='public')
     id_itent_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itent_pro_seq'::regclass)"))
     CD_ITENT_PRO = Column(String)
     CD_ENT_PRO = Column(String)
@@ -111,6 +117,7 @@ class ItentPro(Base):
 class ItmvtoEstoque(Base):
     __tablename__ = 'itmvto_estoque'
 
+    id_itmvto_estoque_seq = Sequence('id_itmvto_estoque_seq', schema='public')
     id_itmvto_estoque = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itmvto_estoque_seq'::regclass)"))
     CD_ITMVTO_ESTOQUE = Column(String)
     CD_MVTO_ESTOQUE = Column(String)
@@ -131,6 +138,7 @@ class ItmvtoEstoque(Base):
 class ItordPro(Base):
     __tablename__ = 'itord_pro'
 
+    id_itord_pro_seq = Sequence('id_itord_pro_seq', schema='public')
     id_itord_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itord_pro_seq'::regclass)"))
     CD_ORD_COM = Column(String)
     CD_PRODUTO = Column(String)
@@ -151,6 +159,7 @@ class ItordPro(Base):
 class ItsolCom(Base):
     __tablename__ = 'itsol_com'
 
+    id_itsol_com_seq = Sequence('id_itsol_com_seq', schema='public')
     id_itsol_com = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itsol_com_seq'::regclass)"))
     CD_SOL_COM = Column(String)
     CD_PRODUTO = Column(String)
@@ -167,6 +176,7 @@ class ItsolCom(Base):
 class LotPro(Base):
     __tablename__ = 'lot_pro'
 
+    id_lot_pro_seq = Sequence('id_lot_pro_seq', schema='public')
     id_lot_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_lot_pro_seq'::regclass)"))
     CD_LOT_PRO = Column(String)
     CD_ESTOQUE = Column(String)
@@ -180,6 +190,7 @@ class LotPro(Base):
 class MotCancel(Base):
     __tablename__ = 'mot_cancel'
 
+    id_mot_cancel_seq = Sequence('id_mot_cancel_seq', schema='public')
     id_mot_cancel = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_mot_cancel_seq'::regclass)"))
     CD_MOT_CANCEL = Column(String)
     DS_MOT_CANCEL = Column(String)
@@ -190,6 +201,7 @@ class MotCancel(Base):
 class MvtoEstoque(Base):
     __tablename__ = 'mvto_estoque'
 
+    id_mvto_estoque_seq = Sequence('id_mvto_estoque_seq', schema='public')
     id_mvto_estoque = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_mvto_estoque_seq'::regclass)"))
     CD_MVTO_ESTOQUE = Column(String)
     CD_ESTOQUE = Column(String)
@@ -218,6 +230,7 @@ class MvtoEstoque(Base):
 class OrdCom(Base):
     __tablename__ = 'ord_com'
 
+    id_ord_com_seq = Sequence('id_ord_com_seq', schema='public')
     id_ord_com = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_ord_com_seq'::regclass)"))
     CD_ORD_COM = Column(String)
     CD_ESTOQUE = Column(String)
@@ -239,6 +252,7 @@ class OrdCom(Base):
 class Produto(Base):
     __tablename__ = 'produto'
 
+    id_produto_seq = Sequence('id_produto_seq', schema='public')
     id_produto = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_produto_seq'::regclass)"))
     CD_PRODUTO = Column(String)
     CD_ESPECIE = Column(String)
@@ -258,6 +272,7 @@ class Produto(Base):
 class Setor(Base):
     __tablename__ = 'setor'
 
+    id_setor_seq = Sequence('id_setor_seq', schema='public')
     id_setor = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_setor_seq'::regclass)"))
     CD_SETOR = Column(String)
     CD_FATOR = Column(String)
@@ -271,6 +286,7 @@ class Setor(Base):
 class SolCom(Base):
     __tablename__ = 'sol_com'
 
+    id_sol_com_seq = Sequence('id_sol_com_seq', schema='public')
     id_sol_com = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_sol_com_seq'::regclass)"))
     CD_SOL_COM = Column(String)
     CD_MOT_PED = Column(String)
@@ -294,6 +310,7 @@ class SolCom(Base):
 class UniPro(Base):
     __tablename__ = 'uni_pro'
 
+    id_uni_pro_seq = Sequence('id_uni_pro_seq', schema='public')
     id_uni_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_uni_pro_seq'::regclass)"))
     CD_UNI_PRO = Column(String)
     CD_UNIDADE = Column(String)
