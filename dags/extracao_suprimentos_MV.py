@@ -13,7 +13,6 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 
-
 postgres_hook = PostgresHook(postgres_conn_id='postgres_prontocardio')
 
 engine_postgres = sa.create_engine(postgres_hook.get_uri())
@@ -23,33 +22,26 @@ nome_schema_postgres = 'raw_mv'
 oracle_hook = OracleHook(oracle_conn_id='oracle_prontocardio', thick_mode=True)
 
 
-
-def gerar_texto_querys(query: str, where: str):
+def gerar_texto_querys(query: str, where: int):
 
     sql_dir = os.path.join(os.path.dirname(__file__), 'raw_mv', 'modelos')
     sql_path = os.path.join(sql_dir, f'{query}.sql')
-
 
     with open(sql_path, 'r') as arq:
 
         texto_query = arq.read()
 
-        if ':PARAM' not in texto_query:
-            texto_query
-            
-        else:
-            if where == 0 :
-                where = 1
-                texto_query = texto_query.replace(':PARAM', str(where))
-            else:
-                texto_query = texto_query.replace(':PARAM', str(where))
+        if ':PARAM' in texto_query:
+
+            where = 1 if where == 0 else where
+
+            texto_query = texto_query.replace(':PARAM', str(where))
 
         print(texto_query)
         return texto_query
 
 
-
-def inserir_dados_postgres(tabela:str, colunas:str, place_insert:str, df):
+def inserir_dados_postgres(tabela: str, colunas: str, place_insert: str, df: pd.DataFrame):
 
     print(colunas)
     print(place_insert)
@@ -64,38 +56,28 @@ def inserir_dados_postgres(tabela:str, colunas:str, place_insert:str, df):
         conn_pg.commit()
 
 
-
 def apagar_tabela(tabela: str, conn):
-    
+
     query = f"TRUNCATE TABLE {nome_schema_postgres}.{tabela} CASCADE"
     conn.execute(query)
 
 
-
 default_args = {
-    'owner' : 'airflow_suprimentos',
+    'owner': 'airflow_suprimentos',
     'depends_on_past': False,
-    'start_date' : datetime(2024, 1, 1),
+    'start_date': datetime(2024, 1, 1),
     'retries': 1,
-    'retry_delay' : timedelta(minutes=1),
+    'retry_delay': timedelta(minutes=1),
 }
 
 with DAG(
-    dag_id= "Extracao_Suprimentos_MV",
+    dag_id="Extracao_Suprimentos_MV",
     default_args=default_args,
-    description= "Extracao de Dados da Produção p/ Camada Raw - SUPRIMENTOS",
+    description="Extracao de Dados da Produção p/ Camada Raw - SUPRIMENTOS",
     schedule_interval=timedelta(minutes=20),
     catchup=False,
     max_active_runs=1,
 ) as dag:
-
-
-    lista_tabelas_postgres = {
-        'lista_tab_incremental' : ['uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque', 'setor', 'especie', 'mvto_estoque', 'itmvto_estoque', 'itsol_com', 'itord_pro', 'itent_pro'] ,
-        'lista_tab_truncate' : ['produto', 'est_pro'] ,
-        'lista_tab_snapshot' : ['sol_com', 'ord_com', 'ent_pro']
-    }
-
 
     def extracao_oracle_for_postgres(nome_tabela, param):
 
@@ -116,17 +98,17 @@ with DAG(
                     where_sql = resultado if resultado is not None else 0
 
                     cursor_pg.close()
-                    
+
                     return where_sql
-            
+
                 if param == 'lista_tab_snapshot':
 
                     tabela = nome_tabela
-                
+
                     count_query = f"SELECT COUNT(id_{tabela}) FROM {nome_schema_postgres}.{tabela}"
                     cursor_pg.execute(count_query)
                     resultado = cursor_pg.fetchone()[0]
-                    
+
                     resultado = resultado if resultado is not None else 0
 
                     if resultado != 0:
@@ -158,7 +140,7 @@ with DAG(
                 cursor_ora = conn_ora.cursor()
                 texto_query = gerar_texto_querys(nome_tabela, maior_id)
                 cursor_ora.execute(texto_query)
-                
+
                 metadados_query = cursor_ora.description
                 colunas = [registro[0] for registro in metadados_query]
                 nome_colunas = ', '.join(f'"{col}"'for col in colunas)
@@ -172,32 +154,25 @@ with DAG(
 
                 inserir_dados_postgres(nome_tabela, nome_colunas, placeholders_insert, df)
 
-
-        
         where_sql_task = obter_where_sql(nome_tabela)
         extrair_dados_oracle_task = extrair_dados_oracle(nome_tabela, where_sql_task)
         where_sql_task >> extrair_dados_oracle_task
         return [where_sql_task, extrair_dados_oracle_task]
 
-
+    lista_tabelas_postgres = {
+        'lista_tab_incremental': [
+            'uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque',
+            'setor', 'especie', 'mvto_estoque', 'itmvto_estoque', 'itsol_com',
+            'itord_pro', 'itent_pro'
+        ],
+        'lista_tab_truncate': ['produto', 'est_pro'],
+        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro']
+    }
 
     tarefas_extracao = []
-    for lista in lista_tabelas_postgres:
-        if lista == 'lista_tab_incremental':
-            for nome_tabela in lista_tabelas_postgres['lista_tab_incremental']:
-                tipo_param = 'lista_tab_incremental'
-                tarefas_extracao.extend(extracao_oracle_for_postgres(nome_tabela, tipo_param))
-        if lista == 'lista_tab_snapshot':
-            for nome_tabela in lista_tabelas_postgres['lista_tab_snapshot']:
-                tipo_param = 'lista_tab_snapshot'
-                tarefas_extracao.extend(extracao_oracle_for_postgres(nome_tabela, tipo_param))
-        if lista == 'lista_tab_truncate':
-            for nome_tabela in lista_tabelas_postgres['lista_tab_truncate']:
-                tipo_param = 'lista_tab_truncate'
-                tarefas_extracao.extend(extracao_oracle_for_postgres(nome_tabela, tipo_param))
-
-    for tarefa in tarefas_extracao:
-        tarefa
+    for tipo_param, lista in lista_tabelas_postgres.items():
+        for nome_tabela in lista:
+            tarefas_extracao.extend(extracao_oracle_for_postgres(nome_tabela, tipo_param))
 
     cosmos_dag_suprimentos = DbtTaskGroup(
         group_id="dbt_trf_suprimentos",
