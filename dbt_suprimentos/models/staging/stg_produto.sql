@@ -1,22 +1,30 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_PRODUTO"',
+            merge_update_columns = ['"DT_ULTIMA_ENTRADA"', '"HR_ULTIMA_ENTRADA"', '"QT_ESTOQUE_ATUAL"', '"QT_ULTIMA_ENTRADA"',
+                                    '"VL_ULTIMA_ENTRADA"', '"VL_CUSTO_MEDIO"', '"VL_ULTIMA_CUSTO_REAL"', '"DT_EXTRACAO"' ] )
+}}
 
-
-WITH source_produto 
+WITH source_produto
     AS (
         SELECT
-            NULLIF("CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
-            , NULLIF("CD_ESPECIE", 'NaN') AS "CD_ESPECIE"
-            , NULLIF("DS_PRODUTO", 'NaN') AS "DS_PRODUTO"
-            , NULLIF("DS_PRODUTO_RESUMIDO", 'NaN') AS "DS_PRODUTO_RESUMIDO"
-            , "DT_CADASTRO"
-            , "DT_ULTIMA_ENTRADA"
-            , "HR_ULTIMA_ENTRADA"
-            , NULLIF("QT_ESTOQUE_ATUAL", 'NaN') AS "QT_ESTOQUE_ATUAL"
-            , NULLIF("QT_ULTIMA_ENTRADA", 'NaN') AS "QT_ULTIMA_ENTRADA"
-            , NULLIF("VL_ULTIMA_ENTRADA", 'NaN') AS "VL_ULTIMA_ENTRADA"
-            , NULLIF("VL_CUSTO_MEDIO", 'NaN') AS "VL_CUSTO_MEDIO"
-            , NULLIF("VL_ULTIMA_CUSTO_REAL", 'NaN') AS "VL_ULTIMA_CUSTO_REAL"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'produto') }}
+            NULLIF(sis."CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
+            , NULLIF(sis."CD_ESPECIE", 'NaN') AS "CD_ESPECIE"
+            , NULLIF(sis."DS_PRODUTO", 'NaN') AS "DS_PRODUTO"
+            , NULLIF(sis."DS_PRODUTO_RESUMIDO", 'NaN') AS "DS_PRODUTO_RESUMIDO"
+            , sis."DT_CADASTRO"
+            , sis."DT_ULTIMA_ENTRADA"
+            , sis."HR_ULTIMA_ENTRADA"
+            , NULLIF(sis."QT_ESTOQUE_ATUAL", 'NaN') AS "QT_ESTOQUE_ATUAL"
+            , NULLIF(sis."QT_ULTIMA_ENTRADA", 'NaN') AS "QT_ULTIMA_ENTRADA"
+            , NULLIF(sis."VL_ULTIMA_ENTRADA", 'NaN') AS "VL_ULTIMA_ENTRADA"
+            , NULLIF(sis."VL_CUSTO_MEDIO", 'NaN') AS "VL_CUSTO_MEDIO"
+            , NULLIF(sis."VL_ULTIMA_CUSTO_REAL", 'NaN') AS "VL_ULTIMA_CUSTO_REAL"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'produto') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_PRODUTO"::BIGINT > ( SELECT MAX("CD_PRODUTO") FROM {{ this }} )
+        {% endif %}
 ),
 treats
     AS (

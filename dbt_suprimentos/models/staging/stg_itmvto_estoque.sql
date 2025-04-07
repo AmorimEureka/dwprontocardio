@@ -1,26 +1,29 @@
-
-
-
-
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_ITMVTO_ESTOQUE"' )
+}}
 
 WITH source_itmvto_estoque
     AS (
         SELECT
-            NULLIF("CD_ITMVTO_ESTOQUE", 'NaN') AS "CD_ITMVTO_ESTOQUE"
-            , NULLIF("CD_MVTO_ESTOQUE", 'NaN') AS "CD_MVTO_ESTOQUE"
-            , NULLIF("CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
-            , NULLIF("CD_UNI_PRO", 'NaN') AS "CD_UNI_PRO"
-            , NULLIF("CD_LOTE", 'NaN') AS "CD_LOTE"
-            , NULLIF(SPLIT_PART("CD_ITENT_PRO", '.', 1), 'NaN') AS "CD_ITENT_PRO"
-            , NULLIF(SPLIT_PART("CD_FORNECEDOR", '.', 1), 'NaN') AS "CD_FORNECEDOR"
-            , NULLIF("CD_ITPRE_MED", 'NaN') AS "CD_ITPRE_MED"
-            , "DT_VALIDADE"
-            , "DH_MVTO_ESTOQUE"
-            , NULLIF("QT_MOVIMENTACAO", 'NaN') AS "QT_MOVIMENTACAO"
-            , NULLIF("VL_UNITARIO", 'NaN') AS "VL_UNITARIO"
-            , NULLIF("TP_ESTOQUE", 'NaN') AS "TP_ESTOQUE"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'itmvto_estoque') }}
+            NULLIF(SPLIT_PART(sis."CD_ITMVTO_ESTOQUE", '.', 1), 'NaN') AS "CD_ITMVTO_ESTOQUE"
+            , NULLIF(sis."CD_MVTO_ESTOQUE", 'NaN') AS "CD_MVTO_ESTOQUE"
+            , NULLIF(sis."CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
+            , NULLIF(sis."CD_UNI_PRO", 'NaN') AS "CD_UNI_PRO"
+            , NULLIF(sis."CD_LOTE", 'NaN') AS "CD_LOTE"
+            , NULLIF(SPLIT_PART(sis."CD_ITENT_PRO", '.', 1), 'NaN') AS "CD_ITENT_PRO"
+            , NULLIF(SPLIT_PART(sis."CD_FORNECEDOR", '.', 1), 'NaN') AS "CD_FORNECEDOR"
+            , NULLIF(sis."CD_ITPRE_MED", 'NaN') AS "CD_ITPRE_MED"
+            , sis."DT_VALIDADE"
+            , sis."DH_MVTO_ESTOQUE"
+            , NULLIF(sis."QT_MOVIMENTACAO", 'NaN') AS "QT_MOVIMENTACAO"
+            , NULLIF(sis."VL_UNITARIO", 'NaN') AS "VL_UNITARIO"
+            , NULLIF(sis."TP_ESTOQUE", 'NaN') AS "TP_ESTOQUE"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'itmvto_estoque') }} sis
+        {% if is_incremental() %}
+        WHERE SPLIT_PART(sis."CD_ITMVTO_ESTOQUE", '.', 1)::BIGINT > ( SELECT MAX("CD_ITMVTO_ESTOQUE") FROM {{this}} )
+        {% endif %}
 ),
 treats
     AS (

@@ -1,18 +1,25 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_FORNECEDOR"' )
+}}
 
-
-WITH source_fornecedor 
+WITH source_fornecedor
     AS (
         SELECT
-            NULLIF("CD_FORNECEDOR", 'NaN') AS "CD_FORNECEDOR"
-            , NULLIF("NM_FORNECEDOR", 'NaN') AS "NM_FORNECEDOR"
-            , NULLIF("NM_FANTASIA", 'NaN') AS "NM_FANTASIA"
-            , "DT_INCLUSAO"
-            , NULLIF("NR_CGC_CPF", 'NaN') AS "NR_CGC_CPF"
-            , NULLIF("TP_FORNECEDOR", 'NaN') AS "TP_FORNECEDOR"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'fornecedor') }}
+            NULLIF(sis."CD_FORNECEDOR", 'NaN') AS "CD_FORNECEDOR"
+            , NULLIF(sis."NM_FORNECEDOR", 'NaN') AS "NM_FORNECEDOR"
+            , NULLIF(sis."NM_FANTASIA", 'NaN') AS "NM_FANTASIA"
+            , sis."DT_INCLUSAO"
+            , NULLIF(sis."NR_CGC_CPF", 'NaN') AS "NR_CGC_CPF"
+            , NULLIF(sis."TP_FORNECEDOR", 'NaN') AS "TP_FORNECEDOR"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'fornecedor') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_FORNECEDOR"::BIGINT > ( SELECT MAX("CD_FORNECEDOR") FROM {{this}} )
+        {% endif %}
+
 ),
-treats 
+treats
     AS (
         SELECT
             "CD_FORNECEDOR"::BIGINT

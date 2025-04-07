@@ -1,6 +1,9 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_ITORD_PRO_KEY"' )
+}}
 
-
-WITH source_itord_pro 
+WITH source_itord_pro
     AS (
         SELECT
             NULLIF("CD_ORD_COM", 'NaN') AS "CD_ORD_COM"
@@ -19,10 +22,34 @@ WITH source_itord_pro
             , "DT_EXTRACAO"
         FROM {{ source('raw_mv' , 'itord_pro') }}
 ),
+treats_key
+    AS (
+        SELECT
+            CONCAT(sis."CD_ORD_COM", sis."CD_PRODUTO") AS "CD_ITORD_PRO_KEY"
+            , sis."CD_ORD_COM"
+            , sis."CD_PRODUTO"
+            , sis."CD_UNI_PRO"
+            , sis."CD_MOT_CANCEL"
+            , sis."DT_CANCEL"
+            , sis."QT_COMPRADA"
+            , sis."QT_ATENDIDA"
+            , sis."QT_RECEBIDA"
+            , sis."QT_CANCELADA"
+            , sis."VL_UNITARIO"
+            , sis."VL_TOTAL"
+            , sis."VL_CUSTO_REAL"
+            , sis."VL_TOTAL_CUSTO_REAL"
+            , sis."DT_EXTRACAO"
+        FROM source_itord_pro sis
+        {% if is_incremental() %}
+        WHERE CONCAT(sis."CD_ORD_COM", sis."CD_PRODUTO")::BIGINT > ( SELECT MAX("CD_ITORD_PRO_KEY") FROM {{this}} )
+        {% endif %}
+),
 treats
     AS (
         SELECT
-            "CD_ORD_COM"::BIGINT
+            "CD_ITORD_PRO_KEY"::BIGINT
+            , "CD_ORD_COM"::BIGINT
             , "CD_PRODUTO"::BIGINT
             , "CD_UNI_PRO"::BIGINT
             , "CD_MOT_CANCEL"::BIGINT
@@ -36,6 +63,6 @@ treats
             , "VL_CUSTO_REAL"::NUMERIC(12,2)
             , "VL_TOTAL_CUSTO_REAL"::NUMERIC(12,2)
             , "DT_EXTRACAO"::TIMESTAMP
-        FROM source_itord_pro
+        FROM treats_key
     )
 SELECT * FROM treats
