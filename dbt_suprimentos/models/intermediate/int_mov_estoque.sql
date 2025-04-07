@@ -1,14 +1,11 @@
-
-
 {{
     config( materialized = 'ephemeral' )
-
 }}
 
 
-WITH source_mov_estoque 
+WITH source_mov_estoque
     AS (
-        SELECT 
+        SELECT
             "CD_MVTO_ESTOQUE"
             , "CD_ESTOQUE"
             , "CD_UNI_PRO"
@@ -34,7 +31,7 @@ WITH source_mov_estoque
 ),
 source_itens_mov_estoque
     AS (
-        SELECT 
+        SELECT
             "CD_ITMVTO_ESTOQUE"
             , "CD_MVTO_ESTOQUE"
             , "CD_PRODUTO"
@@ -52,7 +49,7 @@ source_itens_mov_estoque
 ),
 source_uni_pro
     AS (
-        SELECT 
+        SELECT
             "CD_UNI_PRO"
             , "CD_UNIDADE"
             , "CD_PRODUTO"
@@ -60,11 +57,11 @@ source_uni_pro
             , "TP_RELATORIOS"
             , "SN_ATIVO"
         FROM {{ ref( 'stg_uni_pro' ) }}
-        WHERE "TP_RELATORIOS" = 'G'   
+        WHERE "TP_RELATORIOS" = 'G'
 ),
 source_est_pro
     AS (
-        SELECT 
+        SELECT
             "CD_ESTOQUE"
             , "CD_PRODUTO"
             , "CD_LOCALIZACAO"
@@ -86,7 +83,7 @@ source_est_pro
 ),
 source_produto
     AS (
-        SELECT 
+        SELECT
             "CD_PRODUTO"
             , "DT_ULTIMA_ENTRADA"
             , "HR_ULTIMA_ENTRADA"
@@ -94,40 +91,40 @@ source_produto
             , "VL_ULTIMA_ENTRADA"
             , "VL_CUSTO_MEDIO"
             , "VL_ULTIMA_CUSTO_REAL"
-        FROM {{ ref( 'stg_produto' ) }} 
+        FROM {{ ref( 'stg_produto' ) }}
 ),
 treats_qt_mov
     AS (
-        SELECT 
+        SELECT
             itmve."CD_PRODUTO"
             , up."VL_FATOR"
             , up."TP_RELATORIOS"
             , mve."TP_MVTO_ESTOQUE"
             , COALESCE(
                 SUM(
-                    itmve."QT_MOVIMENTACAO" 
+                    itmve."QT_MOVIMENTACAO"
                     * up."VL_FATOR"
                     * CASE
                         WHEN mve."TP_MVTO_ESTOQUE" IN ('D', 'C') THEN -1
                         ELSE 1
-                      END 
+                      END
                     ) / up."VL_FATOR",
                     0
               ) AS "QT_MOVIMENTO"
         FROM {{ ref( 'stg_itmvto_estoque' ) }} AS itmve
-        LEFT JOIN {{ ref( 'stg_mvto_estoque' ) }} AS mve 
+        LEFT JOIN {{ ref( 'stg_mvto_estoque' ) }} AS mve
             ON itmve."CD_MVTO_ESTOQUE" = mve."CD_MVTO_ESTOQUE"
-        LEFT JOIN {{ ref( 'stg_uni_pro' ) }} AS up 
+        LEFT JOIN {{ ref( 'stg_uni_pro' ) }} AS up
             ON itmve."CD_UNI_PRO" = up."CD_UNI_PRO"
-        WHERE up."TP_RELATORIOS" = 'G' 
+        WHERE up."TP_RELATORIOS" = 'G'
             AND mve."TP_MVTO_ESTOQUE" IN ('S', 'P', 'D', 'C')
-        GROUP BY 
-            itmve."CD_PRODUTO", 
-            up."VL_FATOR", 
-            up."TP_RELATORIOS", 
+        GROUP BY
+            itmve."CD_PRODUTO",
+            up."VL_FATOR",
+            up."TP_RELATORIOS",
             mve."TP_MVTO_ESTOQUE"
 ),
-treats 
+treats
     AS (
         SELECT
             ep."CD_ESTOQUE"
