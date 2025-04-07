@@ -320,3 +320,220 @@ class UniPro(Base):
     TP_RELATORIOS = Column(String)
     SN_ATIVO = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+class Atendime(Base):
+    __tablename__ = 'atendime'
+
+    id_atendime_seq = Sequence('id_atendime_seq', schema='public')
+    id_atendime = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_atendime_seq'::regclass)"))
+    DT_ATENDIMENTO = Column(DateTime)
+    CD_PACIENTE = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Ati_Med(Base):
+    __tablename__ = 'ati_med'
+
+    id_ati_med_seq = Sequence('id_ati_med_seq', schema='public')
+    id_ati_med = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_ati_med_seq'::regclass)"))
+    CD_ATENDIMENTO = Column(String)
+    CD_ATI_MED = Column(String)
+    DS_ATI_MED = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Convenio(Base):
+    __tablename__ = 'convenio'
+
+    id_convenio_seq = Sequence('id_convenio_seq', schema='public')
+    id_convenio = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_convenio_seq'::regclass)"))
+    CD_CONVENIO = Column(String)
+    NM_CONVENIO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Gru_Fat(Base):
+    __tablename__ = 'gru_fat'
+
+    id_gru_fat_seq = Sequence('id_gru_fat_seq', schema='public')
+    id_gru_fat = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_gru_fat_seq'::regclass)"))
+    CD_GRU_FAT = Column(String)
+    DS_GRU_FAT = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Gru_Pro(Base):
+    __tablename__ = 'gru_pro'
+
+    id_gru_pro_seq = Sequence('id_gru_pro_seq', schema='public')
+    id_gru_pro = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_gru_pro_seq'::regclass)"))
+    CD_GRU_PRO = Column(String)
+    DS_GRU_PRO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class It_Repasse_SIH(Base):
+    __tablename__ = 'it_repasse_sih'
+
+    it_repasse_sih_seq = Sequence('it_repasse_sih_seq', schema='public')
+    id_it_repasse_sih = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_it_repasse_sih_seq'::regclass)"))
+    CD_REPASSE = Column(String)
+    CD_REG_FAT = Column(String)
+    CD_LANCAMENTO = Column(String)
+    CD_ATI_MED = Column(String)
+    CD_PRESTADOR_REPASSE = Column(String)
+    VL_REPASSE = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class It_Repasse(Base):
+    __tablename__ = 'it_repasse'
+
+    it_repasse_seq = Sequence('it_repasse_seq', schema='public')
+    id_it_repasse = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_it_repasse_seq'::regclass)"))
+    CD_REPASSE = Column(String)
+    CD_REG_AMB = Column(String)
+    CD_LANCAMENTO_AMB = Column(String)
+    CD_REG_FAT = Column(String)
+    CD_LANCAMENTO_FAT = Column(String)
+    CD_ATI_MED = Column(String)
+    CD_PRESTADOR_REPASSE = Column(String)
+    VL_REPASSE = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Itreg_Amb(Base):
+    __tablename__ = 'itreg_amb'
+
+    itreg_amb_seq = Sequence('itreg_amb_seq', schema='public')
+    id_itreg_amb = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itreg_amb_seq'::regclass)"))
+    CD_PRO_FAT = Column(String)
+    CD_REG_AMB = Column(String)
+    CD_PRESTADOR = Column(String)
+    CD_ATI_MED = Column(String)
+    CD_LANCAMENTO = Column(String)
+    CD_GRU_FAT = Column(String)
+    CD_CONVENIO = Column(String)
+    CD_ATENDIMENTO = Column(String)
+    DT_PRODUCAO = Column(DateTime)
+    DT_FECHAMENTO = Column(DateTime)
+    DT_ITREG_AMB = Column(DateTime)
+    SN_FECHADA = Column(String)
+    SN_REPASSADO = Column(String)
+    SN_PERTENCE_PACOTE = Column(String)
+    VL_UNITARIO = Column(String)
+    VL_TOTAL_CONTA = Column(String)
+    VL_BASE_REPASSADO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Itreg_Fat(Base):
+    __tablename__ = 'itreg_fat'
+
+    itreg_fat_seq = Sequence('itreg_fat_seq', schema='public')
+    id_itreg_fat = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itreg_fat_seq'::regclass)"))
+    CD_PRO_FAT = Column(String)
+    CD_REG_FAT = Column(String)
+    CD_PRESTADOR = Column(String)
+    CD_ATI_MED = Column(String)
+    CD_LANCAMENTO = Column(String)
+    CD_GRU_FAT = Column(String)
+    CD_PROCEDIMENTO = Column(String)
+    DT_PRODUCAO = Column(DateTime)
+    DT_ITREG_FAT = Column(DateTime)
+    SN_REPASSADO = Column(String)
+    SN_PERTENCE_PACOTE = Column(String)
+    VL_UNITARIO = Column(String)
+    VL_TOTAL_CONTA = Column(String)
+    VL_BASE_REPASSADO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Paciente(Base):
+    __tablename__ = 'paciente'
+
+    id_paciente_seq = Sequence('id_paciente_seq', schema='public')
+    id_paciente = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_paciente_seq'::regclass)"))
+    CD_PACIENTE = Column(String)
+    NM_PACIENTE = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Prestador(Base):
+    __tablename__ = 'prestador'
+
+    id_prestador_seq = Sequence('id_prestador_seq', schema='public')
+    id_prestador = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_prestador_seq'::regclass)"))
+    CD_PRESTADOR = Column(String)
+    NM_PRESTADOR = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Pro_Fat(Base):
+    __tablename__ = 'pro_fat'
+
+    id_pro_fat_seq = Sequence('id_pro_fat_seq', schema='public')
+    id_pro_fat = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_pro_fat_seq'::regclass)"))
+    CD_PRO_FAT = Column(String)
+    CD_GRU_PRO = Column(String)
+    DS_GRU_PRO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Reg_Amb(Base):
+    __tablename__ = 'reg_amb'
+
+    id_reg_amb_seq = Sequence('id_reg_amb_seq', schema='public')
+    id_reg_amb = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_reg_amb_seq'::regclass)"))
+    CD_REG_AMB = Column(String)
+    CD_REMESSA = Column(String)
+    DT_REMESSA = Column(DateTime)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Reg_Fat(Base):
+    __tablename__ = 'reg_fat'
+
+    id_reg_fat_seq = Sequence('id_reg_fat_seq', schema='public')
+    id_reg_fat = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_reg_fat_seq'::regclass)"))
+    CD_REG_FAT = Column(String)
+    CD_CONVENIO = Column(String)
+    CD_ATENDIMENTO = Column(String)
+    CD_REMESSA = Column(String)
+    DT_REMESSA = Column(DateTime)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+
+class Repasse(Base):
+    __tablename__ = 'repasse'
+
+    id_repasse_seq = Sequence('id_repasse_seq', schema='public')
+    id_repasse = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_repasse_seq'::regclass)"))
+    CD_REPASSE = Column(String)
+    TP_REPASSE = Column(String)
+    DT_COMPETENCIA = Column(DateTime)
+    DT_REPASSE = Column(DateTime)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+class Repasse_Prestador(Base):
+    __tablename__ = 'repasse_prestador'
+
+    id_repasse_prestador_seq = Sequence('id_repasse_prestador_seq', schema='public')
+    id_repasse_prestador = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_repasse_prestador_seq'::regclass)"))
+    CD_REPASSE = Column(String)
+    CD_PRESTADOR_REPASSE = Column(String)
+    DS_REPASSE = Column(String)
+    DT_COMPETENCIA = Column(DateTime)
+    DT_REPASSE = Column(DateTime)
+    TP_REPASSE = Column(String)
+    VL_REPASSE = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+class Procedimento_Sus(Base):
+    __tablename__ = 'procedimento_sus'
+
+    id_procedimento_sus_seq = Sequence('id_procedimento_sus_seq', schema='public')
+    id_procedimento_sus = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_procedimento_sus_seq'::regclass)"))
+    CD_PROCEDIMENTO = Column(String)
+    DS_PROCEDIMENTO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
