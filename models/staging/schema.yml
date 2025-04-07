@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: staging
+    description: "Dados na camada staging, c/ tratamento, limpeza, definicicao de types e alias dos dados"
+    schema: staging
+    loaded_at_field: DT_EXTRACAO
+    freshness:
+      warn_after: {count: 1, period: day}
+      error_after: {count: 1, period: day}
+    tables:
+      # ...existing tables...
+      - name: itreg_amb
+        identifier: itreg_amb
+        description: "Tabela com dados dos itens do registro ambulatorial"
+        columns:
+          - name: CD_ITREG_AMB_KEY
+            description: "Chave única criada no shcema.yml do item do registro ambulatorial"
+          # ...existing columns...
+          - name: CD_ITREG_AMB_KEY
+            description: "Chave única criada no schema.yml do item do registro ambulatorial"
+          # Adicione a propriedade 'name' para a coluna que está faltando
+          - name: <nome_da_coluna>
+            description: <descrição_da_coluna>
+          # ...existing columns...
