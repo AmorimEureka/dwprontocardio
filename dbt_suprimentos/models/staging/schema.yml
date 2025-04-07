@@ -1,23 +1,19 @@
-
 version: 2
 
 sources:
   - name: staging
-    description: "Dados na camada staging, c/ tratamento, limpeza, definicicao de types e alias dos dados "
+    description: "Dados na camada staging, c/ tratamento, limpeza, definicicao de types e alias dos dados"
     schema: staging
     loaded_at_field: DT_EXTRACAO
     freshness:
       warn_after: {count: 1, period: day}
       error_after: {count: 1, period: day}
 
-
     tables:
-      - name: sol_com
+      - name: stg_sol_com
         identifier: sol_com
         description: "Tabela com dados das solicitações de compra"
         columns:
-          - name: id_sol_com
-            description: "ID criado na extração do banco de produção"
           - name: CD_SOL_COM
             description: "Código da solicitação de compra"
           - name: CD_MOT_PED
@@ -53,13 +49,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: ord_com
+      - name: stg_ord_com
         identifier: ord_com
         description: "Tabela com dados das ordens de compra"
         columns:
-          - name: id_ord_com
-            description: "ID criado na extração do banco de produção"
           - name: CD_ORD_COM
             description: "Código da ordem de compra"
           - name: CD_ESTOQUE
@@ -91,13 +84,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: ent_pro
+      - name: stg_ent_pro
         identifier: ent_pro
         description: "Tabela com dados de entrada de produtos"
         columns:
-          - name: id_ent_pro
-            description: "ID criado na extração do banco de produção"
           - name: CD_ENT_PRO
             description: "Código da entrada do produto"
           - name: CD_TIP_ENT
@@ -131,13 +121,12 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: itsol_com
+      - name: stg_itsol_com
         identifier: itsol_com
         description: "Tabela com dados dos itens de solicitações de compra"
         columns:
-          - name: id_itsol_com
-            description: "ID criado na extração do banco de produção"
+          - name: CD_ITSOL_COM_KEY
+            description: "ID único criado para ser unique key"
           - name: CD_SOL_COM
             description: "Código da solicitação de compra associada"
           - name: CD_PRODUTO
@@ -159,13 +148,12 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: itord_pro
+      - name: stg_itord_pro
         identifier: itord_pro
         description: "Tabela com dados dos itens de ordem de compra"
         columns:
-          - name: id_itord_pro
-            description: "ID criado na extracao do banco de producao"
+          - name: CD_ITORD_PRO_KEY
+            description: "ID único criado para ser unique key"
           - name: CD_ORD_COM
             description: "Codigo da ordem de compra associada"
           - name: CD_PRODUTO
@@ -195,13 +183,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extracao"
 
-            
-      - name: itent_pro
+      - name: stg_itent_pro
         identifier: itent_pro
         description: "Tabela com dados dos itens de entrada de produtos"
         columns:
-          - name: id_itent_pro
-            description: "ID criado na extracao do banco de producao"
           - name: CD_ITENT_PRO
             description: "Codigo do item de entrada de produto"
           - name: CD_ENT_PRO
@@ -235,13 +220,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extracao"
 
-
-      - name: produto
+      - name: stg_produto
         identifier: produto
         description: "Tabela com dados dos produtos"
         columns:
-          - name: id_produto
-            description: "ID do produto"
           - name: CD_PRODUTO
             description: "Código do produto"
           - name: CD_ESPECIE
@@ -269,13 +251,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração dos dados"
 
-
-      - name: estoque
+      - name: stg_estoque
         identifier: estoque
         description: "Tabela com dados dos estoques"
         columns:
-          - name: id_estoque
-            description: "ID criado na extração do banco de produção"
           - name: CD_ESTOQUE
             description: "Código do estoque"
           - name: CD_SETOR
@@ -287,13 +266,12 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: est_pro
+      - name: stg_est_pro
         identifier: est_pro
         description: "Tabela com dados de estoque de produtos"
         columns:
-          - name: id_est_pro
-            description: "ID criado na extração do banco de produção"
+          - name: CD_EST_PRO_KEY
+            description: "ID único criado para ser unique key"
           - name: CD_ESTOQUE
             description: "Código do estoque"
           - name: CD_PRODUTO
@@ -331,13 +309,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: uni_pro
+      - name: stg_uni_pro
         identifier: uni_pro
         description: "Tabela com informações sobre unidades de produtos"
         columns:
-          - name: id_uni_pro
-            description: "ID da unidade do produto"
           - name: CD_UNI_PRO
             description: "Código da unidade do produto"
           - name: CD_UNIDADE
@@ -355,13 +330,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração dos dados"
 
-
-      - name: lot_pro
+      - name: stg_lot_pro
         identifier: lot_pro
         description: "Tabela com dados de lotes de produtos"
         columns:
-          - name: id_lot_pro
-            description: "ID criado na extração do banco de produção"
           - name: CD_LOT_PRO
             description: "Código do lote de produto"
           - name: CD_ESTOQUE
@@ -377,13 +349,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: fornecedor
+      - name: stg_fornecedor
         identifier: fornecedor
         description: "Tabela com dados dos fornecedores"
         columns:
-          - name: id_fornecedor
-            description: "ID criado na extração do banco de produção"
           - name: CD_FORNECEDOR
             description: "Código do fornecedor"
           - name: NM_FORNECEDOR
@@ -399,13 +368,10 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: mot_cancel
+      - name: stg_mot_cancel
         identifier: mot_cancel
         description: "Tabela com dados dos motivos de cancelamento"
         columns:
-          - name: id_mot_cancel
-            description: "ID criado na extração do banco de produção"
           - name: CD_MOT_CANCEL
             description: "Código do motivo de cancelamento"
           - name: DS_MOT_CANCEL
@@ -415,8 +381,7 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-
-      - name: setor
+      - name: stg_setor
         identifier: setor
         description: "Tabela de setores com informações relacionadas a fatores, grupos de custo e status."
         columns:
@@ -432,9 +397,10 @@ sources:
             description: "Nome do setor."
           - name: SN_ATIVO
             description: "Indicador se o setor está ativo ('S' para Sim, 'N' para Não)."
+          - name: DT_EXTRACAO
+            description: "Data da extração"
 
-
-      - name: especie
+      - name: stg_especie
         identifier: especie
         description: "Tabela de espécies com informações sobre itens relacionados e descrição."
         columns:
@@ -444,9 +410,10 @@ sources:
             description: "Código relacionado ao item correspondente à espécie."
           - name: DS_ESPECIE
             description: "Descrição da espécie."
+          - name: DT_EXTRACAO
+            description: "Data da extração"
 
-
-      - name: mvto_estoque
+      - name: stg_mvto_estoque
         identifier: mvto_estoque
         description: "Tabela de movimentação de estoque com informações detalhadas sobre transações."
         columns:
@@ -492,9 +459,10 @@ sources:
             description: "Número do documento associado à movimentação."
           - name: CHAVE_NFE
             description: "Chave da nota fiscal eletrônica associada à movimentação."
+          - name: DT_EXTRACAO
+            description: "Data da extração"
 
-
-      - name: itmvto_estoque
+      - name: stg_itmvto_estoque
         identifier: itmvto_estoque
         description: "Tabela de itens das movimentações de estoque com informações detalhadas sobre produtos e transações."
         columns:
@@ -524,6 +492,301 @@ sources:
             description: "Valor unitário do produto movimentado."
           - name: TP_ESTOQUE
             description: "Tipo de estoque relacionado ao item."
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_repasse
+        identifier: repasse
+        description: "Tabela com dados de repasses aos prestadores"
+        columns:
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: DT_COMPETENCIA
+            description: "Data de competência do repasse"
+          - name: DT_REPASSE
+            description: "Data do repasse"
+          - name: TP_REPASSE
+            description: "Tipo de repasse"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_repasse_prestador
+        identifier: stg_repasse_prestador
+        description: "Tabela com dados dos repasses manuais aos prestadores"
+        columns:
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: CD_PRESTADOR_REPASSE
+            description: "Código do prestador do repasse"
+          - name: DS_REPASSE
+            description: "Descrição do repasse manual"
+          - name: DT_COMPETENCIA
+            description: "Data de competência do repasse"
+          - name: DT_REPASSE
+            description: "Data do repasse"
+          - name: TP_REPASSE
+            description: "Tipo de repasse"
+          - name: "VL_REPASSE"
+            description: "Valor do repasse manual"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_it_repasse
+        identifier: it_repasse
+        description: "Tabela com dados dos itens de repasse aos prestadores"
+        columns:
+          - name: CD_IT_REPASSE
+            description: "Código único identificador do item de repasse."
+          - name: CD_IT_REPASSE
+            description: "Código único identificador do item repasse"
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: CD_REG_AMB
+            description: "Código do registro ambulatorial"
+          - name: CD_LACAMENTO_AMB
+            description: "Código do lançamento ambulatorial"
+          - name: CD_REG_FAT
+            description: "Código do registro faturamento"
+          - name: CD_LANCAMENTO_FAT
+            description: "Código do lançamento faturamento"
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: CD_PRESTADOR_REPASSE
+            description: "Código do prestador de repasse"
+          - name: VL_REPASSE
+            description: "Valor do repasse"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_it_repasse_sih
+        identifier: it_repasse_sih
+        description: "Tabela com dados dos itens de repasse aos prestadores do SIH"
+        columns:
+          - name: CD_IT_REPASSE_SIH
+            description: "Código único identificador do item de repasse SIH."
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: CD_REG_FAT
+            description: "Código do registro faturamento"
+          - name: CD_LANCAMENTO
+            description: "Código do lançamento"
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: CD_PRESTADOR_REPASSE
+            description: "Código do prestador de repasse"
+          - name: VL_REPASSE
+            description: "Valor do repasse"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_prestador
+        identifier: prestador
+        description: "Tabela com dados dos prestadores"
+        columns:
+          - name: CD_PRESTADOR
+            description: "Código do prestador"
+          - name: NM_PRESTADOR
+            description: "Nome do prestador"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_ati_med
+        identifier: ati_med
+        description: "Tabela com dados das atividades médicas"
+        columns:
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: DS_ATI_MED
+            description: "Descrição da atividade médica"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_pro_pro
+        identifier: pro_fat
+        description: "Tabela com dados dos procedimentos."
+        columns:
+          - name: CD_GRU_PRO
+            description: "Código do procedimento."
+          - name: DS_GRU_PRO
+            description: "Descrição do procedimento."
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_pro_fat
+        identifier: pro_fat
+        description: "Tabela com dados dos procedimentos faturados"
+        columns:
+          - name: CD_GRU_FAT
+            description: "Código do procedimento faturado"
+          - name: DS_GRU_FAT
+            description: "Descrição do procedimento faturado"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
 
 
+      - name: stg_itreg_amb
+        identifier: itreg_amb
+        description: "Tabela com dados dos itens do registro ambulatorial"
+        columns:
+          - name: CD_ITREG_AMB_KEY
+            description: "ID único criado para ser unique key"
+          - name: CD_PRO_FAT
+            description: "Código do procedimento faturado"
+          - name: CD_REG_AMB
+            description: "Código do registro ambulatorial"
+          - name: CD_PRESTADOR
+            description: "Código do prestador"
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: CD_LANCAMENTO
+            description: "Código do lançamento"
+          - name: CD_GRU_FAT
+            description: "Código do grupo faturamento"
+          - name: CD_CONVENIO
+            description: "Código do convênio"
+          - name: CD_ATENDIMENTO
+            description: "Código do atendimento"
+          - name: DT_PRODUCAO
+            description: "Data de produção"
+          - name: DT_FECHAMENTO
+            description: "Data de fechamento"
+          - name: DT_ITREG_AMB
+            description: "Data do item do registro ambulatorial"
+          - name: SN_FECHADA
+            description: "Indicador se a produção foi fechada"
+          - name: SN_REPASSADO
+            description: "Indicador se o item foi repassado"
+          - name: SN_PERTENCE_PACOTE
+            description: "Indicador se o item pertence a um pacote"
+          - name: VL_UNITARIO
+            description: "Valor unitário"
+          - name: VL_TOTAL_CONTA
+            description: "Valor total da conta"
+          - name: VL_BASE_REPASSADO
+            description: "Valor base repassado"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
 
+      - name: stg_reg_amb
+        identifier: reg_amb
+        description: "Tabela com dados dos registros ambulatoriais"
+        columns:
+          - name: CD_REG_AMB
+            description: "Código do registro ambulatorial"
+          - name: CD_REMESSA
+            description: "Código da remessa"
+          - name: DT_REMESSA
+            description: "Data da remessa"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_itreg_fat
+        identifier: itreg_fat
+        description: "Tabela com dados dos itens do registro faturamento"
+        columns:
+          - name: CD_ITREG_FAT_KEY
+            description: "ID único criado para ser unique key"
+          - name: CD_PRO_FAT
+            description: "Código do procedimento faturado"
+          - name: CD_REG_FAT
+            description: "Código do registro faturamento"
+          - name: CD_PRESTADOR
+            description: "Código do prestador"
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: CD_LANCAMENTO
+            description: "Código do lançamento"
+          - name: CD_GRU_FAT
+            description: "Código do grupo faturamento"
+          - name: "CD_PROCEDIMENTO"
+            description: "Código do Procedimento SUS"
+          - name: DT_PRODUCAO
+            description: "Data de produção"
+          - name: DT_ITREG_FAT
+            description: "Data do item do registro faturamento"
+          - name: SN_REPASSADO
+            description: "Indicador se o item foi repassado"
+          - name: SN_PERTENCE_PACOTE
+            description: "Indicador se o item pertence a um pacote"
+          - name: VL_UNITARIO
+            description: "Valor unitário"
+          - name: VL_TOTAL_CONTA
+            description: "Valor total da conta"
+          - name: VL_BASE_REPASSADO
+            description: "Valor base repassado"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_reg_fat
+        identifier: reg_fat
+        description: "Tabela com dados dos registros faturamento"
+        columns:
+          - name: CD_REG_FAT
+            description: "Código do registro faturamento"
+          - name: CD_CONVENIO
+            description: "Código do convênio"
+          - name: CD_ATENDIMENTO
+            description: "Código do atendimento"
+          - name: CD_REMESSA
+            description: "Código da remessa"
+          - name: DT_REMESSA
+            description: "Data da remessa"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_gru_fat
+        identifier: gru_fat
+        description: "Tabela com dados dos grupos de faturamento"
+        columns:
+          - name: CD_GRU_FAT
+            description: "Código do grupo de faturamento"
+          - name: DS_GRU_FAT
+            description: "Descrição do grupo de faturamento"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_convenio
+        identifier: convenio
+        description: "Tabela com dados dos convênios"
+        columns:
+          - name: CD_CONVENIO
+            description: "Código do convênio"
+          - name: NM_CONVENIO
+            description: "Nome do convênio"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_atendime
+        identifier: atendime
+        description: "Tabela com dados dos atendimentos"
+        columns:
+          - name: CD_ATENDIMENTO
+            description: "Código do atendimento"
+          - name: DT_ATENDIMENTO
+            description: "Data do atendimento"
+          - name: CD_PACIENTE
+            description: "Código do paciente"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_paciente
+        identifier: paciente
+        description: "Tabela com dados dos pacientes"
+        columns:
+          - name: CD_PACIENTE
+            description: "Código do paciente"
+          - name: NM_PACIENTE
+            description: "Nome do paciente"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: stg_procedimento_sus
+        identifier: stg_procedimento_sus
+        description: "Tabela com as descrições do procedimentos do SUS"
+        columns:
+          - name: "CD_PROCEDIMENTO"
+            description: "Código do Procedimento"
+          - name: "DS _PROCEDIMENTO"
+            description: "Nome do Procedimento"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
