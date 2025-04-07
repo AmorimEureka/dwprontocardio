@@ -1,4 +1,3 @@
-
 version: 2
 
 sources:
@@ -195,7 +194,7 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extracao"
 
-            
+
       - name: itent_pro
         identifier: itent_pro
         description: "Tabela com dados dos itens de entrada de produtos"
@@ -525,4 +524,293 @@ sources:
           - name: TP_ESTOQUE
             description: "Tipo de estoque relacionado ao item."
 
+      - name: repasse
+        identifier: repasse
+        description: "Tabela com dados dos repasses aos prestadores"
+        columns:
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: DT_COMPETENCIA
+            description: "Data de competência do repasse"
+          - name: DT_REPASSE
+            description: "Data do repasse"
+          - name: TP_REPASSE
+            description: "Tipo de repasse"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
 
+      - name: repasse_prestador
+        identifier: repasse_prestador
+        description: "Tabela com dados dos repasses manuais aos prestadores"
+        columns:
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: CD_PRESTADOR_REPASSE
+            description: "Código do prestador do repasse"
+          - name: DS_REPASSE
+            description: "Descrição do repasse manual"
+          - name: DT_COMPETENCIA
+            description: "Data de competência do repasse"
+          - name: DT_REPASSE
+            description: "Data do repasse"
+          - name: TP_REPASSE
+            description: "Tipo de repasse"
+          - name: "VL_REPASSE"
+            description: "Valor do repasse manual"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: it_repasse
+        identifier: it_repasse
+        description: "Tabela com dados dos itens de repasse aos prestadores"
+        columns:
+          - name: CD_IT_REPASSE
+            description: "Código único identificador do item de repasse."
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: CD_REG_AMB
+            description: "Código do registro ambulatorial"
+          - name: CD_LACAMENTO_AMB
+            description: "Código do lançamento ambulatorial"
+          - name: CD_REG_FAT
+            description: "Código do registro faturamento"
+          - name: CD_LANCAMENTO_FAT
+            description: "Código do lançamento faturamento"
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: CD_PRESTADOR_REPASSE
+            desccription: "Código do prestador de repasse"
+          - name: VL_REPASSE
+            description: "Valor do repasse"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: it_repasse_sih
+        identifier: it_repasse_sih
+        description: "Tabela com dados dos itens de repasse aos prestadores do SIH"
+        columns:
+          - name: CD_IT_REPASSE_SIH
+            description: "Código único identificador do item de repasse SIH."
+          - name: CD_REPASSE
+            description: "Código único identificador do repasse"
+          - name: CD_REG_FAT
+            desccription: "Código do registro faturamento"
+          - name: CD_LANCAMENTO
+            description: "Código do lançamento"
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: CD_PRESTADOR_REPASSE
+            description: "Código do prestador de repasse"
+          - name: VL_REPASSE
+            description: "Valor do repasse"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: prestador
+        identifier: prestador
+        description: "Tabela com dados dos prestadores"
+        columns:
+          - name: CD_PRESTADOR
+            description: "Código do prestador"
+          - name: NM_PRESTADOR
+            description: "Nome do prestador"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: ati_med
+        identifier: ati_med
+        description: "Tabela com dados das atividades médicas"
+        columns:
+          - name: CD_ATI_MED
+            description: "Código da atividade médica"
+          - name: DS_ATI_MED
+            description: "Descrição da atividade médica"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: pro_fat
+        identifier: pro_fat
+        description: "Tabela com dados dos procedimentos faturados"
+        columns:
+          - name: "CD_PRO_FAT"
+            description: "Código do procedimento faturado"
+          - name: "CD_GRU_PRO"
+            description: "Código do grupo do procedimento"
+          - name: "DS_PRO_FAT"
+            description: "Descrição do procedimento faturado"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: itreg_amb
+        identifier: itreg_amb
+        description: "Tabela com dados dos itens do registro ambulatorial"
+        columns:
+          - name: "CD_PRO_FAT"
+            desccription: "Código do procedimento faturado"
+          - name: "CD_REG_AMB"
+            description: "Código do registro ambulatorial"
+          - name: "CD_PRESTADOR"
+            description: "Código do prestador"
+          - name: "CD_ATI_MED"
+            description: "Código da atividade médica"
+          - name: "CD_LANCAMENTO"
+            description: "Código do lançamento"
+          - name: "CD_GRU_FAT"
+            description: "Código do grupo faturamento"
+          - name: "CD_CONVENIO"
+            description: "Código do convênio"
+          - name: "CD_ATENDIMENTO"
+            description: "Código do atendimento"
+          - name: "DT_PRODUCAO"
+            description: "Data de produção"
+          - name: "DT_FECHAMENTO"
+            description: "Data de fechamento"
+          - name: "DT_ITREG_AMB"
+            description: "Data do item do registro ambulatorial"
+          - name: "SN_FECHADA"
+            description: "Indicador se a produção foi fechada"
+          - name: "SN_REPASSADO"
+            desccription: "Indicador se o item foi repassado"
+          - name: "SN_PERTENCE_PACOTE"
+            description: "Indicador se o item pertence a um pacote"
+          - name: "VL_UNITARIO"
+            description: "Valor unitário"
+          - name: "VL_TOTAL_CONTA"
+            description: "Valor total da conta"
+          - name: "VL_BASE_REPASSADO"
+            description: "Valor base repassado"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: reg_amb
+        identifier: reg_amb
+        description: "Tabela com dados dos registros ambulatoriais"
+        columns:
+          - name: "CD_REG_AMB"
+            description: "Código do registro ambulatorial"
+          - name: "CD_REMESSA"
+            description: "Código da remessa"
+          - name: "DT_REMESSA"
+            description: "Data da remessa"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: itreg_fat
+        identifier: itreg_fat
+        description: "Tabela com dados dos itens do registro faturamento"
+        columns:
+          - name: "CD_PRO_FAT"
+            description: "Código do procedimento faturado"
+          - name: "CD_REG_FAT"
+            description: "Código do registro faturamento"
+          - name: "CD_PRESTADOR"
+            description: "Código do prestador"
+          - name: "CD_ATI_MED"
+            description: "Código da atividade médica"
+          - name: "CD_LANCAMENTO"
+            description: "Código do lançamento"
+          - name: "CD_GRU_FAT"
+            description: "Código do grupo faturamento"
+          - name: "CD_PROCEDIMENTO"
+            description: "Código do Procedimento SUS"
+          - name: "DT_PRODUCAO"
+            description: "Data de produção"
+          - name: "DT_ITREG_FAT"
+            description: "Data do item do registro faturamento"
+          - name: "SN_REPASSADO"
+            description: "Indicador se o item foi repassado"
+          - name: "SN_PERTENCE_PACOTE"
+            description: "Indicador se o item pertence a um pacote"
+          - name: "VL_UNITARIO"
+            description: "Valor unitário"
+          - name: "VL_TOTAL_CONTA"
+            description: "Valor total da conta"
+          - name: "VL_BASE_REPASSADO"
+            desccripion: "Valor base repassado"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: reg_fat
+        identifier: reg_fat
+        description: "Tabela com dados dos registros faturamento"
+        columns:
+          - name: "CD_REG_FAT"
+            description: "Código do registro faturamento"
+          - name: "CD_CONVENIO"
+            description: "Código do convênio"
+          - name: "CD_ATENDIMENTO"
+            description: "Código do atendimento"
+          - name: "CD_REMESSA"
+            description: "Código da remessa"
+          - name: "DT_REMESSA"
+            description: "Data da remessa"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: gru_pro
+        identifier: gru_pro
+        description: "Tabela com dados dos grupos de procedimentos"
+        columns:
+          - name: "CD_GRU_PRO"
+            description: "Código do grupo de procedimentos"
+          - name: "DS_GRU_PRO"
+            description: "Descrição do grupo de procedimentos"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: gru_fat
+        identifier: gru_fat
+        description: "Tabela com dados dos grupos de faturamento"
+        columns:
+          - name: "CD_GRU_FAT"
+            description: "Código do grupo de faturamento"
+          - name: "DS_GRU_FAT"
+            description: "Descrição do grupo de faturamento"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: convenio
+        identifier: convenio
+        description: "Tabela com dados dos convênios"
+        columns:
+          - name: "CD_CONVENIO"
+            description: "Código do convênio"
+          - name: "NM_CONVENIO"
+            description: "Nome do convênio"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: atendime
+        identifier: atendime
+        description: "Tabela com dados dos atendimentos"
+        columns:
+          - name: "CD_ATENDIMENTO"
+            description: "Código do atendimento"
+          - name: "DT_ATENDIMENTO"
+            description: "Data do atendimento"
+          - name: "CD_PACIENTE"
+            description: "Código do paciente"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: paciente
+        identifier: paciente
+        description: "Tabela com dados dos pacientes"
+        columns:
+          - name: "CD_PACIENTE"
+            description: "Código do paciente"
+          - name: "NM_PACIENTE"
+            description: "Nome do paciente"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
+
+      - name: procedimento_sus
+        identifier: procedimento_sus
+        description: "Tabela com as descrições do procedimentos do SUS"
+        columns:
+          - name: "CD_PROCEDIMENTO"
+            description: "Código do Procedimento"
+          - name: "DS_PROCEDIMENTO"
+            description: "Nome do Procedimento"
+          - name: "DT_EXTRACAO"
+            description: "Data da extração"
