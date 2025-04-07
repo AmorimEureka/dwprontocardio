@@ -1,18 +1,24 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_LOT_PRO"' )
+}}
 
-
-WITH source_lot_pro 
+WITH source_lot_pro
     AS (
         SELECT
-            NULLIF("CD_LOT_PRO", 'NaN') AS "CD_LOT_PRO"
-            , NULLIF("CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
-            , NULLIF("CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
-            , NULLIF("CD_LOTE", 'NaN') AS "CD_LOTE"
-            , "DT_VALIDADE"
-            , NULLIF("QT_ESTOQUE_ATUAL", 'NaN') AS "QT_ESTOQUE_ATUAL"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'lot_pro') }}
+            NULLIF(sis."CD_LOT_PRO", 'NaN') AS "CD_LOT_PRO"
+            , NULLIF(sis."CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
+            , NULLIF(sis."CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
+            , NULLIF(sis."CD_LOTE", 'NaN') AS "CD_LOTE"
+            , sis."DT_VALIDADE"
+            , NULLIF(sis."QT_ESTOQUE_ATUAL", 'NaN') AS "QT_ESTOQUE_ATUAL"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'lot_pro') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_LOT_PRO"::BIGINT > ( SELECT MAX("CD_LOT_PRO") FROM {{this}} )
+        {% endif %}
 ),
-treats 
+treats
     AS (
         SELECT
             "CD_LOT_PRO"::BIGINT

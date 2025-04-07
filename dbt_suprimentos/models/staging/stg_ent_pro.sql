@@ -1,28 +1,32 @@
 {{
-    config( materialized = 'table' )
+    config( materialized = 'incremental',
+            unique_key = '"CD_ENT_PRO"' )
 
 }}
 
-WITH source_ent_pro 
+WITH source_ent_pro
     AS (
         SELECT
-            NULLIF("CD_ENT_PRO", 'NaN') AS "CD_ENT_PRO"  
-            , NULLIF("CD_TIP_ENT", 'NaN') AS "CD_TIP_ENT"  
-            , NULLIF("CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"  
-            , NULLIF("CD_FORNECEDOR", 'NaN') AS "CD_FORNECEDOR"  
-            , NULLIF(SPLIT_PART("CD_ORD_COM"::TEXT,'.', 1), 'NaN') AS "CD_ORD_COM"  
-            , NULLIF("CD_USUARIO_RECEBIMENTO", 'NaN') AS "CD_USUARIO_RECEBIMENTO"  
-            , NULLIF("CD_ATENDIMENTO", 'NaN') AS "CD_ATENDIMENTO"  
-            , "DT_EMISSAO"  
-            , "DT_ENTRADA"  
-            , "DT_RECEBIMENTO"  
-            , "HR_ENTRADA"  
-            , NULLIF("VL_TOTAL", 'NaN') AS "VL_TOTAL"  
-            , NULLIF("NR_DOCUMENTO", 'NaN') AS "NR_DOCUMENTO"  
-            , NULLIF("NR_CHAVE_ACESSO", 'NaN') AS "NR_CHAVE_ACESSO"  
-            , NULLIF("SN_AUTORIZADO", 'NaN') AS "SN_AUTORIZADO"  
-            , "DT_EXTRACAO"  
-        FROM {{ source('raw_mv' , 'ent_pro') }}
+            NULLIF(sis."CD_ENT_PRO", 'NaN') AS "CD_ENT_PRO"
+            , NULLIF(sis."CD_TIP_ENT", 'NaN') AS "CD_TIP_ENT"
+            , NULLIF(sis."CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
+            , NULLIF(sis."CD_FORNECEDOR", 'NaN') AS "CD_FORNECEDOR"
+            , NULLIF(SPLIT_PART(sis."CD_ORD_COM"::TEXT,'.', 1), 'NaN') AS "CD_ORD_COM"
+            , NULLIF(sis."CD_USUARIO_RECEBIMENTO", 'NaN') AS "CD_USUARIO_RECEBIMENTO"
+            , NULLIF(sis."CD_ATENDIMENTO", 'NaN') AS "CD_ATENDIMENTO"
+            , sis."DT_EMISSAO"
+            , sis."DT_ENTRADA"
+            , sis."DT_RECEBIMENTO"
+            , sis."HR_ENTRADA"
+            , NULLIF(sis."VL_TOTAL", 'NaN') AS "VL_TOTAL"
+            , NULLIF(sis."NR_DOCUMENTO", 'NaN') AS "NR_DOCUMENTO"
+            , NULLIF(sis."NR_CHAVE_ACESSO", 'NaN') AS "NR_CHAVE_ACESSO"
+            , NULLIF(sis."SN_AUTORIZADO", 'NaN') AS "SN_AUTORIZADO"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'ent_pro') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_ENT_PRO"::BIGINT > ( SELECT MAX("CD_ENT_PRO") FROM {{this}} )
+        {% endif %}
 ),
 treats
     AS (

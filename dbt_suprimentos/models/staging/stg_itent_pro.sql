@@ -1,25 +1,31 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_ITENT_PRO"' )
+}}
 
-
-WITH source_itent_pro 
+WITH source_itent_pro
     AS (
         SELECT
-            NULLIF(SPLIT_PART("CD_ITENT_PRO"::TEXT, '.', 1), 'NaN') AS "CD_ITENT_PRO"
-            , NULLIF("CD_ENT_PRO", 'NaN') AS "CD_ENT_PRO"
-            , NULLIF("CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
-            , NULLIF("CD_UNI_PRO", 'NaN') AS "CD_UNI_PRO"
-            , NULLIF("CD_ATENDIMENTO", 'NaN') AS "CD_ATENDIMENTO"
-            , NULLIF("CD_CUSTO_MEDIO", 'NaN') AS "CD_CUSTO_MEDIO"
-            , NULLIF("CD_PRODUTO_FORNECEDOR", 'NaN') AS "CD_PRODUTO_FORNECEDOR"
-            , "DT_GRAVACAO"
-            , NULLIF("QT_ENTRADA", 'NaN') AS "QT_ENTRADA"
-            , NULLIF("QT_DEVOLVIDA", 'NaN') AS "QT_DEVOLVIDA"
-            , NULLIF("QT_ATENDIDA", 'NaN') AS "QT_ATENDIDA"
-            , NULLIF("VL_UNITARIO", 'NaN') AS "VL_UNITARIO"
-            , NULLIF("VL_CUSTO_REAL", 'NaN') AS "VL_CUSTO_REAL"
-            , NULLIF("VL_TOTAL_CUSTO_REAL", 'NaN') AS "VL_TOTAL_CUSTO_REAL"
-            , NULLIF("VL_TOTAL", 'NaN') AS "VL_TOTAL"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'itent_pro') }}
+            NULLIF(SPLIT_PART(sis."CD_ITENT_PRO"::TEXT, '.', 1), 'NaN') AS "CD_ITENT_PRO"
+            , NULLIF(sis."CD_ENT_PRO", 'NaN') AS "CD_ENT_PRO"
+            , NULLIF(sis."CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
+            , NULLIF(sis."CD_UNI_PRO", 'NaN') AS "CD_UNI_PRO"
+            , NULLIF(SPLIT_PART(sis."CD_ATENDIMENTO"::TEXT, '.', 1), 'NaN') AS "CD_ATENDIMENTO"
+            , NULLIF(sis."CD_CUSTO_MEDIO", 'NaN') AS "CD_CUSTO_MEDIO"
+            , NULLIF(sis."CD_PRODUTO_FORNECEDOR", 'NaN') AS "CD_PRODUTO_FORNECEDOR"
+            , sis."DT_GRAVACAO"
+            , NULLIF(sis."QT_ENTRADA", 'NaN') AS "QT_ENTRADA"
+            , NULLIF(sis."QT_DEVOLVIDA", 'NaN') AS "QT_DEVOLVIDA"
+            , NULLIF(sis."QT_ATENDIDA", 'NaN') AS "QT_ATENDIDA"
+            , NULLIF(sis."VL_UNITARIO", 'NaN') AS "VL_UNITARIO"
+            , NULLIF(sis."VL_CUSTO_REAL", 'NaN') AS "VL_CUSTO_REAL"
+            , NULLIF(sis."VL_TOTAL_CUSTO_REAL", 'NaN') AS "VL_TOTAL_CUSTO_REAL"
+            , NULLIF(sis."VL_TOTAL", 'NaN') AS "VL_TOTAL"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'itent_pro') }} sis
+        {% if is_incremental() %}
+        WHERE NULLIF(SPLIT_PART(sis."CD_ITENT_PRO"::TEXT, '.', 1), 'NaN')::BIGINT > ( SELECT MAX("CD_ITENT_PRO") FROM {{this}} )
+        {% endif %}
 ),
 treats
     AS (

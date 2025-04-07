@@ -1,16 +1,22 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_ESTOQUE"' )
+}}
 
-
-WITH source_estoque 
+WITH source_estoque
     AS (
         SELECT
-              NULLIF("CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
-            , NULLIF("CD_SETOR", 'NaN') AS "CD_SETOR"
-            , NULLIF("DS_ESTOQUE", 'NaN') AS "DS_ESTOQUE"
-            , NULLIF("TP_ESTOQUE", 'NaN') AS "TP_ESTOQUE"
-            , "DT_EXTRACAO" AS "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'estoque') }}
+              NULLIF(sis."CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
+            , NULLIF(sis."CD_SETOR", 'NaN') AS "CD_SETOR"
+            , NULLIF(sis."DS_ESTOQUE", 'NaN') AS "DS_ESTOQUE"
+            , NULLIF(sis."TP_ESTOQUE", 'NaN') AS "TP_ESTOQUE"
+            , sis."DT_EXTRACAO" AS "DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'estoque') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_ESTOQUE"::BIGINT > ( SELECT MAX("CD_ESTOQUE") FROM {{this}} )
+        {% endif %}
 ),
-treats 
+treats
     AS (
         SELECT
             "CD_ESTOQUE"::BIGINT

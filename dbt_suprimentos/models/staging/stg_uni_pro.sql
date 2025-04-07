@@ -1,17 +1,23 @@
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_UNI_PRO"' )
+}}
 
-
-WITH source_uni_pro 
+WITH source_uni_pro
     AS (
         SELECT
-            NULLIF("CD_UNI_PRO", 'NaN') AS "CD_UNI_PRO"
-            , NULLIF("CD_UNIDADE", 'NaN') AS "CD_UNIDADE"
-            , NULLIF("CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
-            , NULLIF("VL_FATOR", 'NaN') AS "VL_FATOR"
-            , NULLIF("DS_UNIDADE", 'NaN') AS "DS_UNIDADE"
-            , NULLIF("TP_RELATORIOS", 'NaN') AS "TP_RELATORIOS"
-            , NULLIF("SN_ATIVO", 'NaN') AS "SN_ATIVO"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'uni_pro') }}
+            NULLIF(sis."CD_UNI_PRO", 'NaN') AS "CD_UNI_PRO"
+            , NULLIF(sis."CD_UNIDADE", 'NaN') AS "CD_UNIDADE"
+            , NULLIF(sis."CD_PRODUTO", 'NaN') AS "CD_PRODUTO"
+            , NULLIF(sis."VL_FATOR", 'NaN') AS "VL_FATOR"
+            , NULLIF(sis."DS_UNIDADE", 'NaN') AS "DS_UNIDADE"
+            , NULLIF(sis."TP_RELATORIOS", 'NaN') AS "TP_RELATORIOS"
+            , NULLIF(sis."SN_ATIVO", 'NaN') AS "SN_ATIVO"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'uni_pro') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_UNI_PRO"::BIGINT > ( SELECT MAX("CD_UNI_PRO") FROM {{this}} )
+        {% endif %}
 ),
 treats
     AS (

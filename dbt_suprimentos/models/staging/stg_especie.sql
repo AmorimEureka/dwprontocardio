@@ -1,15 +1,19 @@
-
-
-
+{{
+    config( materialized = 'incremental',
+            unique_key = '"CD_ESPECIE"' )
+}}
 
 WITH source_especie
     AS (
         SELECT
-            NULLIF("CD_ESPECIE", 'NaN') AS "CD_ESPECIE"
-            , NULLIF(SPLIT_PART("CD_ITEM_RES", '.', 1), 'NaN') AS "CD_ITEM_RES"
-            , NULLIF("DS_ESPECIE", 'NaN') AS "DS_ESPECIE"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'especie') }}
+            NULLIF(sis."CD_ESPECIE", 'NaN') AS "CD_ESPECIE"
+            , NULLIF(SPLIT_PART(sis."CD_ITEM_RES", '.', 1), 'NaN') AS "CD_ITEM_RES"
+            , NULLIF(sis."DS_ESPECIE", 'NaN') AS "DS_ESPECIE"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'especie') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_ESPECIE"::BIGINT > ( SELECT MAX("CD_ESPECIE") FROM {{this}} )
+        {% endif %}
 ),
 treats
     AS (

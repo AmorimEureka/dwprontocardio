@@ -1,27 +1,30 @@
 {{
-    config( materialized = 'table' )
-
+    config( materialized = 'incremental',
+            unique_key = '"CD_ORD_COM"' )
 }}
 
-WITH source_ord_com 
+WITH source_ord_com
     AS (
         SELECT
-            NULLIF("CD_ORD_COM", 'NaN') AS "CD_ORD_COM"
-            , NULLIF("CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
-            , NULLIF("CD_FORNECEDOR", 'NaN') AS "CD_FORNECEDOR"
-            , NULLIF(SPLIT_PART("CD_SOL_COM"::TEXT, '.', 1), 'NaN') AS "CD_SOL_COM"
-            , NULLIF(SPLIT_PART("CD_MOT_CANCEL"::TEXT, '.', 1), 'NaN') AS "CD_MOT_CANCEL"
-            , "CD_USUARIO_CRIADOR_OC"
-            , "CD_ULTIMO_USU_ALT_OC"
-            , "DT_ORD_COM"
-            , "DT_CANCELAMENTO"
-            , "DT_AUTORIZACAO"
-            , "DT_ULTIMA_ALTERACAO_OC"
-            , NULLIF("TP_SITUACAO", 'NaN') AS "TP_SITUACAO"
-            , NULLIF("TP_ORD_COM", 'NaN') AS "TP_ORD_COM"
-            , NULLIF("SN_AUTORIZADO", 'NaN') AS "SN_AUTORIZADO"
-            , "DT_EXTRACAO"
-        FROM {{ source('raw_mv' , 'ord_com') }}
+            NULLIF(sis."CD_ORD_COM", 'NaN') AS "CD_ORD_COM"
+            , NULLIF(sis."CD_ESTOQUE", 'NaN') AS "CD_ESTOQUE"
+            , NULLIF(sis."CD_FORNECEDOR", 'NaN') AS "CD_FORNECEDOR"
+            , NULLIF(SPLIT_PART(sis."CD_SOL_COM"::TEXT, '.', 1), 'NaN') AS "CD_SOL_COM"
+            , NULLIF(SPLIT_PART(sis."CD_MOT_CANCEL"::TEXT, '.', 1), 'NaN') AS "CD_MOT_CANCEL"
+            , sis."CD_USUARIO_CRIADOR_OC"
+            , sis."CD_ULTIMO_USU_ALT_OC"
+            , sis."DT_ORD_COM"
+            , sis."DT_CANCELAMENTO"
+            , sis."DT_AUTORIZACAO"
+            , sis."DT_ULTIMA_ALTERACAO_OC"
+            , NULLIF(sis."TP_SITUACAO", 'NaN') AS "TP_SITUACAO"
+            , NULLIF(sis."TP_ORD_COM", 'NaN') AS "TP_ORD_COM"
+            , NULLIF(sis."SN_AUTORIZADO", 'NaN') AS "SN_AUTORIZADO"
+            , sis."DT_EXTRACAO"
+        FROM {{ source('raw_mv' , 'ord_com') }} sis
+        {% if is_incremental() %}
+        WHERE sis."CD_ORD_COM"::BIGINT > ( SELECT MAX("CD_ORD_COM") FROM {{this}} )
+        {% endif %}
 ),
 treats
     AS (
