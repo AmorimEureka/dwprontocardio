@@ -1,7 +1,7 @@
 version: 2
 
 snapshots:
-  - name: sol_com
+  - name: snp_sol_com
     description: "Snapshot da tabela sol_com"
     columns:
       - name: CD_SOL_COM
@@ -39,7 +39,7 @@ snapshots:
       - name: DT_EXTRACAO
         description: "Data de extração"
 
-  - name: ord_com
+  - name: snp_ord_com
     description: "Snapshot da tabela ord_com"
     columns:
       - name: CD_ORD_COM
