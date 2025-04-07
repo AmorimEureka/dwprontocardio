@@ -1,9 +1,9 @@
 
 
 
-WITH source_entradas 
+WITH source_entradas
     AS (
-        SELECT 
+        SELECT
             "CD_ENT_PRO"
             , "CD_TIP_ENT"
             , "CD_ESTOQUE"
@@ -23,7 +23,7 @@ WITH source_entradas
 ),
 source_itens_entradas
     AS (
-        SELECT 
+        SELECT
             "CD_ITENT_PRO"
             , "CD_ENT_PRO"
             , "CD_PRODUTO"
@@ -40,13 +40,13 @@ source_itens_entradas
             , "VL_TOTAL_CUSTO_REAL"
             , "VL_TOTAL"
         FROM {{ ref( 'stg_itent_pro' ) }}
-        
+
 ),
 treats
     AS (
-        SELECT 
-            e."CD_ENT_PRO"
-            , ite."CD_ITENT_PRO"
+        SELECT
+            ite."CD_ITENT_PRO"
+            , e."CD_ENT_PRO"
             , e."CD_TIP_ENT"
             , e."CD_ESTOQUE"
             , e."CD_FORNECEDOR"

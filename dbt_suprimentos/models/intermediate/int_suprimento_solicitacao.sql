@@ -1,7 +1,7 @@
 
 WITH source_solicitacao
     AS (
-        SELECT 
+        SELECT
             "CD_SOL_COM"
             , "CD_MOT_PED"
             , "CD_SETOR"
@@ -13,7 +13,7 @@ WITH source_solicitacao
             , "DT_SOL_COM"
             , "DT_CANCELAMENTO"
             , "VL_TOTAL"
-            , CASE 
+            , CASE
                 WHEN "TP_SITUACAO"='A' THEN 'Aberta'
                 WHEN "TP_SITUACAO"='F' THEN 'Fechada'
                 WHEN "TP_SITUACAO"='P' THEN 'Parcialmente Atendida'
@@ -28,8 +28,9 @@ WITH source_solicitacao
 ),
 source_itens_solicitacao
     AS (
-        SELECT 
-            "CD_SOL_COM"
+        SELECT
+            "CD_ITSOL_COM_KEY"
+            , "CD_SOL_COM"
             , "CD_PRODUTO"
             , "CD_UNI_PRO"
             , "CD_MOT_CANCEL"
@@ -39,12 +40,13 @@ source_itens_solicitacao
             , "QT_ATENDIDA"
             , "SN_COMPRADO"
         FROM {{ ref( 'stg_itsol_com' ) }}
-        
+
 ),
 treats
     AS (
-        SELECT DISTINCT
-            s."CD_SOL_COM"
+        SELECT
+            its."CD_ITSOL_COM_KEY"
+            , s."CD_SOL_COM"
             , s."CD_ESTOQUE"
             , s."CD_SETOR"
             , s."CD_MOT_PED"
