@@ -92,10 +92,32 @@ with DAG(
 
                     apagar_tabela(nome_tabela, cursor_pg) if nome_tabela in ['produto', 'est_pro'] else None
 
-                    query_max_id = f"SELECT MAX(id_{nome_tabela}) FROM {nome_schema_postgres}.{nome_tabela}"
+                    meta_campo = f"""
+                                    SELECT UPPER(column_name)
+                                    FROM information_schema.columns
+                                    WHERE table_schema = '{nome_schema_postgres}'
+                                    AND table_name = '{nome_tabela}'
+                                    ORDER BY ordinal_position
+                                    LIMIT 1 OFFSET 1;
+                                """
+
+                    cursor_pg.execute(meta_campo)
+                    campo_result = cursor_pg.fetchone()
+                    if campo_result is None:
+                        return 0
+                    campo = campo_result[0]
+                    coluna = f'"{campo}"'
+                    print(f"Coluna: {coluna}")
+
+                    query_max_id = f"""
+                                        SELECT {coluna}
+                                        FROM {nome_schema_postgres}.{nome_tabela}
+                                        WHERE id_{nome_tabela} = (
+                                        SELECT MAX(id_{nome_tabela}) FROM {nome_schema_postgres}.{nome_tabela})
+                                    """
                     cursor_pg.execute(query_max_id)
-                    resultado = cursor_pg.fetchone()[0]
-                    where_sql = resultado if resultado is not None else 0
+                    resultado = cursor_pg.fetchone()
+                    where_sql = resultado[0] if resultado is not None else 0
 
                     cursor_pg.close()
 
@@ -107,9 +129,8 @@ with DAG(
 
                     count_query = f"SELECT COUNT(id_{tabela}) FROM {nome_schema_postgres}.{tabela}"
                     cursor_pg.execute(count_query)
-                    resultado = cursor_pg.fetchone()[0]
-
-                    resultado = resultado if resultado is not None else 0
+                    resultado = cursor_pg.fetchone()
+                    resultado = resultado[0] if resultado is not None else 0
 
                     if resultado != 0:
 
@@ -118,8 +139,8 @@ with DAG(
 
                         param_maior_dt_query = f"SELECT MAX(\"DT_{nome_tabela.upper()}\") FROM {nome_schema_postgres}.{tabela}"
                         cursor_pg.execute(param_maior_dt_query)
-                        maior_dt_query = cursor_pg.fetchone()[0]
-                        where_sql = str(maior_dt_query).split()[0]
+                        maior_dt_query = cursor_pg.fetchone()
+                        where_sql = str(maior_dt_query[0]).split()[0] if maior_dt_query is not None else '2023-01-01'
                         apagar_tabela(tabela, cursor_pg)
 
                     else:
@@ -163,10 +184,12 @@ with DAG(
         'lista_tab_incremental': [
             'uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque',
             'setor', 'especie', 'mvto_estoque', 'itmvto_estoque', 'itsol_com',
-            'itord_pro', 'itent_pro'
+            'itord_pro', 'itent_pro', 'atendime', 'convenio', 'gru_fat', 'gru_pro',
+            'it_repasse_sih', 'it_repasse', 'paciente', 'prestador', 'pro_fat',
+            'reg_amb', 'reg_fat', 'repasse', 'repasse_prestador', 'ati_med'
         ],
         'lista_tab_truncate': ['produto', 'est_pro'],
-        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro']
+        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro', 'itreg_amb', 'itreg_fat']
     }
 
     tarefas_extracao = []
