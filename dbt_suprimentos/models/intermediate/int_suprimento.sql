@@ -70,6 +70,7 @@ source_sol_ord_com AS (
 ),
 source_itens_solicitacao AS (
     SELECT
+        ic."CD_ITSOL_COM_KEY",
         ic."CD_SOL_COM",
         ic."CD_PRODUTO",
         ic."CD_UNI_PRO",
@@ -81,6 +82,7 @@ source_itens_solicitacao AS (
 ),
 source_itens_pedidos AS (
     SELECT
+        io."CD_ITORD_PRO_KEY",
         io."CD_ORD_COM",
         io."CD_PRODUTO",
         io."CD_UNI_PRO",
@@ -95,6 +97,7 @@ source_itens_pedidos AS (
 ),
 source_itens_entradas AS (
     SELECT
+        ip."CD_ITENT_PRO",
         ip."CD_ENT_PRO",
         ep."CD_ORD_COM",
         ep."CD_FORNECEDOR",
@@ -154,6 +157,11 @@ treats_qt_mov AS (
 ),
 source_suprimentos AS (
     SELECT
+        CONCAT(
+            COALESCE(isol."CD_ITSOL_COM_KEY", '0'),
+            COALESCE(io."CD_ITORD_PRO_KEY", '0'),
+            COALESCE(ie."CD_ITENT_PRO", '0')
+        )::NUMERIC AS "CD_SUPRIMENTO_KEY",
         h."CD_SOL_COM",
         h."CD_SETOR",
         h."CD_ESTOQUE",
@@ -211,6 +219,7 @@ source_suprimentos AS (
 ),
 treats AS (
     SELECT
+        h."CD_SUPRIMENTO_KEY",
         h."CD_SOL_COM",
         h."CD_SETOR",
         h."CD_ESTOQUE",
@@ -252,6 +261,7 @@ treats AS (
         SUM(h."QT_MOVIMENTO") AS "QT_MOVIMENTO"
     FROM source_suprimentos h
     GROUP BY
+        h."CD_SUPRIMENTO_KEY",
         h."CD_SOL_COM",
         h."CD_SETOR",
         h."CD_ESTOQUE",
