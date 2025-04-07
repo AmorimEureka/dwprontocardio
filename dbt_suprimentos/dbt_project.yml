@@ -13,22 +13,28 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-clean-targets:        
+clean-targets:
   - "target"
   - "dbt_packages"
 
 models:
   dbt_suprimentos:
-  
+
     staging:
       +materialized: view
       +schema: staging
 
 
     intermediate:
-      +materialized: view
+      +materialized: ephemeral
       +schema: intermediate
 
     mart:
       +materialized: table
       +schema: mart
+
+      mart_suprimentos:
+        +schema: mart_suprimentos
+
+      mart_repasse_medico:
+        +schema: mart_repasse_medico
