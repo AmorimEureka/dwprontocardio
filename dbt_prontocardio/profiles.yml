@@ -1,6 +1,6 @@
 
-dbt_suprimentos:
-  target: dev
+dbt_prontocardio:
+  target: prod
   outputs:
     dev:
       type: postgres

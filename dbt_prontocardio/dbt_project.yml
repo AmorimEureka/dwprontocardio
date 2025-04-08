@@ -1,9 +1,9 @@
 
-name: 'dbt_suprimentos'
+name: 'dbt_prontocardio'
 version: '1.0.0'
 
 
-profile: 'dbt_suprimentos'
+profile: 'dbt_prontocardio'
 
 
 model-paths: ["models"]
@@ -18,7 +18,7 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  dbt_suprimentos:
+  dbt_prontocardio:
 
     staging:
       +materialized: view

@@ -10,7 +10,7 @@ services:
       - POSTGRES_HOST=dwpostgres
     volumes:
       - ./dags:/usr/local/airflow/dags
-      - ./dbt_suprimentos:/usr/local/airflow/dbt
+      - ./dbt_prontocardio:/usr/local/airflow/dbt
       - ./include/oracle:/usr/local/airflow/.oracle/instantclient_19_23/
       - ./include/postgresql:/usr/local/airflow/.postgresql/data/instantclient_17_0/
     healthcheck:

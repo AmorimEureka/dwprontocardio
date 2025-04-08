@@ -5,7 +5,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 from cosmos import DbtTaskGroup, ProjectConfig
 from include.profiles import airflow_postgres_db
-from include.constants import suprimentos_path, venv_execution_config
+from include.constants import dbt_prontocardio_path, venv_execution_config
 
 import os
 import sqlalchemy as sa
@@ -199,7 +199,7 @@ with DAG(
 
     cosmos_dag_suprimentos = DbtTaskGroup(
         group_id="dbt_trf_suprimentos",
-        project_config=ProjectConfig(suprimentos_path),
+        project_config=ProjectConfig(dbt_prontocardio_path),
         profile_config=airflow_postgres_db,
         execution_config=venv_execution_config,
     )
