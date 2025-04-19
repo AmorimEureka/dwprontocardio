@@ -39,26 +39,8 @@ treats_repasse
             ir."CD_REPASSE",
             ir."CD_REG_AMB",
             ir."CD_LANCAMENTO_AMB",
-            CASE
-                WHEN ir."CD_REG_AMB" IS NULL AND ir."CD_LANCAMENTO_AMB" IS NULL THEN
-                    NULL
-                ELSE CONCAT(
-                    COALESCE(ir."CD_REG_AMB", 0)::NUMERIC(10,0),
-                    COALESCE(ir."CD_LANCAMENTO_AMB", 0)::NUMERIC(10,0),
-                    COALESCE(ir."CD_ATI_MED", 0)
-                    )::NUMERIC(22,0)
-            END AS "CD_ITREG_AMB_KEY",
             ir."CD_REG_FAT",
             ir."CD_LANCAMENTO_FAT",
-            CASE
-                WHEN ir."CD_REG_FAT" IS NULL AND ir."CD_LANCAMENTO_FAT" IS NULL THEN
-                    NULL
-                ELSE CONCAT(
-                    COALESCE(ir."CD_REG_FAT", 0)::NUMERIC(10,0),
-                    COALESCE(ir."CD_LANCAMENTO_FAT", 0)::NUMERIC(10,0),
-                    COALESCE(ir."CD_ATI_MED", 0)
-                    )::NUMERIC(22,0)
-            END AS "CD_ITREG_FAT_KEY",
             ir."CD_ATI_MED",
             ir."CD_PRESTADOR_REPASSE",
             ir."VL_REPASSE",
@@ -74,18 +56,8 @@ treats_repasse_sih
             sih."CD_REPASSE",
             sih."CD_REG_AMB",
             sih."CD_LANCAMENTO_AMB",
-            NULL::NUMERIC(22,0) AS "CD_ITREG_AMB_KEY",
             sih."CD_REG_FAT",
             sih."CD_LANCAMENTO_FAT",
-            CASE
-                WHEN sih."CD_REG_FAT" IS NULL AND sih."CD_LANCAMENTO_FAT" IS NULL THEN
-                    NULL
-                ELSE CONCAT(
-                    COALESCE(sih."CD_REG_FAT", 0)::NUMERIC(10,0),
-                    COALESCE(sih."CD_LANCAMENTO_FAT", 0)::NUMERIC(10,0),
-                    COALESCE(sih."CD_ATI_MED", 0)
-                    )::NUMERIC(22,0)
-            END AS "CD_ITREG_FAT_KEY",
             sih."CD_ATI_MED",
             sih."CD_PRESTADOR_REPASSE",
             sih."VL_REPASSE",
@@ -119,6 +91,14 @@ source_repasse_prestador
             "VL_REPASSE"
         FROM {{ ref('stg_repasse_prestador')}}
 ),
+source_atendimento
+    AS (
+        SELECT
+            "CD_ATENDIMENTO",
+            "CD_PACIENTE",
+            "CD_PRESTADOR"
+        FROM {{ ref('stg_atendime')}}
+),
 source_pro_fat
     AS (
         SELECT
@@ -126,6 +106,14 @@ source_pro_fat
             "CD_GRU_PRO",
             "DS_PRO_FAT"
         FROM {{ ref('stg_pro_fat')}}
+),
+source_regra_ambulatorio
+    AS (
+        SELECT
+            "CD_REG_AMB",
+            "CD_REMESSA",
+            "DT_REMESSA"
+        FROM {{ ref('stg_reg_amb')}}
 ),
 source_item_regra_ambulatorio
     AS (
@@ -150,42 +138,46 @@ source_item_regra_ambulatorio
             "VL_BASE_REPASSADO"
         FROM {{ ref('stg_itreg_amb')}}
 ),
-source_regra_ambulatorio
-    AS (
-        SELECT
-            "CD_REG_AMB",
-            "CD_REMESSA",
-            "DT_REMESSA"
-        FROM {{ ref('stg_reg_amb')}}
-),
 treats_regra_ambulatorio
     AS (
         SELECT
-            ia."CD_ITREG_AMB_KEY",
+            ira."CD_ITREG_AMB_KEY",
             pf."CD_PRO_FAT",
-            ia."CD_REG_AMB",
-            ia."CD_PRESTADOR",
-            ia."CD_ATI_MED",
-            ia."CD_LANCAMENTO",
+            ira."CD_REG_AMB",
+            ira."CD_PRESTADOR",
+            sa."CD_PACIENTE",
+            ira."CD_ATI_MED",
+            ira."CD_LANCAMENTO",
             pf."CD_GRU_PRO",
-            ia."CD_GRU_FAT",
-            ia."CD_CONVENIO",
-            ia."CD_ATENDIMENTO",
+            ira."CD_GRU_FAT",
+            ira."CD_CONVENIO",
+            ira."CD_ATENDIMENTO",
             ra."CD_REMESSA",
             pf."DS_PRO_FAT",
             ra."DT_REMESSA",
-            ia."DT_PRODUCAO",
-            ia."DT_FECHAMENTO",
-            ia."DT_ITREG_AMB",
-            ia."SN_FECHADA",
-            ia."SN_REPASSADO",
-            ia."SN_PERTENCE_PACOTE",
-            ia."VL_UNITARIO",
-            ia."VL_TOTAL_CONTA",
-            ia."VL_BASE_REPASSADO"
-        FROM source_item_regra_ambulatorio ia
-        LEFT JOIN source_pro_fat pf ON ia."CD_PRO_FAT" = pf."CD_PRO_FAT"
-        LEFT JOIN source_regra_ambulatorio ra ON ia."CD_REG_AMB" = ra."CD_REG_AMB"
+            ira."DT_PRODUCAO",
+            ira."DT_FECHAMENTO",
+            ira."DT_ITREG_AMB",
+            ira."SN_FECHADA",
+            ira."SN_REPASSADO",
+            ira."SN_PERTENCE_PACOTE",
+            ira."VL_UNITARIO",
+            ira."VL_TOTAL_CONTA",
+            ira."VL_BASE_REPASSADO"
+        FROM source_item_regra_ambulatorio ira
+        LEFT JOIN source_pro_fat pf ON ira."CD_PRO_FAT" = pf."CD_PRO_FAT"
+        LEFT JOIN source_regra_ambulatorio ra ON ira."CD_REG_AMB" = ra."CD_REG_AMB"
+        LEFT JOIN source_atendimento sa ON ira."CD_ATENDIMENTO" = sa."CD_ATENDIMENTO"
+),
+source_regra_faturamento
+    AS (
+        SELECT
+            "CD_REG_FAT",
+            "CD_CONVENIO",
+            "CD_ATENDIMENTO",
+            "CD_REMESSA",
+            "DT_REMESSA"
+        FROM {{ ref('stg_reg_fat')}}
 ),
 source_item_regra_faturamento
     AS (
@@ -207,16 +199,6 @@ source_item_regra_faturamento
             "VL_BASE_REPASSADO"
         FROM {{ ref('stg_itreg_fat')}}
 ),
-source_regra_faturamento
-    AS (
-        SELECT
-            "CD_REG_FAT",
-            "CD_CONVENIO",
-            "CD_ATENDIMENTO",
-            "CD_REMESSA",
-            "DT_REMESSA"
-        FROM {{ ref('stg_reg_fat')}}
-),
 treats_regra_faturamento
     AS (
         SELECT
@@ -227,6 +209,7 @@ treats_regra_faturamento
             END AS "CD_PRO_FAT",
             irf."CD_REG_FAT",
             irf."CD_PRESTADOR",
+            sa."CD_PACIENTE",
             irf."CD_ATI_MED",
             irf."CD_LANCAMENTO",
             pf."CD_GRU_PRO",
@@ -248,6 +231,79 @@ treats_regra_faturamento
         FROM source_item_regra_faturamento irf
         LEFT JOIN source_pro_fat pf ON irf."CD_PRO_FAT" = pf."CD_PRO_FAT"
         LEFT JOIN source_regra_faturamento rf ON irf."CD_REG_FAT" = rf."CD_REG_FAT"
+        LEFT JOIN source_atendimento sa ON rf."CD_ATENDIMENTO" = sa."CD_ATENDIMENTO"
+),
+treats_regra_ambulatorio_sem_remessa
+    AS (
+        SELECT
+            NULL AS "CD_REPASSE",
+            tra."CD_REG_AMB" AS "CD_REGRA",
+            tra."CD_LANCAMENTO",
+            tra."CD_ITREG_AMB_KEY" AS "CD_ITREG_KEY",
+            tra."CD_PRO_FAT",
+            tra."CD_GRU_PRO",
+            tra."CD_GRU_FAT",
+            sa."CD_ATENDIMENTO",
+            tra."CD_REMESSA",
+            tra."CD_CONVENIO",
+            NULL AS "CD_ATI_MED",
+            sa."CD_PRESTADOR" AS "CD_PRESTADOR_REPASSE",
+            sa."CD_PACIENTE" AS "CD_PACIENTE",
+            tra."DT_ITREG_AMB" AS "DT_ITREGRA",
+            NULL AS "DT_COMPETENCIA",
+            NULL AS "DT_REPASSE",
+            tra."DT_PRODUCAO",
+            tra."DT_FECHAMENTO",
+            NULL AS "TP_REPASSE",
+            'AMBULATORIO'::VARCHAR(12) AS "TP_REGRA",
+            tra."SN_FECHADA",
+            tra."SN_REPASSADO",
+            tra."SN_PERTENCE_PACOTE",
+            NULL AS "VL_REPASSE",
+            tra."VL_UNITARIO",
+            tra."VL_TOTAL_CONTA",
+            tra."VL_BASE_REPASSADO"
+        FROM source_atendimento sa
+        INNER JOIN treats_regra_ambulatorio tra ON sa."CD_ATENDIMENTO" = tra."CD_ATENDIMENTO"
+),
+treats_regra_faturamento_sem_remessa
+    AS (
+        SELECT
+            NULL AS "CD_REPASSE",
+            trf."CD_REG_FAT" AS "CD_REGRA",
+            trf."CD_LANCAMENTO",
+            trf."CD_ITREG_FAT_KEY"  AS "CD_ITREG_KEY",
+            trf."CD_PRO_FAT",
+            trf."CD_GRU_PRO",
+            trf."CD_GRU_FAT",
+            sa."CD_ATENDIMENTO",
+            trf."CD_REMESSA",
+            trf."CD_CONVENIO",
+            NULL AS "CD_ATI_MED",
+            sa."CD_PRESTADOR" AS "CD_PRESTADOR_REPASSE",
+            sa."CD_PACIENTE" AS "CD_PACIENTE",
+            trf."DT_ITREG_FAT" AS "DT_ITREGRA",
+            NULL AS "DT_COMPETENCIA",
+            NULL AS "DT_REPASSE",
+            trf."DT_PRODUCAO",
+            trf."DT_FECHAMENTO",
+            NULL AS "TP_REPASSE",
+            'HOSPITALAR'::VARCHAR(12) AS "TP_REGRA",
+            trf."SN_FECHADA",
+            trf."SN_REPASSADO",
+            trf."SN_PERTENCE_PACOTE",
+            NULL AS "VL_REPASSE",
+            trf."VL_UNITARIO",
+            trf."VL_TOTAL_CONTA",
+            trf."VL_BASE_REPASSADO"
+        FROM source_atendimento sa
+        INNER JOIN treats_regra_faturamento trf ON sa."CD_ATENDIMENTO" = trf."CD_ATENDIMENTO"
+),
+treats_regra_sem_remessa_consolidado
+    AS (
+        SELECT * FROM treats_regra_ambulatorio_sem_remessa
+        UNION ALL
+        SELECT * FROM treats_regra_faturamento_sem_remessa
 ),
 treats_repasse_regra_ambulatorio
     AS (
@@ -264,6 +320,7 @@ treats_repasse_regra_ambulatorio
             tra."CD_CONVENIO",
             trc."CD_ATI_MED",
             trc."CD_PRESTADOR_REPASSE",
+            tra."CD_PACIENTE" AS "CD_PACIENTE",
             tra."DT_ITREG_AMB" AS "DT_ITREGRA",
             trc."DT_COMPETENCIA",
             trc."DT_REPASSE",
@@ -296,6 +353,7 @@ treats_repasse_regra_faturamento
             trf."CD_CONVENIO",
             trc."CD_ATI_MED",
             trc."CD_PRESTADOR_REPASSE",
+            trf."CD_PACIENTE" AS "CD_PACIENTE",
             trf."DT_ITREG_FAT" AS "DT_ITREGRA",
             trc."DT_COMPETENCIA",
             trc."DT_REPASSE",
@@ -328,6 +386,7 @@ treats_repasse_manual
             NULL AS "CD_CONVENIO",
             rp."CD_REPASSE" AS "CD_ATI_MED",
             rp."CD_PRESTADOR_REPASSE",
+            NULL AS "CD_PACIENTE",
             NULL AS "DT_ITREGRA",
             rp."DT_COMPETENCIA",
             rp."DT_REPASSE",
@@ -371,6 +430,7 @@ treats
             "CD_CONVENIO"::BIGINT,
             "CD_ATI_MED"::BIGINT,
             "CD_PRESTADOR_REPASSE"::BIGINT,
+            "CD_PACIENTE"::BIGINT,
             "DT_ITREGRA"::TIMESTAMP,
             "DT_COMPETENCIA"::TIMESTAMP,
             "DT_REPASSE"::TIMESTAMP,
@@ -386,6 +446,38 @@ treats
             "VL_TOTAL_CONTA"::NUMERIC(12,2),
             "VL_BASE_REPASSADO"::NUMERIC(12,2)
         FROM treats_repasse_manual
+
+        UNION ALL
+
+        SELECT
+            "CD_REPASSE"::BIGINT,
+            "CD_REGRA"::NUMERIC(10,0),
+            "CD_LANCAMENTO"::NUMERIC(10,0),
+            "CD_ITREG_KEY"::NUMERIC(20,0),
+            "CD_PRO_FAT"::VARCHAR(21),
+            "CD_GRU_PRO"::BIGINT,
+            "CD_GRU_FAT"::BIGINT,
+            "CD_ATENDIMENTO"::BIGINT,
+            "CD_REMESSA"::BIGINT,
+            "CD_CONVENIO"::BIGINT,
+            "CD_ATI_MED"::BIGINT,
+            "CD_PRESTADOR_REPASSE"::BIGINT,
+            "CD_PACIENTE"::BIGINT,
+            "DT_ITREGRA"::TIMESTAMP,
+            "DT_COMPETENCIA"::TIMESTAMP,
+            "DT_REPASSE"::TIMESTAMP,
+            "DT_PRODUCAO"::TIMESTAMP,
+            "DT_FECHAMENTO"::TIMESTAMP,
+            "TP_REPASSE"::VARCHAR(1),
+            "TP_REGRA"::VARCHAR(12),
+            "SN_FECHADA"::VARCHAR(1),
+            "SN_REPASSADO"::VARCHAR(1),
+            "SN_PERTENCE_PACOTE"::VARCHAR(1),
+            "VL_REPASSE"::NUMERIC(12, 2),
+            "VL_UNITARIO"::NUMERIC(14,4),
+            "VL_TOTAL_CONTA"::NUMERIC(12,2),
+            "VL_BASE_REPASSADO"::NUMERIC(12,2)
+        FROM treats_regra_sem_remessa_consolidado
 )
 SELECT * FROM treats
 
