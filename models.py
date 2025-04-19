@@ -326,8 +326,9 @@ class Atendime(Base):
 
     id_atendime_seq = Sequence('id_atendime_seq', schema='public')
     id_atendime = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_atendime_seq'::regclass)"))
-    DT_ATENDIMENTO = Column(DateTime)
     CD_PACIENTE = Column(String)
+    CD_PRESTADOR = Column(String)
+    DT_ATENDIMENTO = Column(DateTime)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
 
@@ -487,6 +488,7 @@ class Reg_Amb(Base):
     id_reg_amb = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_reg_amb_seq'::regclass)"))
     CD_REG_AMB = Column(String)
     CD_REMESSA = Column(String)
+    DT_REG_AMB = Column(DateTime)
     DT_REMESSA = Column(DateTime)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
@@ -500,6 +502,7 @@ class Reg_Fat(Base):
     CD_CONVENIO = Column(String)
     CD_ATENDIMENTO = Column(String)
     CD_REMESSA = Column(String)
+    DT_REG_FAT = Column(DateTime)
     DT_REMESSA = Column(DateTime)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
