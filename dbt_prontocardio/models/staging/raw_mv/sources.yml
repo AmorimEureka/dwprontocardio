@@ -690,6 +690,8 @@ sources:
             description: "Código do registro ambulatorial"
           - name: "CD_REMESSA"
             description: "Código da remessa"
+          - name: DT_REG_AMB
+            description: "Data do Lançamento"
           - name: "DT_REMESSA"
             description: "Data da remessa"
           - name: "DT_EXTRACAO"
@@ -742,6 +744,8 @@ sources:
             description: "Código do atendimento"
           - name: "CD_REMESSA"
             description: "Código da remessa"
+          - name: DT_REG_FAT
+            description: "Data do Lançamento"
           - name: "DT_REMESSA"
             description: "Data da remessa"
           - name: "DT_EXTRACAO"
@@ -786,10 +790,12 @@ sources:
         columns:
           - name: "CD_ATENDIMENTO"
             description: "Código do atendimento"
-          - name: "DT_ATENDIMENTO"
-            description: "Data do atendimento"
           - name: "CD_PACIENTE"
             description: "Código do paciente"
+          - name: "CD_PRESTADOR"
+            description: "Código do prestador"
+          - name: "DT_ATENDIMENTO"
+            description: "Data do atendimento"
           - name: "DT_EXTRACAO"
             description: "Data da extração"
 

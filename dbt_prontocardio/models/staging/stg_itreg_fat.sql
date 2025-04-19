@@ -1,7 +1,7 @@
 {{
     config( materialized = 'incremental',
             unique_key = '"CD_ITREG_FAT_KEY"',
-             merge_update_columns = ['"SN_REPASSADO"'] )
+             merge_update_columns = ['"SN_FECHADA", "DT_FECHAMENTO"'] )
 }}
 
 WITH source_itreg_fat
