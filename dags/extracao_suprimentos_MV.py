@@ -186,10 +186,10 @@ with DAG(
             'setor', 'especie', 'mvto_estoque', 'itmvto_estoque', 'itsol_com',
             'itord_pro', 'itent_pro', 'atendime', 'convenio', 'gru_fat', 'gru_pro',
             'it_repasse_sih', 'it_repasse', 'paciente', 'prestador', 'pro_fat',
-            'reg_amb', 'reg_fat', 'repasse', 'repasse_prestador', 'ati_med'
+            'repasse', 'repasse_prestador', 'ati_med'
         ],
         'lista_tab_truncate': ['produto', 'est_pro'],
-        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro', 'itreg_amb', 'itreg_fat']
+        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro', 'reg_amb', 'reg_fat', 'itreg_amb', 'itreg_fat']
     }
 
     tarefas_extracao = []
