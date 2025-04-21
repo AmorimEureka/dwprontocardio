@@ -188,7 +188,7 @@ with DAG(
             'it_repasse_sih', 'it_repasse', 'paciente', 'prestador', 'pro_fat',
             'repasse', 'repasse_prestador', 'ati_med'
         ],
-        'lista_tab_truncate': ['produto', 'est_pro'],
+        'lista_tab_truncate': ['produto', 'est_pro', 'procedimento_sus'],
         'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro', 'reg_amb', 'reg_fat', 'itreg_amb', 'itreg_fat']
     }
 

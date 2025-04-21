@@ -5,6 +5,7 @@ SELECT
     itf.CD_ATI_MED,
     itf.CD_LANCAMENTO,
     itf.CD_GRU_FAT,
+    itf.CD_PROCEDIMENTO,
     itf.DT_PRODUCAO,
     itf.DT_LANCAMENTO AS DT_ITREG_FAT,
     itf.SN_REPASSADO,

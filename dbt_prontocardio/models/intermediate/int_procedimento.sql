@@ -21,7 +21,7 @@ source_stg_repasse_prestador
             "CD_REPASSE"::VARCHAR(21) AS "CD_PROCEDIMENTO",
             "DS_REPASSE" AS "DS_PROCEDIMENTO"
         FROM {{ ref( 'stg_repasse_prestador' ) }}
-)
+),
 treats
     AS (
         SELECT
