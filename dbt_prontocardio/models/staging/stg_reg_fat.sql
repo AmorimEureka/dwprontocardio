@@ -7,7 +7,7 @@
 WITH source_reg_fat
     AS (
         SELECT
-            NULLIF(sis."CD_REG_FAT", 'NaN') AS "CD_REG_FAT",
+            NULLIF(SPLIT_PART(sis."CD_REG_FAT", '.', 1), 'NaN') AS "CD_REG_FAT",
             NULLIF(sis."CD_CONVENIO", 'NaN') AS "CD_CONVENIO",
             NULLIF(sis."CD_ATENDIMENTO", 'NaN') AS "CD_ATENDIMENTO",
             NULLIF(SPLIT_PART(sis."CD_REMESSA", '.', 1), 'NaN') AS "CD_REMESSA",
@@ -16,7 +16,7 @@ WITH source_reg_fat
             sis."DT_EXTRACAO"
         FROM {{ source('raw_mv', 'reg_fat')}} sis
         {% if is_incremental() %}
-        WHERE sis."CD_REG_FAT"::BIGINT > ( SELECT MAX("CD_REG_FAT") FROM {{ this }} )
+        WHERE SPLIT_PART(sis."CD_REG_FAT", '.', 1)::BIGINT > ( SELECT MAX("CD_REG_FAT") FROM {{ this }} )
         {% endif %}
 ),
 treats

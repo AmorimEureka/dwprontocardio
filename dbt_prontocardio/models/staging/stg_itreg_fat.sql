@@ -8,7 +8,7 @@ WITH source_itreg_fat
     AS (
         SELECT
             NULLIF("CD_PRO_FAT", 'NaN') AS "CD_PRO_FAT",
-            NULLIF("CD_REG_FAT", 'NaN') AS "CD_REG_FAT",
+            NULLIF(SPLIT_PART("CD_REG_FAT", '.', 1), 'NaN') AS "CD_REG_FAT",
             NULLIF(SPLIT_PART("CD_PRESTADOR", '.', 1), 'NaN') AS "CD_PRESTADOR",
             NULLIF("CD_ATI_MED", 'NaN') AS "CD_ATI_MED",
             NULLIF("CD_LANCAMENTO", 'NaN') AS "CD_LANCAMENTO",

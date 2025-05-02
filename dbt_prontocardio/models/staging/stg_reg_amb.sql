@@ -7,14 +7,14 @@
 WITH source_reg_amb
     AS (
         SELECT
-            sis."CD_REG_AMB",
+            NULLIF(SPLIT_PART(sis."CD_REG_AMB", '.', 1), 'NaN') AS "CD_REG_AMB",
             NULLIF(SPLIT_PART(sis."CD_REMESSA", '.', 1), 'NaN') AS "CD_REMESSA",
             sis."DT_REG_AMB",
             sis."DT_REMESSA",
             sis."DT_EXTRACAO"
         FROM {{ source('raw_mv', 'reg_amb')}} sis
         {% if is_incremental() %}
-        WHERE sis."CD_REG_AMB"::BIGINT > ( SELECT MAX("CD_REG_AMB") FROM {{ this }} )
+        WHERE SPLIT_PART(sis."CD_REG_AMB", '.', 1)::BIGINT > ( SELECT MAX("CD_REG_AMB") FROM {{ this }} )
         {% endif %}
 ),
 treats
