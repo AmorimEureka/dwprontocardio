@@ -477,7 +477,7 @@ treats
             "VL_UNITARIO"::NUMERIC(14,4),
             "VL_TOTAL_CONTA"::NUMERIC(12,2),
             "VL_BASE_REPASSADO"::NUMERIC(12,2)
-        FROM treats_regra_sem_remessa_consolidado
+        FROM treats_regra_sem_remessa_consolidado WHERE "CD_REMESSA" IS NULL
 )
 SELECT * FROM treats
 
