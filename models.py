@@ -445,6 +445,8 @@ class Itreg_Fat(Base):
     SN_REPASSADO = Column(String)
     SN_PERTENCE_PACOTE = Column(String)
     VL_UNITARIO = Column(String)
+    VL_SP = Column(String)
+    VL_ATO = Column(String)
     VL_TOTAL_CONTA = Column(String)
     VL_BASE_REPASSADO = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))

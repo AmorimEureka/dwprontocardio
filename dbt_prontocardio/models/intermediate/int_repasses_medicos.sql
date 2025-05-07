@@ -195,6 +195,8 @@ source_item_regra_faturamento
             "SN_REPASSADO",
             "SN_PERTENCE_PACOTE",
             "VL_UNITARIO",
+            "VL_SP",
+            "VL_ATO",
             "VL_TOTAL_CONTA",
             "VL_BASE_REPASSADO"
         FROM {{ ref('stg_itreg_fat')}}
@@ -226,7 +228,10 @@ treats_regra_faturamento
             irf."SN_REPASSADO",
             irf."SN_PERTENCE_PACOTE",
             irf."VL_UNITARIO",
-            irf."VL_TOTAL_CONTA",
+            CASE WHEN pf."CD_PRO_FAT" = 'X0000000' THEN
+                COALESCE(irf."VL_SP", 0) + COALESCE(irf."VL_ATO", 0)
+            ELSE irf."VL_TOTAL_CONTA"
+            END AS "VL_TOTAL_CONTA",
             irf."VL_BASE_REPASSADO"
         FROM source_item_regra_faturamento irf
         LEFT JOIN source_pro_fat pf ON irf."CD_PRO_FAT" = pf."CD_PRO_FAT"
@@ -301,9 +306,9 @@ treats_regra_faturamento_sem_remessa
 ),
 treats_regra_sem_remessa_consolidado
     AS (
-        SELECT * FROM treats_regra_ambulatorio_sem_remessa
+        SELECT * FROM treats_regra_ambulatorio_sem_remessa tras WHERE tras."CD_REMESSA" IS NULL
         UNION ALL
-        SELECT * FROM treats_regra_faturamento_sem_remessa
+        SELECT * FROM treats_regra_faturamento_sem_remessa trfs WHERE trfs."CD_REMESSA" IS NULL
 ),
 treats_repasse_regra_ambulatorio
     AS (
@@ -364,7 +369,10 @@ treats_repasse_regra_faturamento
             trf."SN_FECHADA",
             trf."SN_REPASSADO",
             trf."SN_PERTENCE_PACOTE",
-            trc."VL_REPASSE",
+            CASE WHEN trf."CD_PRO_FAT" = 'X0000000' THEN
+                COALESCE(trf."VL_BASE_REPASSADO", 0)
+            ELSE trc."VL_REPASSE"
+            END AS "VL_REPASSE",
             trf."VL_UNITARIO",
             trf."VL_TOTAL_CONTA",
             trf."VL_BASE_REPASSADO"
@@ -406,13 +414,65 @@ treats_repasse_manual
 treats
     AS (
         SELECT
-            *
+            "CD_REPASSE"::BIGINT,
+            "CD_REGRA"::NUMERIC(10,0),
+            "CD_LANCAMENTO"::NUMERIC(10,0),
+            "CD_ITREG_KEY"::NUMERIC(20,0),
+            "CD_PRO_FAT"::VARCHAR(21),
+            "CD_GRU_PRO"::BIGINT,
+            "CD_GRU_FAT"::BIGINT,
+            "CD_ATENDIMENTO"::BIGINT,
+            "CD_REMESSA"::BIGINT,
+            "CD_CONVENIO"::BIGINT,
+            "CD_ATI_MED"::BIGINT,
+            "CD_PRESTADOR_REPASSE"::BIGINT,
+            "CD_PACIENTE"::BIGINT,
+            "DT_ITREGRA"::TIMESTAMP,
+            "DT_COMPETENCIA"::TIMESTAMP,
+            "DT_REPASSE"::TIMESTAMP,
+            "DT_PRODUCAO"::TIMESTAMP,
+            "DT_FECHAMENTO"::TIMESTAMP,
+            "TP_REPASSE"::VARCHAR(1),
+            "TP_REGRA"::VARCHAR(12),
+            "SN_FECHADA"::VARCHAR(1),
+            "SN_REPASSADO"::VARCHAR(1),
+            "SN_PERTENCE_PACOTE"::VARCHAR(1),
+            "VL_REPASSE"::NUMERIC(12, 2),
+            "VL_UNITARIO"::NUMERIC(14,4),
+            "VL_TOTAL_CONTA"::NUMERIC(12,2),
+            "VL_BASE_REPASSADO"::NUMERIC(12,2)
         FROM treats_repasse_regra_ambulatorio
 
         UNION ALL
 
         SELECT
-            *
+            "CD_REPASSE"::BIGINT,
+            "CD_REGRA"::NUMERIC(10,0),
+            "CD_LANCAMENTO"::NUMERIC(10,0),
+            "CD_ITREG_KEY"::NUMERIC(20,0),
+            "CD_PRO_FAT"::VARCHAR(21),
+            "CD_GRU_PRO"::BIGINT,
+            "CD_GRU_FAT"::BIGINT,
+            "CD_ATENDIMENTO"::BIGINT,
+            "CD_REMESSA"::BIGINT,
+            "CD_CONVENIO"::BIGINT,
+            "CD_ATI_MED"::BIGINT,
+            "CD_PRESTADOR_REPASSE"::BIGINT,
+            "CD_PACIENTE"::BIGINT,
+            "DT_ITREGRA"::TIMESTAMP,
+            "DT_COMPETENCIA"::TIMESTAMP,
+            "DT_REPASSE"::TIMESTAMP,
+            "DT_PRODUCAO"::TIMESTAMP,
+            "DT_FECHAMENTO"::TIMESTAMP,
+            "TP_REPASSE"::VARCHAR(1),
+            "TP_REGRA"::VARCHAR(12),
+            "SN_FECHADA"::VARCHAR(1),
+            "SN_REPASSADO"::VARCHAR(1),
+            "SN_PERTENCE_PACOTE"::VARCHAR(1),
+            "VL_REPASSE"::NUMERIC(12, 2),
+            "VL_UNITARIO"::NUMERIC(14,4),
+            "VL_TOTAL_CONTA"::NUMERIC(12,2),
+            "VL_BASE_REPASSADO"::NUMERIC(12,2)
         FROM treats_repasse_regra_faturamento
 
         UNION ALL
@@ -477,7 +537,7 @@ treats
             "VL_UNITARIO"::NUMERIC(14,4),
             "VL_TOTAL_CONTA"::NUMERIC(12,2),
             "VL_BASE_REPASSADO"::NUMERIC(12,2)
-        FROM treats_regra_sem_remessa_consolidado WHERE "CD_REMESSA" IS NULL
+        FROM treats_regra_sem_remessa_consolidado
 )
 SELECT * FROM treats
 
