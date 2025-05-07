@@ -11,6 +11,8 @@ SELECT
     itf.SN_REPASSADO,
     itf.SN_PERTENCE_PACOTE,
     itf.VL_UNITARIO,
+    itf.VL_SP,
+    itf.VL_ATO,
     itf.VL_TOTAL_CONTA,
     itf.VL_BASE_REPASSADO
 FROM DBAMV.ITREG_FAT itf

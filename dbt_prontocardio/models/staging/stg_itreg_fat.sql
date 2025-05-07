@@ -19,6 +19,8 @@ WITH source_itreg_fat
             NULLIF("SN_REPASSADO", 'NaN') AS "SN_REPASSADO",
             NULLIF("SN_PERTENCE_PACOTE", 'NaN') AS "SN_PERTENCE_PACOTE",
             NULLIF("VL_UNITARIO", 'NaN') AS "VL_UNITARIO",
+            NULLIF("VL_SP", 'NaN') AS "VL_SP",
+            NULLIF("VL_ATO", 'NaN') AS "VL_ATO",
             NULLIF("VL_TOTAL_CONTA", 'NaN') AS "VL_TOTAL_CONTA",
             NULLIF("VL_BASE_REPASSADO", 'NaN') AS "VL_BASE_REPASSADO",
             "DT_EXTRACAO"
@@ -40,6 +42,8 @@ treats_key
             sis."SN_REPASSADO",
             sis."SN_PERTENCE_PACOTE",
             sis."VL_UNITARIO",
+            sis."VL_SP",
+            sis."VL_ATO",
             sis."VL_TOTAL_CONTA",
             sis."VL_BASE_REPASSADO",
             sis."DT_EXTRACAO"
@@ -64,6 +68,8 @@ treats
             "SN_REPASSADO"::VARCHAR(1),
             "SN_PERTENCE_PACOTE"::VARCHAR(1),
             "VL_UNITARIO"::NUMERIC(14,4),
+            "VL_SP"::NUMERIC(12,2),
+            "VL_ATO"::NUMERIC(12,2),
             "VL_TOTAL_CONTA"::NUMERIC(12,2),
             "VL_BASE_REPASSADO"::NUMERIC(12,2),
             "DT_EXTRACAO"::TIMESTAMP
