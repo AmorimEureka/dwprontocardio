@@ -201,6 +201,30 @@ source_item_regra_faturamento
             "VL_BASE_REPASSADO"
         FROM {{ ref('stg_itreg_fat')}}
 ),
+source_repasse_consolidado
+    AS (
+        SELECT
+            "CD_ITREG_FAT_KEY",
+            "CD_PRO_FAT",
+            "CD_REG_FAT",
+            "CD_PRESTADOR_REPASSE",
+            "CD_ATI_MED",
+            "CD_LANC_FAT",
+            "CD_GRU_FAT",
+            "CD_GRU_PRO",
+            "CD_PROCEDIMENTO",
+            "DT_REPASSE_CONSOLIDADO",
+            "DT_COMPETENCIA_FAT",
+            "DT_COMPETENCIA_REP",
+            "SN_PERTENCE_PACOTE",
+            "VL_SP",
+            "VL_ATO",
+            "VL_REPASSE",
+            "VL_TOTAL_CONTA",
+            "VL_BASE_REPASSADO",
+            "DT_EXTRACAO"
+        FROM {{ref('stg_repasse_consolidado')}}
+),
 treats_regra_faturamento
     AS (
         SELECT
@@ -229,14 +253,16 @@ treats_regra_faturamento
             irf."SN_PERTENCE_PACOTE",
             irf."VL_UNITARIO",
             CASE WHEN pf."CD_PRO_FAT" = 'X0000000' THEN
-                COALESCE(irf."VL_SP", 0) + COALESCE(irf."VL_ATO", 0)
-            ELSE irf."VL_TOTAL_CONTA"
+                COALESCE(rc."VL_SP", 0) + COALESCE(rc."VL_ATO", 0)
+            ELSE rc."VL_TOTAL_CONTA"
             END AS "VL_TOTAL_CONTA",
-            irf."VL_BASE_REPASSADO"
+            rc."VL_BASE_REPASSADO"
         FROM source_item_regra_faturamento irf
         LEFT JOIN source_pro_fat pf ON irf."CD_PRO_FAT" = pf."CD_PRO_FAT"
         LEFT JOIN source_regra_faturamento rf ON irf."CD_REG_FAT" = rf."CD_REG_FAT"
         LEFT JOIN source_atendimento sa ON rf."CD_ATENDIMENTO" = sa."CD_ATENDIMENTO"
+        LEFT JOIN source_repasse_consolidado rc ON irf."CD_REG_FAT" = rc."CD_REG_FAT" AND irf."CD_LANCAMENTO" = rc."CD_LANC_FAT" AND irf."CD_PRESTADOR" = rc."CD_PRESTADOR_REPASSE"
+        WHERE irf."CD_REG_FAT" IS NOT NULL
 ),
 treats_regra_ambulatorio_sem_remessa
     AS (

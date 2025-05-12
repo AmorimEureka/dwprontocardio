@@ -542,3 +542,27 @@ class Procedimento_Sus(Base):
     CD_PROCEDIMENTO = Column(String)
     DS_PROCEDIMENTO = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
+
+class repasse_consolidado(Base):
+    __tablename__ = 'repasse_consolidado'
+
+    id_repasse_consolidado_seq = Sequence('id_repasse_consolidado_seq', schema='public')
+    id_repasse_consolidado = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_repasse_consolidado_seq'::regclass)"))
+    CD_PRO_FAT = Column(String)
+    CD_REG_FAT = Column(String)
+    CD_PRESTADOR_REPASSE = Column(String)
+    CD_ATI_MED = Column(String)
+    CD_LANC_FAT = Column(String)
+    CD_GRU_FAT = Column(String)
+    CD_GRU_PRO = Column(String)
+    CD_PROCEDIMENTO = Column(String)
+    DT_REPASSE_CONSOLIDADO  = Column(DateTime)
+    DT_COMPETENCIA_FAT = Column(DateTime)
+    DT_COMPETENCIA_REP = Column(DateTime)
+    SN_PERTENCE_PACOTE = Column(String)
+    VL_SP = Column(String)
+    VL_ATO = Column(String)
+    VL_REPASSE = Column(String)
+    VL_TOTAL_CONTA = Column(String)
+    VL_BASE_REPASSADO = Column(String)
+    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))

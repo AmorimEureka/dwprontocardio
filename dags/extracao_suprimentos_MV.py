@@ -141,7 +141,7 @@ with DAG(
                         cursor_pg.execute(param_maior_dt_query)
                         maior_dt_query = cursor_pg.fetchone()
                         where_sql = str(maior_dt_query[0]).split()[0] if maior_dt_query is not None else '2023-01-01'
-                        apagar_tabela(tabela, cursor_pg)
+                        #apagar_tabela(tabela, cursor_pg)
 
                     else:
 
@@ -189,7 +189,7 @@ with DAG(
             'repasse', 'repasse_prestador', 'ati_med'
         ],
         'lista_tab_truncate': ['produto', 'est_pro', 'procedimento_sus'],
-        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro', 'reg_amb', 'reg_fat', 'itreg_amb', 'itreg_fat']
+        'lista_tab_snapshot': ['repasse_consolidado', 'sol_com', 'ord_com', 'ent_pro', 'reg_amb', 'reg_fat', 'itreg_amb', 'itreg_fat']
     }
 
     tarefas_extracao = []

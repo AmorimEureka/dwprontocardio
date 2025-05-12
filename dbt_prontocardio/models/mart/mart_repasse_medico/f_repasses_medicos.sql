@@ -2,7 +2,7 @@
 
     config( materialized = 'incremental',
             unique_key = '"CD_ITREG_KEY"',
-            merge_update_columns = ['"CD_REMESSA", "DT_REMESSA", "SN_FECHADA", "DT_FECHAMENTO"'] )
+            merge_update_columns = ['"CD_REMESSA"', '"DT_REMESSA"', '"SN_FECHADA"', '"DT_FECHAMENTO"'] )
 
 }}
 
