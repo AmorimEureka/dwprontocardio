@@ -2,7 +2,7 @@
 dbt_prontocardio:
   target: prod
   outputs:
-    dev:
+    prod:
       type: postgres
       host: localhost
       user: "{{ env_var('POSTGRES_USER', 'dbadw') }}"
