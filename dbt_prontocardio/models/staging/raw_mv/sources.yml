@@ -800,6 +800,8 @@ sources:
             description: "Código do prestador"
           - name: "DT_ATENDIMENTO"
             description: "Data do atendimento"
+          - name: "TP_ATENDIMENTO"
+            description: "Tipo do atendimento"
           - name: "DT_EXTRACAO"
             description: "Data da extração"
 
