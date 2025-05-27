@@ -329,6 +329,7 @@ class Atendime(Base):
     CD_PACIENTE = Column(String)
     CD_PRESTADOR = Column(String)
     DT_ATENDIMENTO = Column(DateTime)
+    TP_ATENDIMENTO = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
 
