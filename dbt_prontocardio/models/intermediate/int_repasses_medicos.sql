@@ -96,7 +96,8 @@ source_atendimento
         SELECT
             "CD_ATENDIMENTO",
             "CD_PACIENTE",
-            "CD_PRESTADOR"
+            "CD_PRESTADOR",
+            "TP_ATENDIMENTO"
         FROM {{ ref('stg_atendime')}}
 ),
 source_pro_fat
@@ -168,6 +169,7 @@ treats_regra_ambulatorio
         LEFT JOIN source_pro_fat pf ON ira."CD_PRO_FAT" = pf."CD_PRO_FAT"
         LEFT JOIN source_regra_ambulatorio ra ON ira."CD_REG_AMB" = ra."CD_REG_AMB"
         LEFT JOIN source_atendimento sa ON ira."CD_ATENDIMENTO" = sa."CD_ATENDIMENTO"
+        WHERE pf."CD_GRU_PRO" <> 28
 ),
 source_regra_faturamento
     AS (
@@ -262,7 +264,7 @@ treats_regra_faturamento
         LEFT JOIN source_regra_faturamento rf ON irf."CD_REG_FAT" = rf."CD_REG_FAT"
         LEFT JOIN source_atendimento sa ON rf."CD_ATENDIMENTO" = sa."CD_ATENDIMENTO"
         LEFT JOIN source_repasse_consolidado rc ON irf."CD_REG_FAT" = rc."CD_REG_FAT" AND irf."CD_LANCAMENTO" = rc."CD_LANC_FAT" AND irf."CD_PRESTADOR" = rc."CD_PRESTADOR_REPASSE"
-        WHERE irf."CD_REG_FAT" IS NOT NULL
+        WHERE irf."CD_REG_FAT" IS NOT NULL AND pf."CD_GRU_PRO" <> 28
 ),
 treats_regra_ambulatorio_sem_remessa
     AS (
@@ -295,7 +297,8 @@ treats_regra_ambulatorio_sem_remessa
             tra."VL_TOTAL_CONTA",
             tra."VL_BASE_REPASSADO"
         FROM source_atendimento sa
-        INNER JOIN treats_regra_ambulatorio tra ON sa."CD_ATENDIMENTO" = tra."CD_ATENDIMENTO"
+        LEFT JOIN treats_regra_ambulatorio tra ON sa."CD_ATENDIMENTO" = tra."CD_ATENDIMENTO"
+        WHERE tra."CD_GRU_PRO" <> 28 AND sa."TP_ATENDIMENTO" IN('A', 'E')
 ),
 treats_regra_faturamento_sem_remessa
     AS (
@@ -328,7 +331,8 @@ treats_regra_faturamento_sem_remessa
             trf."VL_TOTAL_CONTA",
             trf."VL_BASE_REPASSADO"
         FROM source_atendimento sa
-        INNER JOIN treats_regra_faturamento trf ON sa."CD_ATENDIMENTO" = trf."CD_ATENDIMENTO"
+        LEFT JOIN treats_regra_faturamento trf ON sa."CD_ATENDIMENTO" = trf."CD_ATENDIMENTO"
+        WHERE trf."CD_GRU_PRO" <> 28 AND sa."TP_ATENDIMENTO" IN('I', 'U')
 ),
 treats_regra_sem_remessa_consolidado
     AS (
