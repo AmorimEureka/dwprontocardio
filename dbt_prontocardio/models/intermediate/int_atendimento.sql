@@ -6,6 +6,7 @@ WITH source_atendime
             "CD_ATENDIMENTO",
             "DT_ATENDIMENTO",
             "CD_PACIENTE",
+            "TP_ATENDIMENTO",
             "DT_EXTRACAO"
         FROM {{ ref('stg_atendime') }}
 ),
@@ -15,6 +16,7 @@ treats
             "CD_ATENDIMENTO",
             "DT_ATENDIMENTO",
             "CD_PACIENTE",
+            "TP_ATENDIMENTO",
             "DT_EXTRACAO"
         FROM source_atendime
 )
