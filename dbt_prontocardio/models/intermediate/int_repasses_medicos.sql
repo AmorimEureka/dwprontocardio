@@ -326,7 +326,7 @@ treats_regra_faturamento_sem_remessa
             trf."VL_BASE_REPASSADO"
         FROM source_atendimento sa
         LEFT JOIN treats_regra_faturamento trf ON sa."CD_ATENDIMENTO" = trf."CD_ATENDIMENTO"
-        WHERE trf."CD_GRU_PRO" <> 28 AND sa."TP_ATENDIMENTO" IN('I', 'U')
+        WHERE sa."TP_ATENDIMENTO" IN('I', 'U')
 ),
 treats_regra_sem_remessa_consolidado
     AS (
