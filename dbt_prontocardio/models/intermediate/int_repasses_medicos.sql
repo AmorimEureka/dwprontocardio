@@ -397,13 +397,13 @@ treats_repasse_regra_faturamento
             trf."SN_REPASSADO",
             trf."SN_PERTENCE_PACOTE",
             CASE WHEN trf."CD_PRO_FAT" = 'X0000000' THEN
-                COALESCE(rc."VL_BASE_REPASSADO", trf."VL_BASE_REPASSADO")
+                rc."VL_BASE_REPASSADO"
             ELSE rc."VL_REPASSE"
             END AS "VL_REPASSE",
             trf."VL_UNITARIO",
             CASE WHEN trf."CD_PRO_FAT" = 'X0000000' THEN
-                COALESCE((COALESCE(rc."VL_SP", 0) + COALESCE(rc."VL_ATO", 0)), trf."VL_BASE_REPASSADO")
-            ELSE trf."VL_BASE_REPASSADO"
+                rc."VL_SP" + rc."VL_ATO"
+            ELSE rc."VL_TOTAL_CONTA"
             END AS "VL_TOTAL_CONTA",
             trf."VL_BASE_REPASSADO"
         FROM treats_repasse_consolidado trc
@@ -411,7 +411,7 @@ treats_repasse_regra_faturamento
         LEFT JOIN source_repasse_consolidado rc ON trc."CD_REG_FAT" = rc."CD_REG_FAT"
                   AND trc."CD_LANCAMENTO_FAT" = rc."CD_LANC_FAT"
                   AND trc."CD_PRESTADOR_REPASSE" = rc."CD_PRESTADOR_REPASSE"
-                  AND trc."CD_ATI_MED" = rc."CD_ATI_MED"
+                  AND COALESCE(trc."CD_ATI_MED", 1) = COALESCE(rc."CD_ATI_MED", 1)
 ),
 treats_repasse_manual
     AS (
