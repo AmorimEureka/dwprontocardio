@@ -40,7 +40,7 @@ Pipeline de Extração Tratamento de Dados
 
 <br>
 
-<details open>
+<details close>
   <summary>
     <strong>TERMINAL:</strong>
   </summary>
@@ -52,7 +52,7 @@ Pipeline de Extração Tratamento de Dados
 <br>
 <br>
 
-<details open>
+<details close>
   <summary>
     <strong>WSL:</strong>
   </summary>
@@ -81,7 +81,7 @@ Pipeline de Extração Tratamento de Dados
 <br>
 <br>
 
-<details open>
+<details close>
   <summary>
     <strong>DOCKER ENGINE:</strong>
   </summary>
@@ -168,7 +168,7 @@ Pipeline de Extração Tratamento de Dados
 <br>
 <br>
 
-<details open>
+<details close>
   <summary>
     <strong>ASTRO:</strong>
   </summary>
