@@ -8,6 +8,33 @@ Pipeline de Extração Tratamento de Dados
 <br>
 
 
+<details open>
+
+<summary><strong>STACKS UTILIZADAS</strong></summary>
+
+<br>
+
+![Python](https://img.shields.io/badge/Python-FFD43B?&logo=python&logoColor=blue)
+![Airflow 2.8.0](https://img.shields.io/badge/Airflow-2.8.0-EA1D2C?logo=apache-airflow&logoColor=white)
+[![Astro](https://img.shields.io/badge/Astro-Astronomer.io-5A4FCF?logo=Astronomer&logoColor=white)](https://www.astronomer.io/)
+[![cosmos version](https://img.shields.io/pypi/v/astronomer-cosmos?label=cosmos&color=purple&logo=apache-airflow)](https://pypi.org/project/astronomer-cosmos/) <br>
+![dlt version](https://img.shields.io/pypi/v/dlt?label=dlt&color=blue&logo=python&logoColor=white)
+![dbt version](https://img.shields.io/pypi/v/dbt-core?label=dbt-core&color=orange&logo=databricks&logoColor=white)
+![Docker Engine](https://img.shields.io/badge/Docker-Engine-2496ED?logo=docker&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/OS-Ubuntu-E95420?logo=ubuntu&logoColor=white) <br>
+![WSL](https://img.shields.io/badge/WSL-2.0+-brightgreen?logo=windows&logoColor=white)
+[![Oracle Thick Mode](https://img.shields.io/badge/Oracle-Thick%20Mode-red?logo=oracle&logoColor=white)](https://cx.oracletutorial.com/oracle-net/thick-vs-thin-driver/)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?&logo=postgresql&logoColor=white)
+[![DBeaver](https://img.shields.io/badge/DBeaver-Tool-372923?logo=dbeaver&logoColor=white)](https://dbeaver.io/)
+<br>
+[![MV Sistemas](https://img.shields.io/badge/ERP-MV%20Sistemas-006400?logo=linuxfoundation&logoColor=white)](https://www.mvsistemas.com.br/)
+![Power Bi](https://img.shields.io/badge/power_bi-F2C811?&logo=powerbi&logoColor=black)
+
+
+</details>
+
+<br>
+
  Configurações:
  =============
 
