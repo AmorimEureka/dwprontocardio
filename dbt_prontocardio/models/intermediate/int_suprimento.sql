@@ -42,6 +42,7 @@ source_snp_ord_com
             p."DS_PRODUTO",
             oc."CD_MOT_CANCEL" AS "CD_MOT_CANCEL_OC",
             oc."DT_ORD_COM",
+            oc."DT_PREV_ENTREGA",
             oc."DT_AUTORIZACAO",
             CASE
                 WHEN oc."TP_SITUACAO" = 'A' THEN 'Aberta'
@@ -386,6 +387,13 @@ treats_qt_mov
             up."TP_RELATORIOS",
             mve."TP_MVTO_ESTOQUE"
 ),
+dt_previso
+    AS (
+        SELECT DISTINCT
+            "CD_ORD_COM",
+            "DT_PREV_ENTREGA"
+        FROM source_snp_ord_com
+),
 source_suprimentos
     AS (
         SELECT
@@ -411,6 +419,7 @@ source_suprimentos
             h."SN_OPME",
             h."CD_ORD_COM",
             h."DT_ORD_COM",
+            dp."DT_PREV_ENTREGA",
             h."DT_AUTORIZACAO",
             io."CD_MOT_CANCEL" AS "CD_MOT_CANCEL_OC",
             CASE
@@ -450,6 +459,7 @@ source_suprimentos
         LEFT JOIN source_itens_entradas ie ON h."CD_ORD_COM" = ie."CD_ORD_COM" AND h."CD_PRODUTO" = ie."CD_PRODUTO"
         LEFT JOIN source_est_pro po ON h."CD_PRODUTO" = po."CD_PRODUTO" AND h."CD_ESTOQUE" = po."CD_ESTOQUE"
         LEFT JOIN treats_qt_mov tm ON h."CD_PRODUTO" = tm."CD_PRODUTO"
+        LEFT JOIN dt_previso dp ON h."CD_ORD_COM" = dp."CD_ORD_COM"
         ORDER BY h."CD_PRODUTO"
 ),
 treats
@@ -468,6 +478,7 @@ treats
             h."SN_OPME",
             h."CD_ORD_COM",
             h."DT_ORD_COM",
+            h."DT_PREV_ENTREGA",
             h."DT_AUTORIZACAO",
             h."CD_MOT_CANCEL_OC",
             h."TP_SITUACAO_OC",
@@ -511,6 +522,7 @@ treats
             h."SN_OPME",
             h."CD_ORD_COM",
             h."DT_ORD_COM",
+            h."DT_PREV_ENTREGA",
             h."DT_AUTORIZACAO",
             h."CD_MOT_CANCEL_OC",
             h."TP_SITUACAO_OC",

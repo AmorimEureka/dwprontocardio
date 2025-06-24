@@ -69,6 +69,8 @@ sources:
             description: "Código do último usuário que alterou a ordem de compra"
           - name: DT_ORD_COM
             description: "Data da ordem de compra"
+          - name: DT_PREV_ENTREGA
+            description: "Data prevista para entrega"
           - name: DT_CANCELAMENTO
             description: "Data de cancelamento da ordem de compra"
           - name: DT_AUTORIZACAO
