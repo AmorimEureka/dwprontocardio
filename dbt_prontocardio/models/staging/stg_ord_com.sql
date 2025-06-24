@@ -14,6 +14,7 @@ WITH source_ord_com
             , sis."CD_USUARIO_CRIADOR_OC"
             , sis."CD_ULTIMO_USU_ALT_OC"
             , sis."DT_ORD_COM"
+            , sis."DT_PREV_ENTREGA"
             , sis."DT_CANCELAMENTO"
             , sis."DT_AUTORIZACAO"
             , sis."DT_ULTIMA_ALTERACAO_OC"
@@ -37,6 +38,7 @@ treats
             , "CD_USUARIO_CRIADOR_OC"::VARCHAR(30)
             , "CD_ULTIMO_USU_ALT_OC"::VARCHAR(30)
             , "DT_ORD_COM"::DATE
+            , "DT_PREV_ENTREGA"::DATE
             , "DT_CANCELAMENTO"::TIMESTAMP
             , "DT_AUTORIZACAO"::TIMESTAMP
             , "DT_ULTIMA_ALTERACAO_OC"::DATE
