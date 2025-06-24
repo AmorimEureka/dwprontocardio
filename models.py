@@ -240,6 +240,7 @@ class OrdCom(Base):
     CD_USUARIO_CRIADOR_OC = Column(String)
     CD_ULTIMO_USU_ALT_OC = Column(String)
     DT_ORD_COM = Column(DateTime)
+    DT_PREV_ENTREGA = Column(DateTime)
     DT_CANCELAMENTO = Column(DateTime)
     DT_AUTORIZACAO = Column(DateTime)
     DT_ULTIMA_ALTERACAO_OC = Column(DateTime)
