@@ -1,6 +1,8 @@
 {{
     config( materialized = 'incremental',
-            unique_key = '"CD_SOL_COM"' )
+            incremental_strategy = 'merge',
+            unique_key = '"CD_SOL_COM"',
+            merge_update_columns = ['"TP_SITUACAO"', '"CD_MOT_CANCEL"', '"DT_CANCELAMENTO"'] )
 
 }}
 
@@ -26,29 +28,38 @@ WITH source_sol_com
             , sis."DT_EXTRACAO"
         FROM {{ source('raw_mv' , 'sol_com') }} sis
         {% if is_incremental() %}
-        WHERE sis."CD_SOL_COM"::BIGINT > ( SELECT MAX("CD_SOL_COM") FROM {{this}} )
+        WHERE (
+                sis."DT_SOL_COM" >= (current_date - interval '30 day')
+                or
+                sis."CD_SOL_COM"::BIGINT > ( SELECT MAX("CD_SOL_COM") FROM {{this}} )
+                )
         {% endif %}
 ),
 treats
     AS (
         SELECT
-            "CD_SOL_COM"::BIGINT
-            , "CD_MOT_PED"::BIGINT
-            , "CD_SETOR"::BIGINT
-            , "CD_ESTOQUE"::BIGINT
-            , "CD_MOT_CANCEL"::BIGINT
-            , "CD_ATENDIME"::BIGINT
-            , "CD_SOLICITANTE"::VARCHAR(50)
-            , "NM_SOLICITANTE"::VARCHAR(25)
-            , "DT_SOL_COM"::DATE
-            , "DT_CANCELAMENTO"::TIMESTAMP
-            , "VL_TOTAL"::NUMERIC(12,2)
-            , "TP_SITUACAO"::VARCHAR(1)
-            , "TP_SOL_COM"::VARCHAR(1)
-            , "SN_URGENTE"::VARCHAR(1)
-            , "SN_APROVADA"::VARCHAR(1)
-            , "SN_OPME"::VARCHAR(1)
-            , "DT_EXTRACAO"::TIMESTAMP
-        FROM source_sol_com
+            *,
+            ROW_NUMBER() OVER (PARTITION BY "CD_SOL_COM" ORDER BY "DT_EXTRACAO" DESC) as rn
+        FROM (
+            SELECT
+                "CD_SOL_COM"::BIGINT
+                , "CD_MOT_PED"::BIGINT
+                , "CD_SETOR"::BIGINT
+                , "CD_ESTOQUE"::BIGINT
+                , "CD_MOT_CANCEL"::BIGINT
+                , "CD_ATENDIME"::BIGINT
+                , "CD_SOLICITANTE"::VARCHAR(50)
+                , "NM_SOLICITANTE"::VARCHAR(25)
+                , "DT_SOL_COM"::DATE
+                , "DT_CANCELAMENTO"::TIMESTAMP
+                , "VL_TOTAL"::NUMERIC(12,2)
+                , "TP_SITUACAO"::VARCHAR(1)
+                , "TP_SOL_COM"::VARCHAR(1)
+                , "SN_URGENTE"::VARCHAR(1)
+                , "SN_APROVADA"::VARCHAR(1)
+                , "SN_OPME"::VARCHAR(1)
+                , "DT_EXTRACAO"::TIMESTAMP
+            FROM source_sol_com
+        ) base
     )
-SELECT * FROM treats
+SELECT * FROM treats WHERE rn = 1
