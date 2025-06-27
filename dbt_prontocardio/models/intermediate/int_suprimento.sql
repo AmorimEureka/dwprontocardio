@@ -19,6 +19,8 @@ source_snp_sol_com
                 sc."DT_CANCELAMENTO",
                 CASE
                     WHEN sc."TP_SITUACAO" = 'A' THEN 'Aberta'
+                    WHEN sc."TP_SITUACAO" = 'U' THEN 'Autorizada'
+                    WHEN sc."TP_SITUACAO" = 'Z' THEN 'Não Autorizada'
                     WHEN sc."TP_SITUACAO" = 'F' THEN 'Fechada'
                     WHEN sc."TP_SITUACAO" = 'P' THEN 'Parcialmente Atendida'
                     WHEN sc."TP_SITUACAO" = 'S' THEN 'Solicitada'
