@@ -346,22 +346,6 @@ source_itens_entradas
         FROM staging.stg_itent_pro ip
         LEFT JOIN staging.stg_ent_pro ep ON ip."CD_ENT_PRO" = ep."CD_ENT_PRO"
 ),
-source_est_pro
-    AS (
-        SELECT
-            ep."CD_ESTOQUE",
-            ep."CD_PRODUTO",
-            ep."DT_ULTIMA_MOVIMENTACAO",
-            ep."QT_ESTOQUE_ATUAL",
-            ep."QT_ESTOQUE_MAXIMO",
-            ep."QT_ESTOQUE_MINIMO",
-            ep."QT_ESTOQUE_VIRTUAL",
-            ep."QT_PONTO_DE_PEDIDO",
-            ep."QT_CONSUMO_MES",
-            ep."QT_CONSUMO_ATUAL",
-            ep."TP_CLASSIFICACAO_ABC"
-        FROM staging.stg_est_pro ep
-),
 treats_qt_mov
     AS (
         SELECT
@@ -388,6 +372,23 @@ treats_qt_mov
             up."VL_FATOR",
             up."TP_RELATORIOS",
             mve."TP_MVTO_ESTOQUE"
+),
+treats_estoque
+    AS (
+        SELECT
+            p."CD_PRODUTO",
+            ep."CD_ESTOQUE",
+            ROUND(COALESCE(( ep."QT_ESTOQUE_ATUAL" / up."VL_FATOR" ), 0), 1) AS "QT_ESTOQUE_ATUAL",
+            ROUND(COALESCE(( ep."QT_CONSUMO_ATUAL" / up."VL_FATOR" ), 0), 1) AS "QT_CONSUMO_ATUAL",
+            ep."DT_ULTIMA_MOVIMENTACAO",
+            ep."TP_CLASSIFICACAO_ABC",
+            up."VL_FATOR"
+        FROM  staging.stg_produto p
+        LEFT JOIN staging.stg_est_pro ep
+            ON p."CD_PRODUTO" = ep."CD_PRODUTO"
+        LEFT JOIN staging.stg_uni_pro up
+            ON p."CD_PRODUTO" = up."CD_PRODUTO"
+        WHERE up."TP_RELATORIOS" = 'G'
 ),
 dt_previso
     AS (
@@ -450,18 +451,18 @@ source_suprimentos
             COALESCE(ie."QT_ENTRADA", 0) AS "QT_ENTRADA_ENT",
             COALESCE(ie."QT_ATENDIDA", 0) AS "QT_ATENDIDA_ENT",
             COALESCE(ie."VL_UNITARIO", 0) AS "QT_UNITARIO_ENT",
-            COALESCE(po."QT_ESTOQUE_ATUAL", 0) AS "QT_ESTOQUE_ATUAL",
-            COALESCE(po."QT_CONSUMO_ATUAL", 0) AS "QT_CONSUMO_ATUAL",
-            po."DT_ULTIMA_MOVIMENTACAO",
+            e."QT_ESTOQUE_ATUAL",
+            e."QT_CONSUMO_ATUAL",
+            e."DT_ULTIMA_MOVIMENTACAO",
             COALESCE(tm."QT_MOVIMENTO", 0) AS "QT_MOVIMENTO",
             h."MATCHING"
         FROM treats_sol_ord_com h
         LEFT JOIN source_itens_solicitacao isol ON h."CD_SOL_COM" = isol."CD_SOL_COM" AND h."CD_PRODUTO" = isol."CD_PRODUTO"
         LEFT JOIN source_itens_pedidos io ON h."CD_ORD_COM" = io."CD_ORD_COM" AND h."CD_PRODUTO" = io."CD_PRODUTO"
         LEFT JOIN source_itens_entradas ie ON h."CD_ORD_COM" = ie."CD_ORD_COM" AND h."CD_PRODUTO" = ie."CD_PRODUTO"
-        LEFT JOIN source_est_pro po ON h."CD_PRODUTO" = po."CD_PRODUTO" AND h."CD_ESTOQUE" = po."CD_ESTOQUE"
         LEFT JOIN treats_qt_mov tm ON h."CD_PRODUTO" = tm."CD_PRODUTO"
         LEFT JOIN dt_previso dp ON h."CD_ORD_COM" = dp."CD_ORD_COM"
+        LEFT JOIN treats_estoque e ON h."CD_PRODUTO" = e."CD_PRODUTO" AND h."CD_ESTOQUE" = e."CD_ESTOQUE"
         ORDER BY h."CD_PRODUTO"
 ),
 treats
