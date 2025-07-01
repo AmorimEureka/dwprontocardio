@@ -346,49 +346,21 @@ source_itens_entradas
         FROM staging.stg_itent_pro ip
         LEFT JOIN staging.stg_ent_pro ep ON ip."CD_ENT_PRO" = ep."CD_ENT_PRO"
 ),
-treats_qt_mov
-    AS (
-        SELECT
-            itmve."CD_PRODUTO",
-            up."VL_FATOR",
-            up."TP_RELATORIOS",
-            mve."TP_MVTO_ESTOQUE",
-            COALESCE(
-                SUM(
-                    itmve."QT_MOVIMENTACAO" * up."VL_FATOR" * CASE
-                        WHEN mve."TP_MVTO_ESTOQUE" IN ('D', 'C') THEN -1
-                        ELSE 1
-                    END
-                ) / up."VL_FATOR",
-                0
-            ) AS "QT_MOVIMENTO"
-        FROM staging.stg_itmvto_estoque itmve
-        LEFT JOIN staging.stg_mvto_estoque mve ON itmve."CD_MVTO_ESTOQUE" = mve."CD_MVTO_ESTOQUE"
-        LEFT JOIN staging.stg_uni_pro up ON itmve."CD_UNI_PRO" = up."CD_UNI_PRO"
-        WHERE up."TP_RELATORIOS" = 'G'
-            AND mve."TP_MVTO_ESTOQUE" IN ('S', 'P', 'D', 'C')
-        GROUP BY
-            itmve."CD_PRODUTO",
-            up."VL_FATOR",
-            up."TP_RELATORIOS",
-            mve."TP_MVTO_ESTOQUE"
-),
 treats_estoque
     AS (
         SELECT
-            p."CD_PRODUTO",
+            ep."CD_PRODUTO",
             ep."CD_ESTOQUE",
-            ROUND(COALESCE(( ep."QT_ESTOQUE_ATUAL" / up."VL_FATOR" ), 0), 1) AS "QT_ESTOQUE_ATUAL",
-            ROUND(COALESCE(( ep."QT_CONSUMO_ATUAL" / up."VL_FATOR" ), 0), 1) AS "QT_CONSUMO_ATUAL",
-            ep."DT_ULTIMA_MOVIMENTACAO",
+            ep."CD_LOCALIZACAO",
             ep."TP_CLASSIFICACAO_ABC",
-            up."VL_FATOR"
-        FROM  staging.stg_produto p
-        LEFT JOIN staging.stg_est_pro ep
-            ON p."CD_PRODUTO" = ep."CD_PRODUTO"
-        LEFT JOIN staging.stg_uni_pro up
-            ON p."CD_PRODUTO" = up."CD_PRODUTO"
-        WHERE up."TP_RELATORIOS" = 'G'
+            ep."DT_ULTIMA_MOVIMENTACAO",
+            ep."QT_ESTOQUE_ATUAL",
+            ep."QT_CONSUMO_ATUAL",
+            ep."QT_MVTO",
+            ep."QT_MENSAL",
+            ep."QT_DIARIO",
+            ep."QTD_DIAS_ESTOQUE"
+        FROM  staging.stg_est_pro ep
 ),
 dt_previso
     AS (
@@ -451,16 +423,21 @@ source_suprimentos
             COALESCE(ie."QT_ENTRADA", 0) AS "QT_ENTRADA_ENT",
             COALESCE(ie."QT_ATENDIDA", 0) AS "QT_ATENDIDA_ENT",
             COALESCE(ie."VL_UNITARIO", 0) AS "QT_UNITARIO_ENT",
-            e."QT_ESTOQUE_ATUAL",
-            e."QT_CONSUMO_ATUAL",
+
             e."DT_ULTIMA_MOVIMENTACAO",
-            COALESCE(tm."QT_MOVIMENTO", 0) AS "QT_MOVIMENTO",
+
+            e."QT_ESTOQUE_ATUAL" ,
+            e."QT_CONSUMO_ATUAL",
+            e."QT_MVTO" AS "QT_MOVIMENTO",
+            e."QT_MENSAL",
+            e."QT_DIARIO",
+            e."QTD_DIAS_ESTOQUE",
+
             h."MATCHING"
         FROM treats_sol_ord_com h
         LEFT JOIN source_itens_solicitacao isol ON h."CD_SOL_COM" = isol."CD_SOL_COM" AND h."CD_PRODUTO" = isol."CD_PRODUTO"
         LEFT JOIN source_itens_pedidos io ON h."CD_ORD_COM" = io."CD_ORD_COM" AND h."CD_PRODUTO" = io."CD_PRODUTO"
         LEFT JOIN source_itens_entradas ie ON h."CD_ORD_COM" = ie."CD_ORD_COM" AND h."CD_PRODUTO" = ie."CD_PRODUTO"
-        LEFT JOIN treats_qt_mov tm ON h."CD_PRODUTO" = tm."CD_PRODUTO"
         LEFT JOIN dt_previso dp ON h."CD_ORD_COM" = dp."CD_ORD_COM"
         LEFT JOIN treats_estoque e ON h."CD_PRODUTO" = e."CD_PRODUTO" AND h."CD_ESTOQUE" = e."CD_ESTOQUE"
         ORDER BY h."CD_PRODUTO"
@@ -505,53 +482,17 @@ treats
             h."QT_ENTRADA_ENT",
             h."QT_ATENDIDA_ENT",
             h."QT_UNITARIO_ENT",
-            h."QT_ESTOQUE_ATUAL",
-            h."QT_CONSUMO_ATUAL",
+
             h."DT_ULTIMA_MOVIMENTACAO",
-            h."MATCHING",
-            SUM(h."QT_MOVIMENTO") AS "QT_MOVIMENTO"
-        FROM source_suprimentos h
-        GROUP BY
-            h."CD_SUPRIMENTO_KEY",
-            h."CD_SOL_COM",
-            h."CD_SETOR",
-            h."CD_ESTOQUE",
-            h."CD_MOT_PED",
-            h."CD_MOT_CANCEL_SC",
-            h."DT_SOL_COM",
-            h."TP_SITUACAO_SC",
-            h."SN_APROVADA",
-            h."SN_URGENTE",
-            h."SN_OPME",
-            h."CD_ORD_COM",
-            h."DT_ORD_COM",
-            h."DT_PREV_ENTREGA",
-            h."DT_AUTORIZACAO",
-            h."CD_MOT_CANCEL_OC",
-            h."TP_SITUACAO_OC",
-            h."SN_AUTORIZADO_OC",
-            h."CD_FORNECEDOR",
-            h."NR_DOCUMENTO",
-            h."DT_ENTRADA",
-            h."CD_UNI_PRO",
-            h."CD_PRODUTO",
-            h."DT_CANCEL_SOL",
-            h."QT_SOLIC_SOL",
-            h."QT_COMPRADA_SOL",
-            h."QT_ATENDIDA_SOL",
-            h."DT_CANCEL_ORD",
-            h."QT_COMPRADA_ORD",
-            h."QT_ATENDIDA_ORD",
-            h."QT_RECEBIDA_ORD",
-            h."QT_CANCELADA_ORD",
-            h."VL_UNITARIO_ORD",
-            h."SALDO",
-            h."QT_ENTRADA_ENT",
-            h."QT_ATENDIDA_ENT",
-            h."QT_UNITARIO_ENT",
-            h."QT_ESTOQUE_ATUAL",
+
+            h."QT_ESTOQUE_ATUAL" ,
             h."QT_CONSUMO_ATUAL",
-            h."DT_ULTIMA_MOVIMENTACAO",
+            h."QT_MOVIMENTO",
+            h."QT_MENSAL",
+            h."QT_DIARIO",
+            h."QTD_DIAS_ESTOQUE",
+
             h."MATCHING"
+        FROM source_suprimentos h
 )
 SELECT * FROM treats

@@ -273,43 +273,35 @@ sources:
         description: "Tabela com dados de estoque de produtos"
         columns:
           - name: CD_EST_PRO_KEY
-            description: "ID único criado para ser unique key"
+            description: "Chave única composta do código do estoque e código do produto"
           - name: CD_ESTOQUE
-            description: "Código do estoque"
+            description: "Código que identifica o estoque na unidade"
           - name: CD_PRODUTO
-            description: "Código do produto"
+            description: "Código que identifica o produto"
           - name: CD_LOCALIZACAO
-            description: "Código da localização"
-          - name: DS_LOCALIZACAO_PRATELEIRA
-            description: "Descrição da localização na prateleira"
-          - name: DT_ULTIMA_MOVIMENTACAO
-            description: "Data da última movimentação"
-          - name: QT_ESTOQUE_ATUAL
-            description: "Quantidade atual no estoque"
-          - name: QT_ESTOQUE_MAXIMO
-            description: "Quantidade máxima no estoque"
-          - name: QT_ESTOQUE_MINIMO
-            description: "Quantidade mínima no estoque"
-          - name: QT_ESTOQUE_VIRTUAL
-            description: "Quantidade virtual no estoque"
-          - name: QT_PONTO_DE_PEDIDO
-            description: "Quantidade no ponto de pedido"
-          - name: QT_CONSUMO_MES
-            description: "Quantidade consumida no mês"
-          - name: QT_SOLICITACAO_DE_COMPRA
-            description: "Quantidade solicitada para compra"
-          - name: QT_ORDEM_DE_COMPRA
-            description: "Quantidade em ordem de compra"
-          - name: QT_ESTOQUE_DOADO
-            description: "Quantidade doada no estoque"
-          - name: QT_ESTOQUE_RESERVADO
-            description: "Quantidade reservada no estoque"
-          - name: QT_CONSUMO_ATUAL
-            description: "Quantidade consumida atualmente"
+            description: "Código de localização do produto no estoque"
           - name: TP_CLASSIFICACAO_ABC
-            description: "Classificação ABC do estoque"
+            description: "Classificação ABC do produto no estoque, utilizada para controle de inventário"
+          - name: DT_ULTIMA_MOVIMENTACAO
+            description: "Data da última movimentação registrada para o produto"
+          - name: QT_ESTOQUE_ATUAL
+            description: "Quantidade atual do produto no estoque, ajustada pelo fator de conversão"
+          - name: QT_CONSUMO_ATUAL
+            description: "Quantidade consumida do produto no período recente, ajustada pelo fator de conversão"
+          - name: QT_MVTO
+            description: >
+              Quantidade total movimentada nos últimos 90 dias,
+              considerando entradas e saídas com fator de conversão e tipo de movimentação (positivo/negativo)"
+          - name: QT_MENSAL
+            description: "Média mensal de movimentação do produto, derivada da divisão de QT_MVTO por 3"
+          - name: QT_DIARIO
+            description: "Média diária de movimentação do produto, derivada da divisão de QT_MVTO por 90"
+          - name: QTD_DIAS_ESTOQUE
+            description: >
+              Estimativa de quantos dias o estoque atual dura, com base na média de consumo diário.
+              Quando QT_MVTO <= 0, o valor será 99 (estoque parado ou sem movimentações recentes).
           - name: DT_EXTRACAO
-            description: "Data da extração"
+            description: "Data de extração dos dados da fonte transacional"
 
       - name: stg_uni_pro
         identifier: uni_pro
@@ -415,87 +407,6 @@ sources:
           - name: DT_EXTRACAO
             description: "Data da extração"
 
-      - name: stg_mvto_estoque
-        identifier: mvto_estoque
-        description: "Tabela de movimentação de estoque com informações detalhadas sobre transações."
-        columns:
-          - name: CD_MVTO_ESTOQUE
-            description: "Código único identificador da movimentação de estoque."
-          - name: CD_ESTOQUE
-            description: "Código do estoque relacionado à movimentação."
-          - name: CD_UNI_PRO
-            description: "Código da unidade de produto."
-          - name: CD_UNID_INT
-            description: "Código da unidade interna associada."
-          - name: CD_SETOR
-            description: "Código do setor relacionado à movimentação."
-          - name: CD_ESTOQUE_DESTINO
-            description: "Código do estoque de destino, quando aplicável."
-          - name: CD_CUSTO_MEDIO
-            description: "Código relacionado ao custo médio associado à movimentação."
-          - name: CD_AVISO_CIRURGIA
-            description: "Código de aviso de cirurgia relacionado à movimentação."
-          - name: CD_ENT_PRO
-            description: "Código da entrada do produto."
-          - name: CD_USUARIO
-            description: "Código do usuário responsável pela movimentação."
-          - name: CD_FORNECEDOR
-            description: "Código do fornecedor relacionado à movimentação."
-          - name: CD_PRESTADOR
-            description: "Código do prestador relacionado à movimentação."
-          - name: CD_PRE_MED
-            description: "Código do procedimento médico associado."
-          - name: CD_ATENDIMENTO
-            description: "Código do atendimento relacionado à movimentação."
-          - name: CD_MOT_DEV
-            description: "Código do motivo de devolução, se aplicável."
-          - name: DT_MVTO_ESTOQUE
-            description: "Data da movimentação de estoque."
-          - name: HR_MVTO_ESTOQUE
-            description: "Horário da movimentação de estoque."
-          - name: VL_TOTAL
-            description: "Valor total da movimentação."
-          - name: TP_MVTO_ESTOQUE
-            description: "Tipo de movimentação de estoque."
-          - name: NR_DOCUMENTO
-            description: "Número do documento associado à movimentação."
-          - name: CHAVE_NFE
-            description: "Chave da nota fiscal eletrônica associada à movimentação."
-          - name: DT_EXTRACAO
-            description: "Data da extração"
-
-      - name: stg_itmvto_estoque
-        identifier: itmvto_estoque
-        description: "Tabela de itens das movimentações de estoque com informações detalhadas sobre produtos e transações."
-        columns:
-          - name: CD_ITMVTO_ESTOQUE
-            description: "Código único identificador do item da movimentação de estoque."
-          - name: CD_MVTO_ESTOQUE
-            description: "Código da movimentação de estoque associada ao item."
-          - name: CD_PRODUTO
-            description: "Código do produto relacionado ao item."
-          - name: CD_UNI_PRO
-            description: "Código da unidade de produto associada ao item."
-          - name: CD_LOTE
-            description: "Código do lote do produto."
-          - name: CD_ITENT_PRO
-            description: "Código do item de entrada do produto associado."
-          - name: CD_FORNECEDOR
-            description: "Código do fornecedor relacionado ao item."
-          - name: CD_ITPRE_MED
-            description: "Código do item do procedimento médico associado, se aplicável."
-          - name: DT_VALIDADE
-            description: "Data de validade do produto."
-          - name: DH_MVTO_ESTOQUE
-            description: "Data e horário da movimentação do item no estoque."
-          - name: QT_MOVIMENTACAO
-            description: "Quantidade movimentada do produto."
-          - name: VL_UNITARIO
-            description: "Valor unitário do produto movimentado."
-          - name: TP_ESTOQUE
-            description: "Tipo de estoque relacionado ao item."
-          - name: DT_EXTRACAO
-            description: "Data da extração"
 
       - name: stg_repasse
         identifier: repasse
