@@ -48,20 +48,14 @@ class EstPro(Base):
     CD_ESTOQUE = Column(String)
     CD_PRODUTO = Column(String)
     CD_LOCALIZACAO = Column(String)
-    DS_LOCALIZACAO_PRATELEIRA = Column(String)
+    TP_CLASSIFICACAO_ABC = Column(String)
     DT_ULTIMA_MOVIMENTACAO = Column(DateTime)
     QT_ESTOQUE_ATUAL = Column(String)
-    QT_ESTOQUE_MAXIMO = Column(String)
-    QT_ESTOQUE_MINIMO = Column(String)
-    QT_ESTOQUE_VIRTUAL = Column(String)
-    QT_PONTO_DE_PEDIDO = Column(String)
-    QT_CONSUMO_MES = Column(String)
-    QT_SOLICITACAO_DE_COMPRA = Column(String)
-    QT_ORDEM_DE_COMPRA = Column(String)
-    QT_ESTOQUE_DOADO = Column(String)
-    QT_ESTOQUE_RESERVADO = Column(String)
     QT_CONSUMO_ATUAL = Column(String)
-    TP_CLASSIFICACAO_ABC = Column(String)
+    QT_MVTO = Column(String)
+    QT_MENSAL = Column(String)
+    QT_DIARIO = Column(String)
+    QTD_DIAS_ESTOQUE = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
 
@@ -111,27 +105,6 @@ class ItentPro(Base):
     VL_CUSTO_REAL = Column(String)
     VL_TOTAL_CUSTO_REAL = Column(String)
     VL_TOTAL = Column(String)
-    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
-
-
-class ItmvtoEstoque(Base):
-    __tablename__ = 'itmvto_estoque'
-
-    id_itmvto_estoque_seq = Sequence('id_itmvto_estoque_seq', schema='public')
-    id_itmvto_estoque = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_itmvto_estoque_seq'::regclass)"))
-    CD_ITMVTO_ESTOQUE = Column(String)
-    CD_MVTO_ESTOQUE = Column(String)
-    CD_PRODUTO = Column(String)
-    CD_UNI_PRO = Column(String)
-    CD_LOTE = Column(String)
-    CD_ITENT_PRO = Column(String)
-    CD_FORNECEDOR = Column(String)
-    CD_ITPRE_MED = Column(String)
-    DT_VALIDADE = Column(DateTime)
-    DH_MVTO_ESTOQUE = Column(DateTime)
-    QT_MOVIMENTACAO = Column(String)
-    VL_UNITARIO = Column(String)
-    TP_ESTOQUE = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
 
@@ -195,35 +168,6 @@ class MotCancel(Base):
     CD_MOT_CANCEL = Column(String)
     DS_MOT_CANCEL = Column(String)
     TP_MOT_CANCEL = Column(String)
-    DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
-
-
-class MvtoEstoque(Base):
-    __tablename__ = 'mvto_estoque'
-
-    id_mvto_estoque_seq = Sequence('id_mvto_estoque_seq', schema='public')
-    id_mvto_estoque = Column(BigInteger, primary_key=True, server_default=text("nextval('public.id_mvto_estoque_seq'::regclass)"))
-    CD_MVTO_ESTOQUE = Column(String)
-    CD_ESTOQUE = Column(String)
-    CD_UNI_PRO = Column(String)
-    CD_UNID_INT = Column(String)
-    CD_SETOR = Column(String)
-    CD_ESTOQUE_DESTINO = Column(String)
-    CD_CUSTO_MEDIO = Column(String)
-    CD_AVISO_CIRURGIA = Column(String)
-    CD_ENT_PRO = Column(String)
-    CD_USUARIO = Column(String)
-    CD_FORNECEDOR = Column(String)
-    CD_PRESTADOR = Column(String)
-    CD_PRE_MED = Column(String)
-    CD_ATENDIMENTO = Column(String)
-    CD_MOT_DEV = Column(String)
-    DT_MVTO_ESTOQUE = Column(DateTime)
-    HR_MVTO_ESTOQUE = Column(DateTime)
-    VL_TOTAL = Column(String)
-    TP_MVTO_ESTOQUE = Column(String)
-    NR_DOCUMENTO = Column(String)
-    CHAVE_NFE = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
 

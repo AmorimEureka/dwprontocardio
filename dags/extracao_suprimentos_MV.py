@@ -183,7 +183,7 @@ with DAG(
     lista_tabelas_postgres = {
         'lista_tab_incremental': [
             'uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque',
-            'setor', 'especie', 'mvto_estoque', 'itmvto_estoque', 'itsol_com',
+            'setor', 'especie', 'itsol_com',
             'itord_pro', 'itent_pro', 'atendime', 'convenio', 'gru_fat', 'gru_pro',
             'it_repasse_sih', 'it_repasse', 'paciente', 'prestador', 'pro_fat',
             'repasse', 'repasse_prestador', 'ati_med'
