@@ -23,10 +23,10 @@ def upgrade() -> None:
     op.drop_table('itmvto_estoque')
     op.drop_table('mvto_estoque')
 
-    op.add_column('est_pro', sa.Column('QT_MVTO', sa.String(), nullable=True))
-    op.add_column('est_pro', sa.Column('QT_MENSAL', sa.String(), nullable=True))
-    op.add_column('est_pro', sa.Column('QT_DIARIO', sa.String(), nullable=True))
-    op.add_column('est_pro', sa.Column('QTD_DIAS_ESTOQUE', sa.String(), nullable=True))
+    # op.add_column('est_pro', sa.Column('QT_MVTO', sa.String(), nullable=True))
+    # op.add_column('est_pro', sa.Column('QT_MENSAL', sa.String(), nullable=True))
+    # op.add_column('est_pro', sa.Column('QT_DIARIO', sa.String(), nullable=True))
+    # op.add_column('est_pro', sa.Column('QTD_DIAS_ESTOQUE', sa.String(), nullable=True))
 
     op.drop_column('est_pro', 'QT_CONSUMO_MES')
     op.drop_column('est_pro', 'QT_ESTOQUE_VIRTUAL')
@@ -55,7 +55,7 @@ def downgrade() -> None:
     op.add_column('est_pro', sa.Column('QT_ESTOQUE_VIRTUAL', sa.VARCHAR(), autoincrement=False, nullable=True))
     op.add_column('est_pro', sa.Column('QT_CONSUMO_MES', sa.VARCHAR(), autoincrement=False, nullable=True))
 
-    op.drop_column('est_pro', 'QT_DIARIO')
-    op.drop_column('est_pro', 'QT_MENSAL')
-    op.drop_column('est_pro', 'QT_MVTO')
-    op.drop_column('est_pro', 'QTD_DIAS_ESTOQUE')
+    # op.drop_column('est_pro', 'QT_DIARIO')
+    # op.drop_column('est_pro', 'QT_MENSAL')
+    # op.drop_column('est_pro', 'QT_MVTO')
+    # op.drop_column('est_pro', 'QTD_DIAS_ESTOQUE')

@@ -307,21 +307,8 @@ sources:
             description: "Quantidade atual do produto no estoque, ajustada pelo fator de conversão"
           - name: QT_CONSUMO_ATUAL
             description: "Quantidade consumida do produto no período recente, ajustada pelo fator de conversão"
-          - name: QT_MVTO
-            description: >
-              Quantidade total movimentada nos últimos 90 dias,
-              considerando entradas e saídas com fator de conversão e tipo de movimentação (positivo/negativo)"
-          - name: QT_MENSAL
-            description: "Média mensal de movimentação do produto, derivada da divisão de QT_MVTO por 3"
-          - name: QT_DIARIO
-            description: "Média diária de movimentação do produto, derivada da divisão de QT_MVTO por 90"
-          - name: QTD_DIAS_ESTOQUE
-            description: >
-              Estimativa de quantos dias o estoque atual dura, com base na média de consumo diário.
-              Quando QT_MVTO <= 0, o valor será 99 (estoque parado ou sem movimentações recentes).
           - name: DT_EXTRACAO
             description: "Data de extração dos dados da fonte transacional"
-
 
       - name: uni_pro
         identifier: uni_pro

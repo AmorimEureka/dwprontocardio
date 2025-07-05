@@ -2,8 +2,8 @@
     config( materialized = 'incremental',
             incremental_strategy = 'merge',
             unique_key = '"CD_EST_PRO_KEY"',
-            merge_update_columns = ['"QT_ESTOQUE_ATUAL"', '"QT_CONSUMO_ATUAL"', '"QT_MVTO"',
-                                    '"QT_MENSAL"', '"QT_DIARIO"', '"QTD_DIAS_ESTOQUE"', '"DT_ULTIMA_MOVIMENTACAO"'] )
+            merge_update_columns = ['"QT_ESTOQUE_ATUAL"', '"QT_CONSUMO_ATUAL"',
+                                    '"DT_ULTIMA_MOVIMENTACAO"'] )
 }}
 
 WITH source_est_pro
@@ -17,10 +17,10 @@ WITH source_est_pro
             , sis."DT_ULTIMA_MOVIMENTACAO"
             , NULLIF(sis."QT_ESTOQUE_ATUAL", 'NaN') AS "QT_ESTOQUE_ATUAL"
             , NULLIF(sis."QT_CONSUMO_ATUAL", 'NaN') AS "QT_CONSUMO_ATUAL"
-            , NULLIF(sis."QT_MVTO", 'NaN') AS "QT_MVTO"
-            , NULLIF(sis."QT_MENSAL", 'NaN') AS "QT_MENSAL"
-            , NULLIF(sis."QT_DIARIO", 'NaN') AS "QT_DIARIO"
-            , NULLIF(SPLIT_PART(sis."QTD_DIAS_ESTOQUE"::TEXT, '.', 1), 'NaN') AS "QTD_DIAS_ESTOQUE"
+            -- , NULLIF(sis."QT_MVTO", 'NaN') AS "QT_MVTO"
+            -- , NULLIF(sis."QT_MENSAL", 'NaN') AS "QT_MENSAL"
+            -- , NULLIF(sis."QT_DIARIO", 'NaN') AS "QT_DIARIO"
+            -- , NULLIF(SPLIT_PART(sis."QTD_DIAS_ESTOQUE"::TEXT, '.', 1), 'NaN') AS "QTD_DIAS_ESTOQUE"
             , sis."DT_EXTRACAO"
         FROM {{ source('raw_mv' , 'est_pro') }} sis
         {% if is_incremental() %}
@@ -46,10 +46,10 @@ treats
                 , "DT_ULTIMA_MOVIMENTACAO"::TIMESTAMP
                 , "QT_ESTOQUE_ATUAL"::NUMERIC(11,3)
                 , "QT_CONSUMO_ATUAL"::NUMERIC(11,3)
-                , "QT_MVTO"::NUMERIC(11,3)
-                , "QT_MENSAL"::NUMERIC(11,3)
-                , "QT_DIARIO"::NUMERIC(11,3)
-                , "QTD_DIAS_ESTOQUE"::BIGINT
+                -- , "QT_MVTO"::NUMERIC(11,3)
+                -- , "QT_MENSAL"::NUMERIC(11,3)
+                -- , "QT_DIARIO"::NUMERIC(11,3)
+                -- , "QTD_DIAS_ESTOQUE"::BIGINT
                 , "DT_EXTRACAO"::TIMESTAMP
             FROM source_est_pro
         ) base

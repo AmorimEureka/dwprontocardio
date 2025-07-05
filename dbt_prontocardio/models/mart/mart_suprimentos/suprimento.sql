@@ -3,7 +3,7 @@
             incremental_strategy = 'merge',
             unique_key = '"CD_SUPRIMENTO_KEY"',
             merge_update_columns = ['"TP_SITUACAO_SC"', '"TP_SITUACAO_OC"', '"CD_MOT_CANCEL_SC"', '"CD_MOT_CANCEL_OC"', '"DT_CANCEL_SOL"', '"DT_CANCEL_ORD"',
-                                    '"QT_MOVIMENTO"', '"DT_ULTIMA_MOVIMENTACAO"', '"QT_ESTOQUE_ATUAL"', '"QT_CONSUMO_ATUAL"', '"QTD_DIAS_ESTOQUE"', '"QT_ENTRADA_ENT"', '"QT_ATENDIDA_ENT"', '"QT_UNITARIO_ENT"'] )
+                                     '"DT_ULTIMA_MOVIMENTACAO"', '"QT_ESTOQUE_ATUAL"', '"QT_CONSUMO_ATUAL"', '"QT_ENTRADA_ENT"', '"QT_ATENDIDA_ENT"', '"QT_UNITARIO_ENT"'] )
 }}
 
 WITH source_int_suprimento
@@ -48,10 +48,10 @@ WITH source_int_suprimento
             sis."QT_UNITARIO_ENT",
             sis."QT_ESTOQUE_ATUAL",
             sis."QT_CONSUMO_ATUAL",
-            sis."QTD_DIAS_ESTOQUE",
+            -- sis."QTD_DIAS_ESTOQUE",
             sis."DT_ULTIMA_MOVIMENTACAO",
-            sis."MATCHING",
-            sis."QT_MOVIMENTO"
+            sis."MATCHING"
+            -- sis."QT_MOVIMENTO"
         FROM {{ ref( 'int_suprimento' ) }} sis
         {% if is_incremental() %}
         WHERE (
@@ -109,10 +109,10 @@ mrt_suprimento
             "QT_UNITARIO_ENT",
             "QT_ESTOQUE_ATUAL",
             "QT_CONSUMO_ATUAL",
-            "QTD_DIAS_ESTOQUE",
+            -- "QTD_DIAS_ESTOQUE",
             "DT_ULTIMA_MOVIMENTACAO",
-            "MATCHING",
-            "QT_MOVIMENTO"
+            "MATCHING"
+            -- "QT_MOVIMENTO"
         FROM (
             SELECT
                 *,

@@ -355,11 +355,11 @@ treats_estoque
             ep."TP_CLASSIFICACAO_ABC",
             ep."DT_ULTIMA_MOVIMENTACAO",
             ep."QT_ESTOQUE_ATUAL",
-            ep."QT_CONSUMO_ATUAL",
-            ep."QT_MVTO",
-            ep."QT_MENSAL",
-            ep."QT_DIARIO",
-            ep."QTD_DIAS_ESTOQUE"
+            ep."QT_CONSUMO_ATUAL"
+            -- ep."QT_MVTO",
+            -- ep."QT_MENSAL",
+            -- ep."QT_DIARIO",
+            -- ep."QTD_DIAS_ESTOQUE"
         FROM  staging.stg_est_pro ep
 ),
 dt_previso
@@ -428,10 +428,10 @@ source_suprimentos
 
             e."QT_ESTOQUE_ATUAL" ,
             e."QT_CONSUMO_ATUAL",
-            e."QT_MVTO" AS "QT_MOVIMENTO",
-            e."QT_MENSAL",
-            e."QT_DIARIO",
-            e."QTD_DIAS_ESTOQUE",
+            -- e."QT_MVTO" AS "QT_MOVIMENTO",
+            -- e."QT_MENSAL",
+            -- e."QT_DIARIO",
+            -- e."QTD_DIAS_ESTOQUE",
 
             h."MATCHING"
         FROM treats_sol_ord_com h
@@ -487,10 +487,10 @@ treats
 
             h."QT_ESTOQUE_ATUAL" ,
             h."QT_CONSUMO_ATUAL",
-            h."QT_MOVIMENTO",
-            h."QT_MENSAL",
-            h."QT_DIARIO",
-            h."QTD_DIAS_ESTOQUE",
+            -- h."QT_MOVIMENTO",
+            -- h."QT_MENSAL",
+            -- h."QT_DIARIO",
+            -- h."QTD_DIAS_ESTOQUE",
 
             h."MATCHING"
         FROM source_suprimentos h

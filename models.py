@@ -52,10 +52,6 @@ class EstPro(Base):
     DT_ULTIMA_MOVIMENTACAO = Column(DateTime)
     QT_ESTOQUE_ATUAL = Column(String)
     QT_CONSUMO_ATUAL = Column(String)
-    QT_MVTO = Column(String)
-    QT_MENSAL = Column(String)
-    QT_DIARIO = Column(String)
-    QTD_DIAS_ESTOQUE = Column(String)
     DT_EXTRACAO = Column(DateTime, server_default=text("now()"))
 
 
