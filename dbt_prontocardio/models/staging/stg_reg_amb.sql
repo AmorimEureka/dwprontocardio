@@ -1,7 +1,7 @@
 {{
     config( materialized = 'incremental',
             unique_key = '"CD_REG_AMB"',
-            merge_update_columns = ['"CD_REMESSA", "DT_REMESSA"'] )
+            merge_update_columns = ['"CD_REMESSA"', '"DT_REMESSA"'] )
 }}
 
 WITH source_reg_amb
