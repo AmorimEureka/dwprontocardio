@@ -3,10 +3,12 @@ from logging.config import fileConfig
 from sqlalchemy import create_engine
 from alembic import context
 from models import Base
+import os
 from os import environ
 
 
-
+from dotenv import load_dotenv
+load_dotenv()
 
 URL = environ['DATABASE_URL']
 
