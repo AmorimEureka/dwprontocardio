@@ -1,4 +1,16 @@
 services:
+  dwpostgres:
+    image: postgres:17rc1-alpine3.19
+    restart: unless-stopped
+    container_name: dwpronto_postgres
+    env_file: ./.env
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    networks:
+      - airflow
+
   webserver:
     build:
       context: .
@@ -12,26 +24,44 @@ services:
     volumes:
       - ./dags:/usr/local/airflow/dags
       - ./dbt_prontocardio:/usr/local/airflow/dbt
+      - ./dbt_dw_entradas:/usr/local/airflow/dbt
       - ./include/oracle:/usr/local/airflow/.oracle/instantclient_19_23/
       - ./include/postgresql:/usr/local/airflow/.postgresql/data/instantclient_17_0/
+      - ./script_ingestao:/usr/local/airflow/script_ingestao
+      - ./.dlt:/usr/local/airflow/.dlt
+    depends_on:
+      - dwpostgres
+    networks:
+      - airflow
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8080/health"]
       interval: 30s
       timeout: 30s
       retries: 5
-      # start_period: 30s
 
-  dwpostgres:
-    image: postgres:17rc1-alpine3.19
-    restart: unless-stopped
-    container_name: dwpronto_postgres
-    env_file: ./.env
-    ports:
-      - "5434:5432"
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - postgres-volume:/var/lib/postgresql/data
+      - ./script_ingestao:/usr/local/airflow/script_ingestao
+      - ./.dlt:/usr/local/airflow/.dlt
+      - ./dbt_dw_entradas:/usr/local/airflow/dbt
     depends_on:
-      - webserver
+      - dwpostgres
+    networks:
+      - airflow
+
+  triggerer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./script_ingestao:/usr/local/airflow/script_ingestao
+      - ./.dlt:/usr/local/airflow/.dlt
+      - ./dbt_dw_entradas:/usr/local/airflow/dbt
+    depends_on:
+      - dwpostgres
     networks:
       - airflow
 
@@ -40,4 +70,6 @@ volumes:
 
 networks:
   airflow:
+    name: airflow
     driver: bridge
+    external: false
