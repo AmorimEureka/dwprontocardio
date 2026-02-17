@@ -4,3 +4,6 @@ oracledb
 apache-airflow-providers-postgres
 astronomer-cosmos[dbt-postgres]
 alembic
+dlt[postgres]>=1.4.0
+psycopg2-binary
+python-dateutil
