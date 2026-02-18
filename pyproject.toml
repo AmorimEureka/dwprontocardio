@@ -13,10 +13,11 @@ oracledb = ">=3.4.0,<4.0.0"
 dlt = {version = ">=1.4.0", extras = ["postgres"]}
 psycopg2-binary = "^2.9.11"
 dbt = "^1.0.0.40.10"
-dotenv = "^0.9.9"
+python-dotenv = "^1.0.1"
 python-dateutil = "^2.9.0.post0"
 dbt-core = "^1.10.15"
 dbt-postgres = "^1.9.1"
+alembic = "^1.16.5"
 
 
 [build-system]
