@@ -1,0 +1,178 @@
+version: 2
+
+sources:
+  - name: raw_entradas_mv
+    description: "Dados da camada raw de entradas, extraídos do sistema MV"
+    schema: raw_entradas_mv
+    loaded_at_field: dt_extracao
+    freshness:
+      warn_after: {count: 1, period: day}
+      error_after: {count: 2, period: day}
+
+    tables:
+      - name: con_pag
+        description: "Tabela de contas a pagar"
+        columns:
+          - name: cd_con_pag
+            description: "Código da conta a pagar"
+          - name: cd_processo
+            description: "Código do processo"
+          - name: cd_reduzido
+            description: "Código reduzido"
+          - name: cd_tip_doc
+            description: "Código do tipo de documento"
+          - name: cd_fornecedor
+            description: "Código do fornecedor"
+          - name: ds_con_pag
+            description: "Descrição da conta a pagar"
+          - name: nr_documento
+            description: "Número do documento"
+          - name: nr_serie
+            description: "Número da série"
+          - name: dt_lancamento
+            description: "Data de lançamento"
+          - name: tp_vencimento
+            description: "Tipo de vencimento"
+          - name: vl_bruto_conta
+            description: "Valor bruto da conta"
+
+      - name: ratcon_pag
+        description: "Tabela de rateio de contas a pagar"
+        columns:
+          - name: cd_ratcon_pag
+            description: "Código do rateio da conta a pagar"
+          - name: cd_con_pag
+            description: "Código da conta a pagar"
+          - name: cd_setor
+            description: "Código do setor"
+          - name: cd_reduzido
+            description: "Código reduzido"
+          - name: cd_item_res
+            description: "Código do item responsável"
+          - name: dt_competencia
+            description: "Data de competência"
+          - name: vl_rateio
+            description: "Valor do rateio"
+
+      - name: itcon_pag
+        description: "Tabela de itens/parcelas de contas a pagar"
+        columns:
+          - name: cd_itcon_pag
+            description: "Código do item da conta a pagar"
+          - name: cd_con_pag
+            description: "Código da conta a pagar"
+          - name: nr_parcela
+            description: "Número da parcela"
+          - name: dt_vencimento
+            description: "Data de vencimento"
+          - name: dt_prevista_pag
+            description: "Data prevista de pagamento"
+          - name: tp_quitacao
+            description: "Tipo de quitação"
+          - name: vl_duplicata
+            description: "Valor da duplicata"
+
+      - name: pagcon_pag
+        description: "Tabela de pagamentos realizados das contas a pagar"
+        columns:
+          - name: cd_pagcon_pag
+            description: "Código do pagamento da conta a pagar"
+          - name: cd_itcon_pag
+            description: "Código do item da conta a pagar"
+          - name: ds_pagcon_pag
+            description: "Descrição do pagamento"
+          - name: dt_pagamento
+            description: "Data de pagamento"
+          - name: dt_baixa
+            description: "Data de baixa"
+          - name: tp_pagamento
+            description: "Tipo de pagamento"
+          - name: vl_acrescimo
+            description: "Valor de acréscimo"
+          - name: vl_desconto
+            description: "Valor de desconto"
+          - name: vl_pago
+            description: "Valor pago"
+
+      - name: ent_serv
+        description: "Tabela de entradas de serviços"
+        columns:
+          - name: cd_ent_serv
+            description: "Código da entrada de serviço"
+          - name: cd_con_pag
+            description: "Código da conta a pagar"
+          - name: cd_fornecedor
+            description: "Código do fornecedor"
+          - name: cd_oficina
+            description: "Código da oficina"
+          - name: cd_tip_doc
+            description: "Código do tipo de documento"
+          - name: cd_usuario
+            description: "Código do usuário"
+          - name: nr_documento
+            description: "Número do documento"
+          - name: nr_serie
+            description: "Número da série"
+          - name: dt_entrada
+            description: "Data de entrada"
+          - name: dt_emissao
+            description: "Data de emissão"
+          - name: ds_observacao
+            description: "Observação"
+          - name: vl_total
+            description: "Valor total"
+
+      - name: setor
+        description: "Tabela de setores/departamentos"
+        columns:
+          - name: cd_setor
+            description: "Código do setor"
+          - name: nm_setor
+            description: "Nome do setor"
+          - name: cd_cen_cus
+            description: "Código do centro de custo"
+
+      - name: fornecedor
+        description: "Tabela de fornecedores"
+        columns:
+          - name: cd_fornecedor
+            description: "Código do fornecedor"
+          - name: cd_cidade
+            description: "Código da cidade"
+          - name: cd_setor
+            description: "Código do setor"
+          - name: nm_fornecedor
+            description: "Nome do fornecedor"
+          - name: nm_fantasia
+            description: "Nome fantasia"
+          - name: nr_cgc_cpf
+            description: "Número do CGC/CPF"
+
+      - name: tip_doc
+        description: "Tabela com os tipos de documentos fiscais"
+        columns:
+          - name: cd_tip_doc
+            description: "Código do documento fiscal"
+          - name: ds_tip_doc
+            description: "Descrição do tipo de documento fiscal"
+          - name: DT_EXTRACAO
+            description: "Data da extração"
+
+      - name: oficina
+        description: "Tabela oficina dos departamentos; permite relação com setores"
+        columns:
+          - name: cd_oficina
+            description: "Código da oficina"
+          - name: ds_oficina
+            description: "Descrição da oficina"
+          - name: cd_setor
+            description: "Código do setor vinculado"
+
+
+
+
+
+
+
+
+
