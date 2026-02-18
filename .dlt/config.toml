@@ -1,0 +1,164 @@
+# put your configuration values here
+
+[runtime]
+log_level="WARNING"  # the system log level of dlt
+# use the dlthub_telemetry setting to enable/disable anonymous usage data reporting, see https://dlthub.com/docs/reference/telemetry
+dlthub_telemetry = true
+
+[sources.sql_database]
+table_names = [
+    "CON_PAG",
+    "RATCON_PAG",
+    "ITCON_PAG",
+    "PAGCON_PAG",
+    "ENT_SERV",
+    "SETOR",
+    "FORNECEDOR",
+    "TIP_DOC",
+    "OFICINA",
+]
+
+
+[sources.sql_database.CON_PAG]
+included_columns = [
+    "CD_CON_PAG",
+    "CD_PROCESSO",
+    "CD_REDUZIDO",
+    "CD_TIP_DOC",
+    "CD_FORNECEDOR",
+    "DS_CON_PAG",
+    "NR_DOCUMENTO",
+    "NR_SERIE",
+    "DT_LANCAMENTO",
+    "TP_VENCIMENTO",
+    "VL_BRUTO_CONTA"
+]
+incremental_column="DT_LANCAMENTO"
+primary_key="CD_CON_PAG"
+initial_value="2025-01-01"
+write_disposition="merge"
+
+
+[sources.sql_database.RATCON_PAG]
+included_columns = [
+    "CD_RATCON_PAG",
+    "CD_CON_PAG",
+    "CD_SETOR",
+    "CD_REDUZIDO",
+    "CD_ITEM_RES",
+    "DT_COMPETENCIA",
+    "VL_RATEIO"
+]
+incremental_column="DT_COMPETENCIA"
+primary_key="CD_RATCON_PAG"
+initial_value="2025-01-01"
+write_disposition="merge"
+
+
+[sources.sql_database.ITCON_PAG]
+included_columns = [
+    "CD_ITCON_PAG",
+    "CD_CON_PAG",
+    "CD_PROCESSO",
+    "NR_PARCELA",
+    "DT_VENCIMENTO",
+    "DT_PREVISTA_PAG",
+    "TP_QUITACAO",
+    "VL_DUPLICATA"
+]
+incremental_column="DT_VENCIMENTO"
+primary_key="CD_ITCON_PAG"
+initial_value="2025-01-01"
+write_disposition="merge"
+
+
+[sources.sql_database.PAGCON_PAG]
+included_columns = [
+    "CD_PAGCON_PAG",
+    "CD_ITCON_PAG",
+    "CD_REDUZIDO",
+    "CD_PROCESSO",
+    "CD_ACRESCIMO",
+    "CD_DESCONTO",
+    "DS_PAGCON_PAG",
+    "DT_PAGAMENTO",
+    "DT_BAIXA",
+    "TP_PAGAMENTO",
+    "VL_ACRESCIMO",
+    "VL_DESCONTO",
+    "VL_PAGO"
+]
+incremental_column="DT_PAGAMENTO"
+primary_key="CD_PAGCON_PAG"
+initial_value="2025-01-01"
+write_disposition="merge"
+
+
+[sources.sql_database.ENT_SERV]
+included_columns = [
+    "CD_ENT_SERV",
+    "CD_CON_PAG",
+    "CD_FORNECEDOR",
+    "CD_OFICINA",
+    "CD_TIP_DOC",
+    "CD_USUARIO",
+    "NR_DOCUMENTO",
+    "NR_SERIE",
+    "DT_ENTRADA",
+    "DT_EMISSAO",
+    "DS_OBSERVACAO",
+    "VL_TOTAL"
+]
+incremental_column="DT_ENTRADA"
+primary_key="CD_ENT_SERV"
+initial_value="2025-01-01"
+write_disposition="merge"
+
+
+[sources.sql_database.SETOR]
+included_columns = [
+    "CD_SETOR",
+    "NM_SETOR",
+    "CD_CEN_CUS"
+]
+incremental_column="CD_SETOR"
+primary_key="CD_SETOR"
+initial_value=1
+write_disposition="merge"
+
+
+[sources.sql_database.FORNECEDOR]
+included_columns = [
+    "CD_FORNECEDOR",
+    "CD_CIDADE",
+    "CD_SETOR",
+    "NM_FORNECEDOR",
+    "NM_FANTASIA",
+    "NR_CGC_CPF"
+]
+incremental_column="CD_FORNECEDOR"
+primary_key="CD_FORNECEDOR"
+initial_value=1
+write_disposition="merge"
+
+
+[sources.sql_database.TIP_DOC]
+included_columns = [
+    "CD_TIP_DOC",
+    "DS_TIP_DOC"
+]
+incremental_column="CD_TIP_DOC"
+primary_key="CD_TIP_DOC"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.OFICINA]
+included_columns = [
+    "CD_OFICINA",
+    "DS_OFICINA",
+    "CD_SETOR"
+]
+incremental_column="CD_OFICINA"
+primary_key="CD_OFICINA"
+initial_value=1
+write_disposition="merge"
