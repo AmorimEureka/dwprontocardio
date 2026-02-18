@@ -1,0 +1,37 @@
+name: 'dbt_dw_entradas'
+version: '1.0.0'
+
+profile: 'dbt_dw_entradas'
+
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+models:
+  dbt_dw_entradas:
+    # Ajuste dos caminhos para refletir a estrutura real do diretório models/
+    # models/staging/staging_entradas_mv
+    staging:
+      staging_entradas:
+        +materialized: view
+        +schema: staging_entradas
+
+    # models/intermediate
+    intermediate:
+      +materialized: ephemeral
+      +schema: intermediate
+
+    # models/mart/mart_entradas
+    mart:
+      mart_entradas:
+        +materialized: table
+        +schema: mart_entradas
