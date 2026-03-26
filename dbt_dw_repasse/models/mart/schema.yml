@@ -1,0 +1,137 @@
+version: 2
+
+models:
+  - name: d_atendimento
+    description: "Dimensão de atendimentos."
+    columns:
+      - name: cd_atendimento
+        description: "Código do atendimento"
+      - name: cd_paciente
+        description: "Código do paciente"
+      - name: dt_atendimento
+        description: "Data do atendimento"
+
+  - name: d_atendimento_medico
+    description: "Dimensão de atividades médicas."
+    columns:
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: ds_ati_med
+        description: "Descrição da atividade médica"
+
+  - name: d_convenio
+    description: "Dimensão de convênios."
+    columns:
+      - name: cd_convenio
+        description: "Código do convênio"
+      - name: nm_convenio
+        description: "Nome do convênio"
+
+  - name: d_descricao_repasse_manual
+    description: "Dimensão de descrições de repasse manual."
+    columns:
+      - name: cd_repasse
+        description: "Código único identificador do repasse"
+      - name: ds_repasse
+        description: "Descrição do repasse manual"
+
+  - name: d_grupo_faturamento
+    description: "Dimensão de grupos de faturamento."
+    columns:
+      - name: cd_gru_fat
+        description: "Código do grupo de faturamento"
+      - name: ds_gru_fat
+        description: "Descrição do grupo de faturamento"
+
+  - name: d_grupo_procedimento
+    description: "Dimensão de grupos de procedimento."
+    columns:
+      - name: cd_gru_pro
+        description: "Código do grupo de procedimentos"
+      - name: ds_gru_pro
+        description: "Descrição do grupo de procedimentos"
+
+  - name: d_paciente
+    description: "Dimensão de pacientes."
+    columns:
+      - name: cd_paciente
+        description: "Código do paciente"
+      - name: nm_paciente
+        description: "Nome do paciente"
+
+  - name: d_prestador
+    description: "Dimensão de prestadores."
+    columns:
+      - name: cd_prestador
+        description: "Código do prestador"
+      - name: nm_prestador
+        description: "Nome do prestador"
+
+  - name: d_procedimento
+    description: "Dimensão de procedimentos."
+    columns:
+      - name: cd_procedimento
+        description: "Código do procedimento"
+        tests:
+          - not_null
+          - unique
+      - name: ds_procedimento
+        description: "Descrição do procedimento"
+
+  - name: f_repasses_medicos
+    description: "Fato de repasses médicos."
+    columns:
+      - name: cd_repasse
+        description: "Código único identificador do repasse"
+      - name: cd_regra
+        description: "Código da regra de origem do item"
+      - name: cd_lancamento
+        description: "Código do lançamento"
+      - name: cd_itreg_key
+        description: "Chave técnica do item de regra (ambulatorial/faturamento)"
+      - name: cd_pro_fat
+        description: "Código do procedimento faturado"
+      - name: cd_gru_pro
+        description: "Código do grupo de procedimentos"
+      - name: cd_gru_fat
+        description: "Código do grupo de faturamento"
+      - name: cd_atendimento
+        description: "Código do atendimento"
+      - name: cd_remessa
+        description: "Código da remessa"
+      - name: cd_convenio
+        description: "Código do convênio"
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: cd_prestador_repasse
+        description: "Código do prestador de repasse"
+      - name: cd_paciente
+        description: "Código do paciente"
+      - name: dt_itregra
+        description: "Data do item da regra"
+      - name: dt_competencia
+        description: "Data de competência do repasse"
+      - name: dt_repasse
+        description: "Data do repasse"
+      - name: dt_producao
+        description: "Data de produção"
+      - name: dt_fechamento
+        description: "Data de fechamento"
+      - name: tp_repasse
+        description: "Tipo de repasse"
+      - name: tp_regra
+        description: "Tipo da regra aplicada"
+      - name: sn_fechada
+        description: "Indicador se a produção foi fechada"
+      - name: sn_repassado
+        description: "Indicador se o item foi repassado"
+      - name: sn_pertence_pacote
+        description: "Indicador se o item pertence a um pacote"
+      - name: vl_repasse
+        description: "Valor do repasse"
+      - name: vl_unitario
+        description: "Valor unitário"
+      - name: vl_total_conta
+        description: "Valor total da conta"
+      - name: vl_base_repassado
+        description: "Valor base repassado"
