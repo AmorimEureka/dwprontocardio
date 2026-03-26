@@ -94,7 +94,7 @@ def load_oracle_data():
     )
 
     # get the source with date logic from source_acumula_resources
-    source = source_acumula_resources()
+    source = source_acumula_resources(tag="notas")
 
     # decompose="serialize" ira converter os resources do dlt
     # em tarefas do Airflow. Para desabilitar isso defina-o como "none"
