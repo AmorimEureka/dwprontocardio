@@ -1,0 +1,29 @@
+name: 'dbt_dw_repasse'
+version: '1.0.0'
+
+profile: 'dbt_dw_repasse'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+
+models:
+  dbt_dw_repasse:
+    staging:
+      +schema: staging_repasse
+
+    intermediate:
+      +materialized: ephemeral
+      +schema: intermediate
+
+    mart:
+      +schema: mart_repasse

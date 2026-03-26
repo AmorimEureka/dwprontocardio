@@ -1,5 +1,3 @@
-
-
 from cosmos import ProfileConfig
 from cosmos.profiles import PostgresUserPasswordProfileMapping
 
@@ -8,7 +6,7 @@ airflow_postgres_db = ProfileConfig(
     target_name="prod",
     profile_mapping=PostgresUserPasswordProfileMapping(
         conn_id="postgres_prontocardio",
-        profile_args={"schema":"raw_mv"},
+        profile_args={"schema": "raw_mv"},
     ),
 )
 
@@ -18,5 +16,14 @@ perfil_postgres = ProfileConfig(
     profile_mapping=PostgresUserPasswordProfileMapping(
         conn_id="postgres_prontocardio",
         profile_args={"schema": "raw_entradas_mv"},
+    ),
+)
+
+perfil_postgres_repasse = ProfileConfig(
+    profile_name="dbt_dw_repasse",
+    target_name="prod",
+    profile_mapping=PostgresUserPasswordProfileMapping(
+        conn_id="postgres_prontocardio",
+        profile_args={"schema": "raw_repasse_mv"},
     ),
 )
