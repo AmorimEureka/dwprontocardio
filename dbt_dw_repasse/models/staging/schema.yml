@@ -1,0 +1,336 @@
+version: 2
+
+models:
+  - name: stg_repasse
+    identifier: stg_repasse
+    description: "Tabela com dados dos repasses aos prestadores"
+    columns:
+      - name: cd_repasse
+        description: "Código único identificador do repasse"
+      - name: ds_repasse
+        description: "Descrição do repasse"
+      - name: dt_competencia
+        description: "Data de competência do repasse"
+      - name: dt_repasse
+        description: "Data do repasse"
+      - name: tp_repasse
+        description: "Tipo de repasse"
+
+  - name: stg_repasse_prestador
+    identifier: stg_repasse_prestador
+    description: "Tabela com dados dos repasses manuais aos prestadores"
+    columns:
+      - name: cd_repasse
+        description: "Código único identificador do repasse"
+      - name: cd_prestador_repasse
+        description: "Código do prestador do repasse"
+      - name: ds_repasse
+        description: "Descrição do repasse manual"
+      - name: dt_competencia
+        description: "Data competência do repasse manual"
+      - name: dt_repasse
+        description: "Data de realização do repasse manual"
+      - name: tp_repasse
+        description: "Tipo do repasse manual"
+      - name: vl_repasse
+        description: "Valor do repasse manual"
+
+  - name: stg_it_repasse
+    identifier: stg_it_repasse
+    description: "Tabela com dados dos itens de repasse aos prestadores"
+    columns:
+      - name: cd_it_repasse
+        description: "Código único identificador do item de repasse."
+      - name: cd_repasse
+        description: "Código único identificador do repasse"
+      - name: cd_reg_amb
+        description: "Código do registro ambulatorial"
+      - name: cd_lancamento_amb
+        description: "Código do lançamento ambulatorial"
+      - name: cd_reg_fat
+        description: "Código do registro faturamento"
+      - name: cd_lancamento_fat
+        description: "Código do lançamento faturamento"
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: cd_prestador_repasse
+        desccription: "Código do prestador de repasse"
+      - name: vl_repasse
+        description: "Valor do repasse"
+
+  - name: stg_it_repasse_sih
+    identifier: stg_it_repasse_sih
+    description: "Tabela com dados dos itens de repasse aos prestadores do SIH"
+    columns:
+      - name: cd_it_repasse_sih
+        description: "Código único identificador do item de repasse SIH."
+      - name: cd_repasse
+        description: "Código único identificador do repasse"
+      - name: cd_reg_fat
+        desccription: "Código do registro faturamento"
+      - name: cd_lancamento
+        description: "Código do lançamento"
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: cd_prestador_repasse
+        description: "Código do prestador de repasse"
+      - name: vl_repasse
+        description: "Valor do repasse"
+
+  - name: stg_prestador
+    identifier: stg_prestador
+    description: "Tabela com dados dos prestadores"
+    columns:
+      - name: cd_prestador
+        description: "Código do prestador"
+      - name: nm_prestador
+        description: "Nome do prestador"
+
+  - name: stg_ati_med
+    identifier: stg_ati_med
+    description: "Tabela com dados das atividades médicas"
+    columns:
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: ds_ati_med
+        description: "Descrição da atividade médica"
+
+  - name: stg_pro_fat
+    identifier: stg_pro_fat
+    description: "Tabela com dados dos procedimentos faturados"
+    columns:
+      - name: cd_pro_fat
+        description: "Código do procedimento faturado"
+      - name: cd_gru_pro
+        description: "Código do grupo do procedimento"
+      - name: ds_pro_fat
+        description: "Descrição do procedimento faturado"
+
+  - name: stg_itreg_amb
+    identifier: stg_itreg_amb
+    description: "Tabela com dados dos itens do registro ambulatorial"
+    columns:
+      - name: cd_pro_fat
+        desccription: "Código do procedimento faturado"
+      - name: cd_reg_amb
+        description: "Código do registro ambulatorial"
+      - name: cd_prestador
+        description: "Código do prestador"
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: cd_lancamento
+        description: "Código do lançamento"
+      - name: cd_gru_fat
+        description: "Código do grupo faturamento"
+      - name: cd_convenio
+        description: "Código do convênio"
+      - name: cd_atendimento
+        description: "Código do atendimento"
+      - name: dt_producao
+        description: "Data de produção"
+      - name: dt_fechamento
+        description: "Data de fechamento"
+      - name: hr_lancamento
+        description: "Data do item do registro ambulatorial"
+      - name: sn_fechada
+        description: "Indicador se a produção foi fechada"
+      - name: sn_repassado
+        desccription: "Indicador se o item foi repassado"
+      - name: sn_pertence_pacote
+        description: "Indicador se o item pertence a um pacote"
+      - name: vl_unitario
+        description: "Valor unitário"
+      - name: vl_total_conta
+        description: "Valor total da conta"
+      - name: vl_base_repassado
+        description: "Valor base repassado"
+
+  - name: stg_reg_amb
+    identifier: stg_reg_amb
+    description: "Tabela com dados dos registros ambulatoriais"
+    columns:
+      - name: cd_reg_amb
+        description: "Código do registro ambulatorial"
+      - name: cd_remessa
+        description: "Código da remessa"
+      - name: dt_reg_amb
+        description: "Data do Lançamento"
+      - name: dt_remessa
+        description: "Data da remessa"
+
+  - name: stg_itreg_fat
+    identifier: stg_itreg_fat
+    description: "Tabela com dados dos itens do registro faturamento"
+    columns:
+      - name: cd_pro_fat
+        description: "Código do procedimento faturado"
+      - name: cd_reg_fat
+        description: "Código do registro faturamento"
+      - name: cd_prestador
+        description: "Código do prestador"
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: cd_lancamento
+        description: "Código do lançamento"
+      - name: cd_gru_fat
+        description: "Código do grupo faturamento"
+      - name: cd_procedimento
+        description: "Código do Procedimento SUS"
+      - name: dt_producao
+        description: "Data de produção"
+      - name: dt_lancamento
+        description: "Data do item do registro faturamento"
+      - name: sn_repassado
+        description: "Indicador se o item foi repassado"
+      - name: sn_pertence_pacote
+        description: "Indicador se o item pertence a um pacote"
+      - name: vl_unitario
+        description: "Valor unitário"
+      - name: vl_sp
+        description: "Valor servico prestado"
+      - name: vl_ato
+        description: "Valor servico ATO"
+      - name: vl_total_conta
+        description: "Valor total da conta"
+      - name: vl_base_repassado
+        desccripion: "Valor base repassado"
+
+  - name: stg_reg_fat
+    identifier: stg_reg_fat
+    description: "Tabela com dados dos registros faturamento"
+    columns:
+      - name: cd_reg_fat
+        description: "Código do registro faturamento"
+      - name: cd_convenio
+        description: "Código do convênio"
+      - name: cd_atendimento
+        description: "Código do atendimento"
+      - name: cd_remessa
+        description: "Código da remessa"
+      - name: dt_reg_fat
+        description: "Data do Lançamento"
+      - name: dt_remessa
+        description: "Data da remessa"
+      - name: dt_fechamento
+        description: "Data do fechamento"
+      - name: sn_fechamento
+        description: "booleano de fechamento"
+
+  - name: stg_gru_pro
+    identifier: stg_gru_pro
+    description: "Tabela com dados dos grupos de procedimentos"
+    columns:
+      - name: cd_gru_pro
+        description: "Código do grupo de procedimentos"
+      - name: ds_gru_pro
+        description: "Descrição do grupo de procedimentos"
+
+  - name: stg_gru_fat
+    identifier: stg_gru_fat
+    description: "Tabela com dados dos grupos de faturamento"
+    columns:
+      - name: cd_gru_fat
+        description: "Código do grupo de faturamento"
+      - name: ds_gru_fat
+        description: "Descrição do grupo de faturamento"
+
+  - name: stg_convenio
+    identifier: stg_convenio
+    description: "Tabela com dados dos convênios"
+    columns:
+      - name: cd_convenio
+        description: "Código do convênio"
+      - name: nm_convenio
+        description: "Nome do convênio"
+
+  - name: stg_atendime
+    identifier: stg_atendime
+    description: "Tabela com dados dos atendimentos"
+    columns:
+      - name: cd_atendimento
+        description: "Código do atendimento"
+      - name: cd_paciente
+        description: "Código do paciente"
+      - name: cd_prestador
+        description: "Código do prestador"
+      - name: cd_convenio
+        description: "Código do convênio"
+      - name: cd_pro_int
+        description: "Código do procedimento interno"
+      - name: cd_leito
+        description: "Código do leito"
+      - name: cd_mot_alt
+        description: "Código do motivo de alta"
+      - name: cd_guia
+        description: "Código da guia"
+      - name: dt_atendimento
+        description: "Data do atendimento"
+      - name: hr_atendimento
+        description: "Hora do atendimento"
+      - name: dt_alta
+        description: "Data da alta"
+      - name: hr_alta
+        description: "Hora da alta"
+      - name: tp_atendimento
+        description: "Tipo do atendimento"
+      - name: sn_obito
+        description: "Indicador de óbito"
+
+  - name: stg_paciente
+    identifier: stg_paciente
+    description: "Tabela com dados dos pacientes"
+    columns:
+      - name: cd_paciente
+        description: "Código do paciente"
+      - name: nm_paciente
+        description: "Nome do paciente"
+
+  - name: stg_procedimento_sus
+    identifier: stg_procedimento_sus
+    description: "Tabela com as descrições do procedimentos do SUS"
+    columns:
+      - name: cd_procedimento
+        description: "Código do Procedimento"
+      - name: ds_procedimento
+        description: "Nome do Procedimento"
+
+  - name: stg_repasse_consolidado
+    identifier: stg_repasse_consolidado
+    description: "Tabela com as consolidações de repasses"
+    columns:
+      - name: cd_repasse_consolidado
+        description: "Primary Key"
+      - name: cd_pro_fat
+        description: "Código do procedimento faturado"
+      - name: cd_reg_fat
+        description: "Código do registro faturamento"
+      - name: cd_prestador_repasse
+        description: "Código do prestador do repasse"
+      - name: cd_ati_med
+        description: "Código da atividade médica"
+      - name: cd_lanc_fat
+        description: "Código do lançamento de faturamento"
+      - name: cd_gru_fat
+        description: "Código do grupo do faturamento"
+      - name: cd_gru_pro
+        description: "Código do grupo do procedimento"
+      - name: cd_procedimento
+        description: "Código do procedimento"
+      - name: dt_repasse_consolidado
+        description: "Data do item do registro faturamento"
+      - name: dt_competencia_fat
+        description: "Data da competência do faturamento"
+      - name: dt_competencia_rep
+        description: "Data da competencia do repasse"
+      - name: sn_pertence_pacote
+        description: "Indicador se o item pertence a um pacote"
+      - name: vl_sp
+        description: "Valor servico prestado"
+      - name: vl_ato
+        description: "Valor ato cirurgico"
+      - name: vl_repasse
+        description: "Valor do repasse"
+      - name: vl_total_conta
+        description: "Valor total da conta"
+      - name: vl_base_repassado
+        description: "Valor base do repasse"
