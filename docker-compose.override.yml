@@ -25,6 +25,7 @@ services:
       - ./dags:/usr/local/airflow/dags
       - ./dbt_prontocardio:/usr/local/airflow/dbt
       - ./dbt_dw_entradas:/usr/local/airflow/dbt
+      - ./dbt_dw_repasse:/usr/local/airflow/dbt
       - ./include/oracle:/usr/local/airflow/.oracle/instantclient_19_23/
       - ./include/postgresql:/usr/local/airflow/.postgresql/data/instantclient_17_0/
       - ./script_ingestao:/usr/local/airflow/script_ingestao
@@ -47,6 +48,7 @@ services:
       - ./script_ingestao:/usr/local/airflow/script_ingestao
       - ./.dlt:/usr/local/airflow/.dlt
       - ./dbt_dw_entradas:/usr/local/airflow/dbt
+      - ./dbt_dw_repasse:/usr/local/airflow/dbt
     depends_on:
       - dwpostgres
     networks:
@@ -60,6 +62,7 @@ services:
       - ./script_ingestao:/usr/local/airflow/script_ingestao
       - ./.dlt:/usr/local/airflow/.dlt
       - ./dbt_dw_entradas:/usr/local/airflow/dbt
+      - ./dbt_dw_repasse:/usr/local/airflow/dbt
     depends_on:
       - dwpostgres
     networks:
