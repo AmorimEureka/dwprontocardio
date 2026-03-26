@@ -16,10 +16,31 @@ table_names = [
     "FORNECEDOR",
     "TIP_DOC",
     "OFICINA",
+
+    "ATENDIME",
+    "ATI_MED",
+    "CONVENIO",
+    "GRU_FAT",
+    "GRU_PRO",
+    "IT_REPASSE_SIH",
+    "IT_REPASSE",
+    "ITREG_AMB",
+    "ITREG_FAT",
+    "PACIENTE",
+    "PRESTADOR",
+    "PRO_FAT",
+    "PROCEDIMENTO_SUS",
+    "REG_AMB",
+    "REG_FAT",
+    "REPASSE_CONSOLIDADO",
+    "REPASSE_PRESTADOR",
+    "REPASSE",
+
 ]
 
 
 [sources.sql_database.CON_PAG]
+dag_tags = ["notas"]
 included_columns = [
     "CD_CON_PAG",
     "CD_PROCESSO",
@@ -40,6 +61,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.RATCON_PAG]
+dag_tags = ["notas"]
 included_columns = [
     "CD_RATCON_PAG",
     "CD_CON_PAG",
@@ -56,6 +78,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.ITCON_PAG]
+dag_tags = ["notas"]
 included_columns = [
     "CD_ITCON_PAG",
     "CD_CON_PAG",
@@ -73,6 +96,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.PAGCON_PAG]
+dag_tags = ["notas"]
 included_columns = [
     "CD_PAGCON_PAG",
     "CD_ITCON_PAG",
@@ -95,6 +119,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.ENT_SERV]
+dag_tags = ["notas"]
 included_columns = [
     "CD_ENT_SERV",
     "CD_CON_PAG",
@@ -116,6 +141,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.SETOR]
+dag_tags = ["notas"]
 included_columns = [
     "CD_SETOR",
     "NM_SETOR",
@@ -128,6 +154,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.FORNECEDOR]
+dag_tags = ["notas"]
 included_columns = [
     "CD_FORNECEDOR",
     "CD_CIDADE",
@@ -143,6 +170,7 @@ write_disposition="merge"
 
 
 [sources.sql_database.TIP_DOC]
+dag_tags = ["notas"]
 included_columns = [
     "CD_TIP_DOC",
     "DS_TIP_DOC"
@@ -153,6 +181,7 @@ initial_value=1
 write_disposition="merge"
 
 [sources.sql_database.OFICINA]
+dag_tags = ["notas"]
 included_columns = [
     "CD_OFICINA",
     "DS_OFICINA",
@@ -162,3 +191,288 @@ incremental_column="CD_OFICINA"
 primary_key="CD_OFICINA"
 initial_value=1
 write_disposition="merge"
+
+[source.sql_database.ATENDIME]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_ATENDIMENTO",
+    "CD_PACIENTE",
+    "CD_PRESTADOR",
+    "CD_CONVENIO",
+    "CD_PRO_INT",
+    "CD_LEITO",
+    "CD_MOT_ALT",
+    "CD_GUIA",
+    "DT_ATENDIMENTO",
+    "HR_ATENDIMENTO",
+    "DT_ALTA",
+    "HR_ALTA",
+    "TP_ATENDIMENTO",
+    "SN_OBITO"
+]
+incremental_column="DT_ATENDIMENTO"
+primary_key="CD_ATENDIMENTO"
+initial_value="2025-01-01"
+write_disposition="merge"
+
+[sources.sql_database.ATI_MED]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_ATI_MED",
+    "DS_ATI_MED"
+]
+incremental_column="CD_ATI_MED"
+primary_key="CD_ATI_MED"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.CONVENIO]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_CONVENIO",
+    "NM_CONVENIO"
+]
+incremental_column="CD_CONVENIO"
+primary_key="CD_CONVENIO"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.GRU_FAT]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_GRU_FAT",
+    "DS_GRU_FAT"
+]
+incremental_column="CD_GRU_FAT"
+primary_key="CD_GRU_FAT"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.GRU_PRO]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_GRU_PRO",
+    "DS_GRU_PRO"
+]
+incremental_column="CD_GRU_PRO"
+primary_key="CD_GRU_PRO"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.IT_REPASSE_SIH]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_IT_REPASSE_SIH",
+    "CD_REPASSE",
+    "CD_REG_FAT",
+    "CD_LANCAMENTO",
+    "CD_ATI_MED",
+    "CD_PRESTADOR_REPASSE",
+    "VL_REPASSE"
+]
+incremental_column="CD_IT_REPASSE_SIH"
+primary_key="CD_IT_REPASSE_SIH"
+initial_value=1
+write_disposition="merge"
+
+[source.sql_database.IT_REPASSE]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_IT_REPASSE",
+    "CD_REPASSE",
+    "CD_REG_AMB",
+    "CD_LANCAMENTO_AMB",
+    "CD_REG_FAT",
+    "CD_LANCAMENTO_FAT",
+    "CD_ATI_MED",
+    "CD_PRESTADOR_REPASSE",
+    "VL_REPASSE"
+]
+incremental_column="CD_IT_REPASSE"
+primary_key="CD_IT_REPASSE"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.ITREG_AMB]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_PRO_FAT",
+    "CD_REG_AMB",
+    "CD_PRESTADOR",
+    "CD_ATI_MED",
+    "CD_LANCAMENTO",
+    "CD_GRU_FAT",
+    "CD_CONVENIO",
+    "CD_ATENDIMENTO",
+    "DT_PRODUCAO",
+    "DT_FECHAMENTO",
+    "HR_LANCAMENTO",
+    "SN_FECHADA",
+    "SN_REPASSADO",
+    "SN_PERTENCE_PACOTE",
+    "VL_UNITARIO",
+    "VL_TOTAL_CONTA",
+    "VL_BASE_REPASSADO"
+]
+incremental_column="HR_LANCAMENTO"
+primary_key=["CD_REG_AMB", "CD_LANCAMENTO"]
+initial_value="2025-01-01"
+write_disposition="merge"
+
+[sources.sql_database.ITREG_FAT]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_PRO_FAT",
+    "CD_REG_FAT",
+    "CD_PRESTADOR",
+    "CD_ATI_MED",
+    "CD_LANCAMENTO",
+    "CD_GRU_FAT",
+    "CD_PROCEDIMENTO",
+    "DT_PRODUCAO",
+    "DT_LANCAMENTO",
+    "SN_REPASSADO",
+    "SN_PERTENCE_PACOTE",
+    "VL_UNITARIO",
+    "VL_SP",
+    "VL_ATO",
+    "VL_TOTAL_CONTA",
+    "VL_BASE_REPASSADO"
+]
+incremental_column="DT_LANCAMENTO"
+primary_key=["CD_REG_FAT", "CD_LANCAMENTO"]
+initial_value="2025-01-01"
+write_disposition="merge"
+
+[sources.sql_database.PACIENTE]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_PACIENTE",
+    "NM_PACIENTE"
+]
+incremental_column="CD_PACIENTE"
+primary_key="CD_PACIENTE"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.PRESTADOR]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_PRESTADOR",
+    "NM_PRESTADOR"
+]
+incremental_column="CD_PRESTADOR"
+primary_key="CD_PRESTADOR"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.PRO_FAT]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_PRO_FAT",
+    "CD_GRU_PRO",
+    "DS_PRO_FAT"
+]
+incremental_column="CD_PRO_FAT_NUM"
+primary_key="CD_PRO_FAT"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.PROCEDIMENTO_SUS]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_PROCEDIMENTO",
+    "DS_PROCEDIMENTO"
+]
+incremental_column="CD_PROCEDIMENTO"
+primary_key="CD_PROCEDIMENTO"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.REG_AMB]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_REG_AMB",
+    "CD_REMESSA",
+    "DT_LANCAMENTO",
+    "DT_REMESSA"
+]
+incremental_column="CD_REG_AMB"
+primary_key="CD_REG_AMB"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.REG_FAT]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_REG_FAT",
+    "CD_CONVENIO",
+    "CD_ATENDIMENTO",
+    "CD_REMESSA",
+    "DT_INICIO",
+    "DT_REMESSA",
+    "DT_FECHAMENTO",
+    "SN_FECHADA"
+]
+incremental_column="CD_REG_FAT"
+primary_key="CD_REG_FAT"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.REPASSE_CONSOLIDADO]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_REPASSE_CONSOLIDADO",
+    "CD_REPASSE",
+    "CD_PRO_FAT",
+    "CD_REG_FAT",
+    "CD_REG_AMB",
+    "CD_PRESTADOR_REPASSE",
+    "CD_ATI_MED",
+    "CD_LANC_FAT",
+    "CD_LANC_AMB",
+    "CD_GRU_FAT",
+    "CD_GRU_PRO",
+    "CD_PROCEDIMENTO",
+    "DT_LANCAMENTO",
+    "DT_COMPETENCIA_FAT",
+    "DT_COMPETENCIA_REP",
+    "SN_PERTENCE_PACOTE",
+    "VL_SP",
+    "VL_ATO",
+    "VL_REPASSE",
+    "VL_TOTAL_CONTA",
+    "VL_BASE_REPASSADO"
+]
+incremental_column="CD_REPASSE_CONSOLIDADO"
+primary_key="CD_REPASSE_CONSOLIDADO"
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.REPASSE_PRESTADOR]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_REPASSE",
+    "CD_PRESTADOR_REPASSE",
+    "VL_REPASSE"
+]
+incremental_column="CD_REPASSE"
+primary_key=["CD_REPASSE", "CD_PRESTADOR_REPASSE"]
+initial_value=1
+write_disposition="merge"
+
+[sources.sql_database.REPASSE]
+dag_tags = ["repasse"]
+included_columns = [
+    "CD_REPASSE",
+    "DS_REPASSE",
+    "DT_COMPETENCIA",
+    "DT_REPASSE",
+    "TP_REPASSE"
+]
+incremental_column="CD_REPASSE"
+primary_key="CD_REPASSE"
+initial_value=1
+write_disposition="merge"
+
+
