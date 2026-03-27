@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "prj-dw-entradas"
+name = "prj-dw_prontocardio"
 version = "0.1.0"
 description = ""
 authors = ["rafael.amorim <raffaekk@gmail.com>"]
