@@ -183,13 +183,10 @@ with DAG(
     lista_tabelas_postgres = {
         'lista_tab_incremental': [
             'uni_pro', 'mot_cancel', 'lot_pro', 'fornecedor', 'estoque',
-            'setor', 'especie', 'itsol_com',
-            'itord_pro', 'itent_pro', 'atendime', 'convenio', 'gru_fat', 'gru_pro',
-            'it_repasse_sih', 'it_repasse', 'paciente', 'prestador', 'pro_fat',
-            'repasse', 'repasse_prestador', 'ati_med'
+            'setor', 'especie', 'itsol_com', 'itord_pro', 'itent_pro'
         ],
-        'lista_tab_truncate': ['produto', 'est_pro', 'procedimento_sus'],
-        'lista_tab_snapshot': ['repasse_consolidado', 'sol_com', 'ord_com', 'ent_pro', 'reg_amb', 'reg_fat', 'itreg_amb', 'itreg_fat']
+        'lista_tab_truncate': ['produto', 'est_pro'],
+        'lista_tab_snapshot': ['sol_com', 'ord_com', 'ent_pro']
     }
 
     tarefas_extracao = []
