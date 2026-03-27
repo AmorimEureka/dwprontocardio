@@ -21,6 +21,7 @@ services:
     environment:
       - _PIP_ADDITIONAL_REQUIREMENTS=oracledb==1.1.0
       - POSTGRES_HOST=dwpostgres
+      - AIRFLOW__CORE__HOSTNAME_CALLABLE=airflow.utils.net.getfqdn
     volumes:
       - ./dags:/usr/local/airflow/dags
       - ./dbt_prontocardio:/usr/local/airflow/dbt
@@ -44,6 +45,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - AIRFLOW__CORE__HOSTNAME_CALLABLE=airflow.utils.net.getfqdn
     volumes:
       - ./script_ingestao:/usr/local/airflow/script_ingestao
       - ./.dlt:/usr/local/airflow/.dlt
