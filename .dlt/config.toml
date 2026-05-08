@@ -423,11 +423,15 @@ write_disposition="merge"
 dag_tags = ["repasse"]
 included_columns = [
     "CD_REPASSE_CONSOLIDADO",
+    "CD_ATENDIMENTO",
+    "CD_REMESSA",
+    "CD_CONVENIO",
     "CD_REPASSE",
     "CD_PRO_FAT",
     "CD_REG_FAT",
     "CD_REG_AMB",
     "CD_PRESTADOR_REPASSE",
+    "CD_PACIENTE",
     "CD_ATI_MED",
     "CD_LANC_FAT",
     "CD_LANC_AMB",

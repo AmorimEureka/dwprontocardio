@@ -300,12 +300,20 @@ models:
     columns:
       - name: cd_repasse_consolidado
         description: "Primary Key"
+      - name: cd_atendimento
+        description: "Codigo de atendimento"
+      - name: cd_remessa
+        description: "Codigo da remessa"
+      - name: cd_convenio
+        description: "Codigo do convenio"
       - name: cd_pro_fat
         description: "Código do procedimento faturado"
       - name: cd_reg_fat
         description: "Código do registro faturamento"
       - name: cd_prestador_repasse
         description: "Código do prestador do repasse"
+      - name: "cd_paciente"
+        description: "Codigo do paciente"
       - name: cd_ati_med
         description: "Código da atividade médica"
       - name: cd_lanc_fat
