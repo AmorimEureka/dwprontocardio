@@ -2,7 +2,7 @@
 
     config( materialized = 'incremental',
             unique_key = 'cd_itreg_key',
-            merge_update_columns = ['cd_remessa', 'sn_fechada', 'dt_fechamento'],
+            merge_update_columns = ['cd_repasse', 'sn_fechada', 'dt_fechamento'],
             on_schema_change = 'sync_all_columns',
             tags = ['repasse']
     )
@@ -13,6 +13,18 @@ WITH source_int_repasses_medicos
         SELECT
             *
         FROM {{ ref('int_repasses_medicos') }} sis
+        {% if is_incremental() %}
+        WHERE COALESCE(sis.dt_fechamento, sis.dt_repasse, sis.dt_itregra, sis.dt_producao, sis.dt_competencia)
+            >= (
+                SELECT
+                    COALESCE(
+                        MAX(COALESCE(tgt.dt_fechamento, tgt.dt_repasse, tgt.dt_itregra, tgt.dt_producao, tgt.dt_competencia)),
+                        TIMESTAMP '1900-01-01'
+                    )
+                    - make_interval(days => {{ var('f_repasses_medicos_lookback_days', 90) }})
+                FROM {{ this }} tgt
+            )
+        {% endif %}
 ),
 source_incremental
     AS (
