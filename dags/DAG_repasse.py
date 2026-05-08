@@ -125,6 +125,9 @@ def load_oracle_data():
         profile_config=perfil_postgres_repasse,
         execution_config=venv_execution_config,
         render_config=render_repasse_config,
+        operator_args={
+            "dbt_cmd_flags": ["--threads", "1", "--vars", "{f_repasses_medicos_lookback_days: 90}"],
+        },
     )
 
     tsk_dlt >> tsk_dbt_deps >> tsk_dbt
