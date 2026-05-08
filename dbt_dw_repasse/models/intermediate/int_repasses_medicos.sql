@@ -25,6 +25,7 @@ source_item_repasse
             cd_prestador_repasse,
             vl_repasse
         FROM {{ ref('stg_it_repasse')}}
+        WHERE cd_ati_med IS NOT NULL
 ),
 source_item_repasse_sih
     AS (
@@ -219,9 +220,13 @@ source_repasse_consolidado
         SELECT
             cd_itreg_fat_key,
             cd_repasse,
+            cd_atendimento,
+            cd_convenio,
+            cd_remessa,
             cd_pro_fat,
             cd_reg_fat,
             cd_prestador_repasse,
+            cd_paciente,
             cd_ati_med,
             cd_lanc_fat,
             cd_gru_fat,
@@ -237,6 +242,7 @@ source_repasse_consolidado
             vl_total_conta,
             vl_base_repassado
         FROM {{ref('stg_repasse_consolidado')}}
+        -- WHERE cd_ati_med <> 6
 ),
 treats_regra_faturamento
     AS (
@@ -407,21 +413,70 @@ treats_repasse_regra_faturamento
             trf.sn_fechada,
             trf.sn_repassado,
             trf.sn_pertence_pacote,
+
             CASE WHEN trf.cd_pro_fat = 'X0000000' THEN
-                rc.vl_base_repassado
-            ELSE rc.vl_repasse
+                trf.vl_base_repassado
+            ELSE trc.vl_repasse
             END AS vl_repasse,
+
             trf.vl_unitario,
-            CASE WHEN trf.cd_pro_fat = 'X0000000' THEN
-                rc.vl_sp + rc.vl_ato
-            ELSE rc.vl_total_conta
-            END AS vl_total_conta,
+
+            trf.VL_TOTAL_CONTA AS vl_total_conta,
+
             trf.vl_base_repassado
+
         FROM treats_repasse_consolidado trc
         INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
-        LEFT JOIN source_repasse_consolidado rc ON trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
-                --   AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
-                --   AND COALESCE(trc.cd_ati_med, 1) = COALESCE(rc.cd_ati_med, 1)
+               AND trc.cd_prestador_repasse = trf.cd_prestador
+
+        UNION
+
+        SELECT
+            trc.cd_repasse,
+            trc.cd_reg_fat AS cd_regra,
+            trc.cd_lancamento_fat AS cd_lancamento,
+            CONCAT(COALESCE(trc.cd_reg_fat, trc.cd_reg_amb), COALESCE(trc.cd_lancamento_fat, trc.cd_lancamento_amb))::NUMERIC(20,0) AS cd_itreg_key,
+
+            rc.cd_procedimento AS cd_pro_fat,
+
+            rc.cd_gru_pro,
+            rc.cd_gru_fat,
+            rc.cd_atendimento,
+            rc.cd_remessa,
+            rc.cd_convenio,
+            rc.cd_ati_med,
+            trc.cd_prestador_repasse,
+            rc.cd_paciente,
+            NULL AS dt_itregra,
+            rc.dt_competencia_fat AS dt_competencia,
+            rc.dt_repasse_consolidado AS dt_repasse,
+            NULL AS dt_producao,
+            NULL AS dt_fechamento,
+            trc.tp_repasse,
+            'HOSPITALAR'::VARCHAR(12) AS tp_regra,
+            NULL AS sn_fechada,
+            NULL AS sn_repassado,
+            rc.sn_pertence_pacote,
+
+            rc.vl_repasse,
+
+            NULL AS vl_unitario,
+
+            rc.vl_total_conta,
+
+            rc.vl_base_repassado
+
+        FROM treats_repasse_consolidado trc
+        INNER JOIN source_repasse_consolidado rc ON trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
+               AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
+               AND trc.cd_ati_med = rc.cd_ati_med
+        WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM treats_regra_faturamento trf
+                    WHERE trf.cd_reg_fat = trc.cd_reg_fat
+                      AND trf.cd_lancamento = trc.cd_lancamento_fat
+                      AND trf.cd_prestador = trc.cd_prestador_repasse
+        )
 ),
 treats_repasse_manual
     AS (
