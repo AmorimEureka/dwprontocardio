@@ -15,11 +15,11 @@ WITH source_procedimento_sus
         {% if is_incremental() %}
         WHERE (
                 TRIM(sis.cd_procedimento::TEXT) ~ '^[0-9]+$'
-                AND TRIM(sis.cd_procedimento::TEXT)::NUMERIC(20,0) > (
+                AND LPAD(TRIM(sis.cd_procedimento::TEXT), 21, '0') > (
                     SELECT COALESCE(MAX(CASE
-                        WHEN TRIM(cd_procedimento::TEXT) ~ '^[0-9]+$' THEN TRIM(cd_procedimento::TEXT)::NUMERIC(20,0)
+                        WHEN TRIM(cd_procedimento::TEXT) ~ '^[0-9]+$' THEN LPAD(TRIM(cd_procedimento::TEXT), 21, '0')
                         ELSE NULL
-                    END), 0)
+                    END), LPAD('', 21, '0'))
                     FROM {{ this }}
                 )
             )
@@ -29,7 +29,7 @@ WITH source_procedimento_sus
 treats
     AS (
         SELECT
-            cd_procedimento::BIGINT AS cd_procedimento,
+            TRIM(cd_procedimento::TEXT)::VARCHAR(21) AS cd_procedimento,
             ds_procedimento::VARCHAR(250)
         FROM source_procedimento_sus
 )
