@@ -268,6 +268,8 @@ treats_regra_faturamento
             rf.sn_fechada,
             irf.sn_repassado,
             irf.sn_pertence_pacote,
+            irf.vl_sp,
+            irf.vl_ato,
             irf.vl_unitario,
             irf.vl_total_conta,
             irf.vl_base_repassado
@@ -421,7 +423,19 @@ treats_repasse_regra_faturamento
 
             trf.vl_unitario,
 
-            trf.VL_TOTAL_CONTA AS vl_total_conta,
+            -- trf.vl_base_repassado AS vl_total_conta,
+
+            CASE
+                WHEN trf.vl_base_repassado <> COALESCE(trf.vl_sp, 0) AND COALESCE(trf.vl_ato, 0) = 0 THEN
+                    COALESCE(trf.vl_sp, trf.vl_base_repassado)
+                ELSE
+                    CASE
+                        WHEN trf.vl_base_repassado <> COALESCE(trf.vl_ato, 0) AND COALESCE(trf.vl_sp, 0) = 0 THEN
+                            COALESCE(trf.vl_ato, trf.vl_base_repassado)
+                        ELSE COALESCE(trf.vl_sp, trf.vl_base_repassado)
+                    END
+                -- ELSE COALESCE(trf.vl_ato, 0)
+            END AS vl_total_conta,
 
             trf.vl_base_repassado
 
@@ -437,14 +451,14 @@ treats_repasse_regra_faturamento
             trc.cd_lancamento_fat AS cd_lancamento,
             CONCAT(COALESCE(trc.cd_reg_fat, trc.cd_reg_amb), COALESCE(trc.cd_lancamento_fat, trc.cd_lancamento_amb))::NUMERIC(20,0) AS cd_itreg_key,
 
-            rc.cd_procedimento AS cd_pro_fat,
+            COALESCE(rc.cd_procedimento, rc.cd_pro_fat) AS cd_pro_fat,
 
             rc.cd_gru_pro,
             rc.cd_gru_fat,
             rc.cd_atendimento,
             rc.cd_remessa,
             rc.cd_convenio,
-            rc.cd_ati_med,
+            trc.cd_ati_med,
             trc.cd_prestador_repasse,
             rc.cd_paciente,
             NULL AS dt_itregra,
@@ -462,7 +476,17 @@ treats_repasse_regra_faturamento
 
             NULL AS vl_unitario,
 
-            rc.vl_total_conta,
+            -- rc.vl_total_conta,
+            CASE
+                WHEN rc.vl_base_repassado <> COALESCE(rc.vl_sp, 0) AND rc.vl_sp <> 0 AND COALESCE(rc.vl_ato, 0) = 0 THEN
+                    COALESCE(rc.vl_sp, rc.vl_base_repassado)
+                ELSE
+                    CASE
+                        WHEN rc.vl_base_repassado <> COALESCE(rc.vl_ato, 0) AND COALESCE(rc.vl_sp, 0) = 0 THEN
+                            COALESCE(rc.vl_ato, rc.vl_base_repassado)
+                        ELSE COALESCE(rc.vl_sp, rc.vl_base_repassado)
+                    END
+            END AS vl_total_conta,
 
             rc.vl_base_repassado
 
