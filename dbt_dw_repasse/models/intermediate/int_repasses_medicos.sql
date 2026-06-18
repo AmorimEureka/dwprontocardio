@@ -417,7 +417,7 @@ treats_repasse_regra_faturamento
             trf.sn_pertence_pacote,
 
             CASE WHEN trf.cd_pro_fat = 'X0000000' THEN
-                trf.vl_base_repassado
+                COALESCE(trf.vl_base_repassado, trc.vl_repasse)
             ELSE trc.vl_repasse
             END AS vl_repasse,
 
@@ -442,8 +442,79 @@ treats_repasse_regra_faturamento
         FROM treats_repasse_consolidado trc
         INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
                AND trc.cd_prestador_repasse = trf.cd_prestador
+        WHERE trf.cd_pro_fat = 'X0000000'
 
-        UNION
+        UNION ALL
+
+        SELECT
+            trc.cd_repasse,
+            trf.cd_reg_fat AS cd_regra,
+            trf.cd_lancamento,
+            trf.cd_itreg_fat_key AS cd_itreg_key,
+            CASE WHEN trf.cd_pro_fat = 'X0000000' THEN
+                trf.cd_procedimento
+            ELSE trf.cd_pro_fat
+            END AS cd_pro_fat,
+            trf.cd_gru_pro,
+            trf.cd_gru_fat,
+            trf.cd_atendimento,
+            trf.cd_remessa,
+            trf.cd_convenio,
+            trc.cd_ati_med,
+            trc.cd_prestador_repasse,
+            trf.cd_paciente,
+            trf.dt_itreg_fat AS dt_itregra,
+            trc.dt_competencia,
+            trc.dt_repasse,
+            trf.dt_producao,
+            trf.dt_fechamento,
+            trc.tp_repasse,
+            'HOSPITALAR'::VARCHAR(12) AS tp_regra,
+            trf.sn_fechada,
+            trf.sn_repassado,
+            trf.sn_pertence_pacote,
+
+            CASE WHEN trf.cd_pro_fat = 'X0000000' THEN
+                COALESCE(trf.vl_base_repassado, trc.vl_repasse)
+            ELSE trc.vl_repasse
+            END AS vl_repasse,
+
+            trf.vl_unitario,
+
+            -- trf.vl_base_repassado AS vl_total_conta,
+
+            -- CASE
+            --     WHEN trf.vl_base_repassado <> COALESCE(trf.vl_sp, 0) AND COALESCE(trf.vl_ato, 0) = 0 THEN
+            --         COALESCE(trf.vl_sp, trf.vl_base_repassado)
+            --     ELSE
+            --         CASE
+            --             WHEN trf.vl_base_repassado <> COALESCE(trf.vl_ato, 0) AND COALESCE(trf.vl_sp, 0) = 0 THEN
+            --                 COALESCE(trf.vl_ato, trf.vl_base_repassado)
+            --             ELSE COALESCE(trf.vl_sp, trf.vl_base_repassado)
+            --         END
+            --     -- ELSE COALESCE(trf.vl_ato, 0)
+            -- END AS vl_total_conta,
+
+            COALESCE(trf.vl_base_repassado, rc.vl_base_repassado) AS vl_total_conta,
+
+            trf.vl_base_repassado
+
+        FROM treats_repasse_consolidado trc
+        INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
+               AND trc.cd_prestador_repasse = trf.cd_prestador
+        LEFT JOIN source_repasse_consolidado rc ON trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
+               AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
+               AND trc.cd_ati_med = rc.cd_ati_med
+        WHERE trf.cd_pro_fat <> 'X0000000' AND
+        EXISTS (
+                SELECT 1
+                FROM treats_regra_faturamento trf
+                WHERE trf.cd_reg_fat = trc.cd_reg_fat
+                    AND trf.cd_lancamento = trc.cd_lancamento_fat
+                    AND trf.cd_prestador = trc.cd_prestador_repasse
+        )
+
+        UNION ALL
 
         SELECT
             trc.cd_repasse,
