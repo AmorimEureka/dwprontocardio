@@ -14,11 +14,11 @@ WITH source_int_repasses_medicos
             *
         FROM {{ ref('int_repasses_medicos') }} sis
         {% if is_incremental() %}
-        WHERE COALESCE(sis.dt_fechamento, sis.dt_repasse, sis.dt_itregra, sis.dt_producao, sis.dt_competencia)
+        WHERE sis.dt_competencia
             >= (
                 SELECT
                     COALESCE(
-                        MAX(COALESCE(tgt.dt_fechamento, tgt.dt_repasse, tgt.dt_itregra, tgt.dt_producao, tgt.dt_competencia)),
+                        MAX(tgt.dt_competencia),
                         TIMESTAMP '1900-01-01'
                     )
                     - make_interval(days => {{ var('f_repasses_medicos_lookback_days', 90) }})
