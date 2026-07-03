@@ -533,7 +533,7 @@ treats_repasse_regra_faturamento
             trc.cd_prestador_repasse,
             rc.cd_paciente,
             NULL AS dt_itregra,
-            rc.dt_competencia_fat AS dt_competencia,
+            COALESCE(rc.dt_competencia_fat, trc.dt_competencia) AS dt_competencia,
             rc.dt_repasse_consolidado AS dt_repasse,
             NULL AS dt_producao,
             NULL AS dt_fechamento,
