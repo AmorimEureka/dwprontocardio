@@ -163,6 +163,8 @@ def gera_recursos(tabela: str):
                         ORDER BY {config_cursor_incremental} ASC
                     """
 
+                # Executa o SELECT com :last_value como filtro minimo; isso retorna todas as linhas >= last_value.
+                # As linhas nao sao entregues aqui: ficam no cursor para serem lidas depois com fetchone(), 1 por vez.
                 cursor.execute(consulta, last_value=bind_ultimo_valor)
 
                 nomes_campos = [campo[0] for campo in cursor.description]
@@ -196,6 +198,9 @@ def gera_recursos(tabela: str):
                             row_dict.pop("CD_PRO_FAT_NUM", None)
 
                         # print(f"[DEBUG] da linha extraida: {row_dict}")
+
+                        # Cada loop le 1 linha do cursor (fetchone) e entrega esse unico registro ao dlt.
+                        # Ou seja, este yield e literalmente 1 linha por vez do resultado da consulta.
                         yield row_dict
                     except ValueError as e:
                         if "year" in str(e) and "out of range" in str(e):
@@ -213,6 +218,9 @@ def gera_recursos(tabela: str):
             if conn:
                 conn.close()
 
+    # Retorna para o dlt a funcao-recurso ja configurada para esta tabela.
+    # Aqui ainda nao extrai dados: a execucao real acontece depois, quando o dlt rodar o recurso.
+    # na DAG onde o ppipeline dlt é definido de fato
     return recursos_dinamicos
 
 
@@ -238,4 +246,5 @@ def source_acumula_resources(table_names=None, tag=None):
     else:
         tabelas = tabelas_config
 
+    # Publica no source os recursos (um por tabela); os dados so serao lidos quando cada recurso executar.
     yield from [gera_recursos(tabela) for tabela in tabelas]
