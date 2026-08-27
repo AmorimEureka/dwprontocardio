@@ -448,9 +448,10 @@ included_columns = [
     "VL_TOTAL_CONTA",
     "VL_BASE_REPASSADO"
 ]
-incremental_column="CD_REPASSE_CONSOLIDADO"
+incremental_column="DT_LANCAMENTO"
 primary_key="CD_REPASSE_CONSOLIDADO"
-initial_value=1
+initial_value="2025-01-01"
+incremental_lookback_days=120
 write_disposition="merge"
 
 [sources.sql_database.REPASSE_PRESTADOR]
@@ -463,6 +464,7 @@ included_columns = [
 incremental_column="CD_REPASSE"
 primary_key=["CD_REPASSE", "CD_PRESTADOR_REPASSE"]
 initial_value=1
+incremental_lookback_value=1000
 write_disposition="merge"
 
 [sources.sql_database.REPASSE]
@@ -474,9 +476,9 @@ included_columns = [
     "DT_REPASSE",
     "TP_REPASSE"
 ]
-incremental_column="CD_REPASSE"
+incremental_column="DT_REPASSE"
 primary_key="CD_REPASSE"
-initial_value=1
+initial_value="2025-01-01"
+incremental_lookback_days=120
 write_disposition="merge"
-
 
