@@ -2,7 +2,13 @@
 
     config( materialized = 'incremental',
             unique_key = 'cd_itreg_key',
-            merge_update_columns = ['cd_repasse', 'sn_fechada', 'dt_fechamento'],
+            merge_update_columns = [
+                'cd_repasse',
+                'cd_convenio',
+                'dt_competencia',
+                'sn_fechada',
+                'dt_fechamento'
+            ],
             on_schema_change = 'sync_all_columns',
             tags = ['repasse']
     )
@@ -36,6 +42,8 @@ source_incremental
             ON tgt.cd_itreg_key = sis.cd_itreg_key
         WHERE tgt.cd_itreg_key IS NULL
             OR tgt.cd_repasse IS DISTINCT FROM sis.cd_repasse
+            OR tgt.cd_convenio IS DISTINCT FROM sis.cd_convenio
+            OR tgt.dt_competencia IS DISTINCT FROM sis.dt_competencia
             OR tgt.sn_fechada IS DISTINCT FROM sis.sn_fechada
             OR tgt.dt_fechamento IS DISTINCT FROM sis.dt_fechamento
         {% endif %}

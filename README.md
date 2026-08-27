@@ -237,6 +237,38 @@ astro dev init
 <br>
 <br>
 
+Manutenção do Airflow em produção
+=================================
+
+O ambiente local do Astro mantém cache de build no Docker. Em um servidor de longa
+duração, esse cache deve ser limitado para não ocupar o filesystem usado pelo
+metadatabase e pelos diretórios temporários das DAGs.
+
+A rotina `scripts/manutencao_airflow_producao.sh`:
+
+- remove diariamente caches de build inativos com mais de sete dias;
+- faz uma limpeza completa do cache inativo quando o espaço livre fica abaixo de 20%;
+- verifica o heartbeat do scheduler e reinicia somente esse container quando necessário.
+
+O PostgreSQL do DW usa o volume nomeado `dwprontocardio-postgres-data`, com o
+`PGDATA` fixado dentro desse volume. O limite de 20 GB por processo para arquivos
+temporários impede que uma consulta com plano inadequado ocupe todo o disco.
+
+Instale o agendamento no usuário que executa os containers:
+
+```sh
+chmod +x scripts/*.sh
+./scripts/instalar_manutencao_airflow_producao.sh
+```
+
+O horário padrão é `03:17`. Os limites podem ser ajustados pelas variáveis
+`AIRFLOW_MAINTENANCE_CRON`, `DOCKER_CACHE_MAX_AGE` e `DOCKER_MIN_FREE_PERCENT`.
+
+Os serviços do Airflow também usam rotação do log JSON do Docker e o scheduler
+possui um healthcheck próprio. Após alterar o Compose, recrie os containers com
+`astro dev restart`.
+
+
 <details open>
   <summary>
     <strong>DBT-CORE:</strong>
@@ -348,8 +380,6 @@ dbt debug
 ```
 
 </details>
-
-
 
 
 
