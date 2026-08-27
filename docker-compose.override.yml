@@ -1,15 +1,36 @@
+x-airflow-logging: &airflow-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   dwpostgres:
     image: postgres:17rc1-alpine3.19
     restart: unless-stopped
     container_name: dwpronto_postgres
     env_file: ./.env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command:
+      - postgres
+      - -c
+      - temp_file_limit=20GB
+      - -c
+      - log_temp_files=1GB
     ports:
       - "5434:5432"
     volumes:
       - postgres-volume:/var/lib/postgresql/data
     networks:
       - airflow
+    logging: *airflow-logging
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   webserver:
     build:
@@ -32,9 +53,12 @@ services:
       - ./script_ingestao:/usr/local/airflow/script_ingestao
       - ./.dlt:/usr/local/airflow/.dlt
     depends_on:
-      - dwpostgres
+      dwpostgres:
+        condition: service_healthy
     networks:
       - airflow
+    restart: unless-stopped
+    logging: *airflow-logging
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8080/health"]
       interval: 30s
@@ -53,9 +77,18 @@ services:
       - ./dbt_dw_entradas:/usr/local/airflow/dbt
       - ./dbt_dw_repasse:/usr/local/airflow/dbt
     depends_on:
-      - dwpostgres
+      dwpostgres:
+        condition: service_healthy
     networks:
       - airflow
+    restart: unless-stopped
+    logging: *airflow-logging
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --local"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
 
   triggerer:
     build:
@@ -67,12 +100,16 @@ services:
       - ./dbt_dw_entradas:/usr/local/airflow/dbt
       - ./dbt_dw_repasse:/usr/local/airflow/dbt
     depends_on:
-      - dwpostgres
+      dwpostgres:
+        condition: service_healthy
     networks:
       - airflow
+    restart: unless-stopped
+    logging: *airflow-logging
 
 volumes:
   postgres-volume:
+    name: dwprontocardio-postgres-data
 
 networks:
   airflow:

@@ -5,6 +5,55 @@ WITH source_produto
             p."DS_PRODUTO"
         FROM {{ ref('stg_produto') }} p
 ),
+source_itens_solicitacao
+    AS (
+        SELECT
+            "CD_ITSOL_COM_KEY",
+            "CD_SOL_COM",
+            "CD_PRODUTO",
+            "CD_UNI_PRO",
+            "CD_MOT_CANCEL",
+            "DT_CANCEL",
+            "QT_SOLIC",
+            "QT_COMPRADA",
+            "QT_ATENDIDA"
+        FROM (
+            SELECT
+                ic.*,
+                ROW_NUMBER() OVER (
+                    PARTITION BY ic."CD_SOL_COM", ic."CD_PRODUTO"
+                    ORDER BY ic."DT_EXTRACAO" DESC, ic."CD_ITSOL_COM_KEY" DESC
+                ) AS rn
+            FROM {{ ref('stg_itsol_com') }} ic
+        ) itens_solicitacao
+        WHERE rn = 1
+),
+source_itens_pedidos
+    AS (
+        SELECT
+            "CD_ITORD_PRO_KEY",
+            "CD_ORD_COM",
+            "CD_PRODUTO",
+            "CD_UNI_PRO",
+            "CD_MOT_CANCEL",
+            "DT_CANCEL",
+            "QT_COMPRADA",
+            "QT_ATENDIDA",
+            "QT_RECEBIDA",
+            "QT_CANCELADA",
+            "VL_UNITARIO",
+            "VL_TOTAL"
+        FROM (
+            SELECT
+                io.*,
+                ROW_NUMBER() OVER (
+                    PARTITION BY io."CD_ORD_COM", io."CD_PRODUTO"
+                    ORDER BY io."DT_EXTRACAO" DESC, io."CD_ITORD_PRO_KEY" DESC
+                ) AS rn
+            FROM {{ ref('stg_itord_pro') }} io
+        ) itens_pedidos
+        WHERE rn = 1
+),
 source_snp_sol_com
     AS (
         SELECT
@@ -31,7 +80,7 @@ source_snp_sol_com
                 sc."SN_URGENTE",
                 sc."SN_OPME"
         FROM {{ ref('snp_sol_com') }} sc
-        LEFT JOIN {{ ref('stg_itsol_com') }} isol ON sc."CD_SOL_COM" = isol."CD_SOL_COM"
+        LEFT JOIN source_itens_solicitacao isol ON sc."CD_SOL_COM" = isol."CD_SOL_COM"
         LEFT JOIN source_produto p ON isol."CD_PRODUTO" = p."CD_PRODUTO"
         WHERE sc.dbt_valid_to IS NULL
 ),
@@ -59,7 +108,7 @@ source_snp_ord_com
             END AS "TP_SITUACAO_OC",
             oc."SN_AUTORIZADO" AS "SN_AUTORIZADO_OC"
     FROM {{ ref('snp_ord_com') }} oc
-    LEFT JOIN {{ ref('stg_itord_pro') }} io ON oc."CD_ORD_COM" = io."CD_ORD_COM"
+    LEFT JOIN source_itens_pedidos io ON oc."CD_ORD_COM" = io."CD_ORD_COM"
     LEFT JOIN source_produto p ON io."CD_PRODUTO" = p."CD_PRODUTO"
     WHERE oc.dbt_valid_to IS NULL
 ),
@@ -76,6 +125,7 @@ treats_match_cod_sol_ord_com
             sc."CD_MOT_CANCEL_SC",
             oc."CD_MOT_CANCEL_OC",
             oc."DT_ORD_COM",
+            oc."DT_PREV_ENTREGA",
             sc."DT_SOL_COM",
             sc."DT_CANCELAMENTO",
             oc."DT_AUTORIZACAO",
@@ -111,6 +161,7 @@ treats_match_cod_ord_sol_com
             NULL::BIGINT AS "CD_MOT_CANCEL_SC",
             oc."CD_MOT_CANCEL_OC",
             oc."DT_ORD_COM",
+            oc."DT_PREV_ENTREGA",
             ds."DT_SOL_COM",
             sc."DT_CANCELAMENTO",
             oc."DT_AUTORIZACAO",
@@ -146,6 +197,7 @@ treats_desc_sol_ord_com
             sc."CD_MOT_CANCEL_SC",
             oc."CD_MOT_CANCEL_OC",
             oc."DT_ORD_COM",
+            oc."DT_PREV_ENTREGA",
             sc."DT_SOL_COM",
             sc."DT_CANCELAMENTO",
             sc."DT_AUTORIZACAO",
@@ -174,6 +226,7 @@ treats_itens_sol_original
             tmc."CD_MOT_CANCEL_SC",
             tmc."CD_MOT_CANCEL_OC",
             tmc."DT_ORD_COM",
+            tmc."DT_PREV_ENTREGA",
             tmc."DT_SOL_COM",
             tmc."DT_CANCELAMENTO",
             tmc."DT_AUTORIZACAO",
@@ -206,6 +259,7 @@ treats_itens_ord_totalmente_arbitrario
             smc."CD_MOT_CANCEL_SC",
             smc."CD_MOT_CANCEL_OC",
             smc."DT_ORD_COM",
+            smc."DT_PREV_ENTREGA",
             smc."DT_SOL_COM",
             smc."DT_CANCELAMENTO",
             smc."DT_AUTORIZACAO",
@@ -237,6 +291,7 @@ treats_sol_ord_com
             a."CD_MOT_CANCEL_SC",
             a."CD_MOT_CANCEL_OC",
             a."DT_ORD_COM",
+            a."DT_PREV_ENTREGA",
             a."DT_SOL_COM",
             a."DT_CANCELAMENTO",
             a."DT_AUTORIZACAO",
@@ -260,6 +315,7 @@ treats_sol_ord_com
             b."CD_MOT_CANCEL_SC",
             b."CD_MOT_CANCEL_OC",
             b."DT_ORD_COM",
+            b."DT_PREV_ENTREGA",
             b."DT_SOL_COM",
             b."DT_CANCELAMENTO",
             b."DT_AUTORIZACAO",
@@ -283,6 +339,7 @@ treats_sol_ord_com
             c."CD_MOT_CANCEL_SC",
             c."CD_MOT_CANCEL_OC",
             c."DT_ORD_COM",
+            c."DT_PREV_ENTREGA",
             c."DT_SOL_COM",
             c."DT_CANCELAMENTO",
             c."DT_AUTORIZACAO",
@@ -294,37 +351,6 @@ treats_sol_ord_com
             c."TP_SITUACAO_OC",
             c."MATCHING"
         FROM treats_itens_ord_totalmente_arbitrario c
-),
-source_itens_solicitacao
-    AS (
-        SELECT
-            ic."CD_ITSOL_COM_KEY",
-            ic."CD_SOL_COM",
-            ic."CD_PRODUTO",
-            ic."CD_UNI_PRO",
-            ic."CD_MOT_CANCEL",
-            ic."DT_CANCEL",
-            ic."QT_SOLIC",
-            ic."QT_COMPRADA",
-            ic."QT_ATENDIDA"
-        FROM staging.stg_itsol_com ic
-),
-source_itens_pedidos
-    AS (
-        SELECT
-            io."CD_ITORD_PRO_KEY",
-            io."CD_ORD_COM",
-            io."CD_PRODUTO",
-            io."CD_UNI_PRO",
-            io."CD_MOT_CANCEL",
-            io."DT_CANCEL",
-            io."QT_COMPRADA",
-            io."QT_ATENDIDA",
-            io."QT_RECEBIDA",
-            io."QT_CANCELADA",
-            io."VL_UNITARIO",
-            io."VL_TOTAL"
-        FROM {{ ref('stg_itord_pro') }} io
 ),
 source_itens_entradas
     AS (
@@ -362,13 +388,6 @@ treats_estoque
             -- ep."QTD_DIAS_ESTOQUE"
         FROM  staging.stg_est_pro ep
 ),
-dt_previso
-    AS (
-        SELECT DISTINCT
-            "CD_ORD_COM",
-            "DT_PREV_ENTREGA"
-        FROM source_snp_ord_com
-),
 source_suprimentos
     AS (
         SELECT
@@ -394,7 +413,7 @@ source_suprimentos
             h."SN_OPME",
             h."CD_ORD_COM",
             h."DT_ORD_COM",
-            dp."DT_PREV_ENTREGA",
+            h."DT_PREV_ENTREGA",
             h."DT_AUTORIZACAO",
             io."CD_MOT_CANCEL" AS "CD_MOT_CANCEL_OC",
             CASE
@@ -438,9 +457,7 @@ source_suprimentos
         LEFT JOIN source_itens_solicitacao isol ON h."CD_SOL_COM" = isol."CD_SOL_COM" AND h."CD_PRODUTO" = isol."CD_PRODUTO"
         LEFT JOIN source_itens_pedidos io ON h."CD_ORD_COM" = io."CD_ORD_COM" AND h."CD_PRODUTO" = io."CD_PRODUTO"
         LEFT JOIN source_itens_entradas ie ON h."CD_ORD_COM" = ie."CD_ORD_COM" AND h."CD_PRODUTO" = ie."CD_PRODUTO"
-        LEFT JOIN dt_previso dp ON h."CD_ORD_COM" = dp."CD_ORD_COM"
         LEFT JOIN treats_estoque e ON h."CD_PRODUTO" = e."CD_PRODUTO" AND h."CD_ESTOQUE" = e."CD_ESTOQUE"
-        ORDER BY h."CD_PRODUTO"
 ),
 treats
     AS (

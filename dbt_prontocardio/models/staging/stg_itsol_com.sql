@@ -1,7 +1,7 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'CD_ITSOL_COM_KEY',
-            incremental_strategy = 'append' )
+            incremental_strategy = 'delete+insert' )
 }}
 
 WITH source_itsol_com

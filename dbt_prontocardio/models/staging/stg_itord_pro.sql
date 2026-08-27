@@ -1,7 +1,7 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'CD_ITORD_PRO_KEY',
-            incremental_strategy = 'append' )
+            incremental_strategy = 'delete+insert' )
 }}
 
 WITH source_itord_pro
