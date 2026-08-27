@@ -1,7 +1,6 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'cd_repasse_consolidado',
-             merge_update_columns = ['cd_reg_fat', 'cd_reg_amb', 'cd_procedimento', 'vl_sp', 'vl_ato'],
              on_schema_change = 'sync_all_columns',
              tags = ['repasse']
     )
@@ -68,9 +67,6 @@ treats_key
             sis.vl_total_conta,
             sis.vl_base_repassado
         FROM source_repasse_consolidado sis
-        {% if is_incremental() %}
-        WHERE sis.cd_repasse_consolidado::BIGINT > ( SELECT MAX(cd_repasse_consolidado) FROM {{this}} )
-        {% endif %}
 ),
 treats
     AS (

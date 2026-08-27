@@ -1,6 +1,6 @@
 {{
     config( materialized = 'incremental',
-            unique_key = 'cd_repasse',
+            unique_key = ['cd_repasse', 'cd_prestador_repasse'],
             on_schema_change = 'sync_all_columns',
             tags = ['repasse']
     )
@@ -18,9 +18,6 @@ WITH source_repasse_prestador
             sis.vl_repasse
         FROM {{ source('raw_repasse_mv', 'repasse_prestador')}} sis
         INNER JOIN {{ source('raw_repasse_mv', 'repasse')}} r ON r.cd_repasse = sis.cd_repasse
-        {% if is_incremental() %}
-        WHERE sis.cd_repasse::BIGINT > ( SELECT MAX(cd_repasse) FROM {{this}} )
-        {% endif %}
 ),
 treats
     AS (

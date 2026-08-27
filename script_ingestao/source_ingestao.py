@@ -1,6 +1,6 @@
 import dlt
 import oracledb as ora
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import os
 from dotenv import load_dotenv
@@ -60,6 +60,8 @@ def gera_recursos(tabela: str):
     config_modo_escrita = get_table_config("write_disposition")
     config_primary_key = get_table_config("primary_key")
     config_valor_inicial = get_table_config("initial_value")
+    config_lookback_days = get_table_config("incremental_lookback_days") or 0
+    config_lookback_value = get_table_config("incremental_lookback_value") or 0
     incremental_is_datetime = is_datetime_column(config_cursor_incremental)
 
     # TRATAMENTO: Tipando 'Valor Inicial' da primeira extracao
@@ -103,6 +105,18 @@ def gera_recursos(tabela: str):
             elif not isinstance(cursor_incremental, (int, float)):
                 cursor_incremental = valor_inicial
 
+        # O estado guarda o maior cursor confirmado, mas a consulta retrocede uma
+        # janela para recuperar registros tardios ou uma carga que tenha falhado
+        # depois de avançar o cursor. O merge por chave torna a releitura idempotente.
+        cursor_high_watermark = cursor_incremental
+        cursor_consulta = cursor_incremental
+        if incremental_is_datetime and config_lookback_days:
+            cursor_consulta = cursor_incremental - timedelta(days=int(config_lookback_days))
+        elif isinstance(cursor_incremental, (int, float)) and config_lookback_value:
+            cursor_consulta = cursor_incremental - type(cursor_incremental)(config_lookback_value)
+            if isinstance(valor_inicial, (int, float)):
+                cursor_consulta = max(cursor_consulta, valor_inicial)
+
         conn = None
 
         try:
@@ -133,7 +147,7 @@ def gera_recursos(tabela: str):
                 else:
                     bind_ultimo_valor = cursor.var(ora.STRING)
 
-                bind_ultimo_valor.setvalue(0, cursor_incremental)
+                bind_ultimo_valor.setvalue(0, cursor_consulta)
 
                 if tabela == "PRO_FAT" and config_cursor_incremental == "CD_PRO_FAT_NUM":
                     consulta = f"""
@@ -191,7 +205,14 @@ def gera_recursos(tabela: str):
                         valor_cursor = row_dict.get(config_cursor_incremental)
                         if incremental_is_datetime:
                             valor_cursor = parse_datetime_value(valor_cursor)
-                        if valor_cursor is not None:
+                        if (
+                            valor_cursor is not None
+                            and (
+                                cursor_high_watermark is None
+                                or valor_cursor > cursor_high_watermark
+                            )
+                        ):
+                            cursor_high_watermark = valor_cursor
                             resource_state[config_cursor_incremental] = valor_cursor
 
                         if tabela == "PRO_FAT" and config_cursor_incremental == "CD_PRO_FAT_NUM":
