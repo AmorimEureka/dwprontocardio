@@ -1,7 +1,6 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'cd_reg_amb',
-            merge_update_columns = ['cd_remessa', 'dt_remessa'],
         on_schema_change = 'sync_all_columns',
         tags = ['repasse']
     )
@@ -16,7 +15,7 @@ WITH source_reg_amb
             sis.dt_remessa
         FROM {{ source('raw_repasse_mv', 'reg_amb')}} sis
         {% if is_incremental() %}
-        WHERE sis.cd_reg_amb::BIGINT > ( SELECT MAX(cd_reg_amb) FROM {{ this }} )
+        WHERE sis.dt_lancamento::TIMESTAMP >= CURRENT_DATE - make_interval(days => 120)
         {% endif %}
 ),
 treats

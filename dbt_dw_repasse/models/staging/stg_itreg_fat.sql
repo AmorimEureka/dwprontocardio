@@ -1,8 +1,6 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'cd_itreg_fat_key',
-             merge_update_columns = ['dt_producao', 'dt_lancamento', 'sn_repassado',
-             'vl_sp', 'vl_ato'],
              tags = ['repasse']
     )
 }}
@@ -51,7 +49,7 @@ treats_key
             sis.vl_base_repassado
         FROM source_itreg_fat sis
         {% if is_incremental() %}
-        WHERE sis.cd_itreg_fat_key::NUMERIC(20,0) > ( SELECT MAX(cd_itreg_fat_key) FROM {{this}} )
+        WHERE sis.dt_itreg_fat::TIMESTAMP >= CURRENT_DATE - make_interval(days => 120)
         {% endif %}
 ),
 treats

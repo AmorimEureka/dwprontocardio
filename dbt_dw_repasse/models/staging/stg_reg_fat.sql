@@ -1,7 +1,6 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'cd_reg_fat',
-            merge_update_columns = ['cd_remessa', 'dt_remessa', 'sn_fechada', 'dt_fechamento'],
             on_schema_change = 'sync_all_columns',
             tags = ['repasse']
     )
@@ -20,7 +19,7 @@ WITH source_reg_fat
             sis.sn_fechada
         FROM {{ source('raw_repasse_mv', 'reg_fat')}} sis
         {% if is_incremental() %}
-        WHERE sis.cd_reg_fat::BIGINT > ( SELECT MAX(cd_reg_fat) FROM {{ this }} )
+        WHERE sis.dt_inicio::TIMESTAMP >= CURRENT_DATE - make_interval(days => 120)
         {% endif %}
 ),
 treats

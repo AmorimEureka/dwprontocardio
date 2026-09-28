@@ -317,6 +317,7 @@ included_columns = [
 incremental_column="HR_LANCAMENTO"
 primary_key=["CD_REG_AMB", "CD_LANCAMENTO"]
 initial_value="2025-01-01"
+incremental_lookback_days=120
 write_disposition="merge"
 
 [sources.sql_database.ITREG_FAT]
@@ -342,6 +343,7 @@ included_columns = [
 incremental_column="DT_LANCAMENTO"
 primary_key=["CD_REG_FAT", "CD_LANCAMENTO"]
 initial_value="2025-01-01"
+incremental_lookback_days=120
 write_disposition="merge"
 
 [sources.sql_database.PACIENTE]
@@ -397,9 +399,10 @@ included_columns = [
     "DT_LANCAMENTO",
     "DT_REMESSA"
 ]
-incremental_column="CD_REG_AMB"
+incremental_column="DT_LANCAMENTO"
 primary_key="CD_REG_AMB"
-initial_value=1
+initial_value="2025-01-01"
+incremental_lookback_days=120
 write_disposition="merge"
 
 [sources.sql_database.REG_FAT]
@@ -414,9 +417,10 @@ included_columns = [
     "DT_FECHAMENTO",
     "SN_FECHADA"
 ]
-incremental_column="CD_REG_FAT"
+incremental_column="DT_INICIO"
 primary_key="CD_REG_FAT"
-initial_value=1
+initial_value="2025-01-01"
+incremental_lookback_days=120
 write_disposition="merge"
 
 [sources.sql_database.REPASSE_CONSOLIDADO]
