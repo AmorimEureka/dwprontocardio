@@ -1,9 +1,12 @@
 import dlt
 import oracledb as ora
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 import os
 from dotenv import load_dotenv
+
+from script_ingestao.cursor_utils import normalize_numeric_cursor
 
 load_dotenv()
 
@@ -72,6 +75,11 @@ def gera_recursos(tabela: str):
     else:
         valor_inicial = config_valor_inicial
 
+    incremental_is_numeric = (
+        not isinstance(valor_inicial, bool)
+        and isinstance(valor_inicial, (int, float, Decimal))
+    )
+
     # TRATAMENTO:
     #   ⛧ Prepa a lista de campos
     #   ⛧ Aplicar TO_CHAR() p/ campos de datas
@@ -98,12 +106,11 @@ def gera_recursos(tabela: str):
 
         if incremental_is_datetime:
             cursor_incremental = parse_datetime_value(cursor_incremental) or valor_inicial
-
-        if tabela == "PRO_FAT" and config_cursor_incremental == "CD_PRO_FAT_NUM":
-            if isinstance(cursor_incremental, str):
-                cursor_incremental = int(cursor_incremental) if cursor_incremental.isdigit() else valor_inicial
-            elif not isinstance(cursor_incremental, (int, float)):
-                cursor_incremental = valor_inicial
+        elif incremental_is_numeric:
+            cursor_normalizado = normalize_numeric_cursor(cursor_incremental, valor_inicial)
+            cursor_incremental = (
+                valor_inicial if cursor_normalizado is None else cursor_normalizado
+            )
 
         # O estado guarda o maior cursor confirmado, mas a consulta retrocede uma
         # janela para recuperar registros tardios ou uma carga que tenha falhado
@@ -205,6 +212,8 @@ def gera_recursos(tabela: str):
                         valor_cursor = row_dict.get(config_cursor_incremental)
                         if incremental_is_datetime:
                             valor_cursor = parse_datetime_value(valor_cursor)
+                        elif incremental_is_numeric:
+                            valor_cursor = normalize_numeric_cursor(valor_cursor, valor_inicial)
                         if (
                             valor_cursor is not None
                             and (

@@ -1,7 +1,6 @@
 {{
     config( materialized = 'incremental',
             unique_key = 'cd_itreg_amb_key',
-            merge_update_columns = ['sn_fechada', 'dt_fechamento'],
             tags = ['repasse']
     )
 }}
@@ -53,7 +52,7 @@ treats_key
             sis.vl_base_repassado
         FROM source_itreg_amg sis
         {% if is_incremental() %}
-        WHERE sis.cd_itreg_amb_key::NUMERIC(20,0) > ( SELECT MAX(cd_itreg_amb_key) FROM {{this}} )
+        WHERE sis.dt_itreg_amb::TIMESTAMP >= CURRENT_DATE - make_interval(days => 120)
         {% endif %}
 ),
 treats
