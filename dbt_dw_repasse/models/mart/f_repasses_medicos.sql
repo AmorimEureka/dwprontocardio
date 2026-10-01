@@ -17,7 +17,13 @@ WITH source_int_repasses_medicos
             *
         FROM {{ ref('int_repasses_medicos') }} sis
         {% if is_incremental() %}
-        WHERE COALESCE(sis.dt_competencia, sis.dt_producao, sis.dt_itregra)
+        WHERE GREATEST(
+                COALESCE(sis.dt_competencia, TIMESTAMP '1900-01-01'),
+                COALESCE(sis.dt_repasse, TIMESTAMP '1900-01-01'),
+                COALESCE(sis.dt_producao, TIMESTAMP '1900-01-01'),
+                COALESCE(sis.dt_itregra, TIMESTAMP '1900-01-01'),
+                COALESCE(sis.dt_fechamento, TIMESTAMP '1900-01-01')
+            )
             >= CURRENT_DATE
                 - make_interval(days => {{ var('f_repasses_medicos_lookback_days', 90) }})
         {% endif %}
