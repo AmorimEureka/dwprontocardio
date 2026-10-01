@@ -1,7 +1,7 @@
 {{
 
     config( materialized = 'incremental',
-            unique_key = 'cd_itreg_key',
+            unique_key = 'sk_repasse_medico',
             post_hook = [
                 "DELETE FROM {{ this }} AS tgt USING {{ ref('stg_reg_amb') }} AS src WHERE tgt.tp_regra = 'AMBULATORIO' AND tgt.cd_regra = src.cd_reg_amb AND tgt.cd_remessa IS NULL AND src.cd_remessa IS NOT NULL",
                 "DELETE FROM {{ this }} AS tgt USING {{ ref('stg_reg_fat') }} AS src WHERE tgt.tp_regra = 'HOSPITALAR' AND tgt.cd_regra = src.cd_reg_fat AND tgt.cd_remessa IS NULL AND src.cd_remessa IS NOT NULL"
@@ -53,4 +53,15 @@ mrt_repasses_medicos
             *
         FROM source_incremental
 )
-SELECT * FROM mrt_repasses_medicos
+SELECT
+    CONCAT_WS(
+        ':',
+        CASE WHEN cd_repasse IS NULL THEN 'REGRA' ELSE 'REPASSE' END,
+        COALESCE(cd_repasse::TEXT, ''),
+        COALESCE(cd_prestador_repasse::TEXT, ''),
+        COALESCE(cd_ati_med::TEXT, ''),
+        COALESCE(tp_regra, ''),
+        cd_itreg_key::TEXT
+    ) AS sk_repasse_medico,
+    mrt_repasses_medicos.*
+FROM mrt_repasses_medicos

@@ -81,6 +81,11 @@ models:
   - name: f_repasses_medicos
     description: "Fato de repasses médicos."
     columns:
+      - name: sk_repasse_medico
+        description: "Chave única do item por regra, repasse, prestador e atividade médica"
+        tests:
+          - not_null
+          - unique
       - name: cd_repasse
         description: "Código único identificador do repasse"
       - name: cd_regra
