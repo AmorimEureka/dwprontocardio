@@ -441,8 +441,15 @@ treats_repasse_regra_faturamento
 
         FROM treats_repasse_consolidado trc
         INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
-               AND trc.cd_prestador_repasse = trf.cd_prestador
+        LEFT JOIN source_repasse_consolidado rc ON trf.cd_prestador IS NULL
+               AND trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
+               AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
+               AND trc.cd_ati_med = rc.cd_ati_med
         WHERE trf.cd_pro_fat = 'X0000000'
+          AND (
+              trc.cd_prestador_repasse = trf.cd_prestador
+              OR (trf.cd_prestador IS NULL AND rc.cd_itreg_fat_key IS NULL)
+          )
 
         UNION ALL
 
@@ -501,18 +508,14 @@ treats_repasse_regra_faturamento
 
         FROM treats_repasse_consolidado trc
         INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
-               AND trc.cd_prestador_repasse = trf.cd_prestador
         LEFT JOIN source_repasse_consolidado rc ON trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
                AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
                AND trc.cd_ati_med = rc.cd_ati_med
-        WHERE trf.cd_pro_fat <> 'X0000000' AND
-        EXISTS (
-                SELECT 1
-                FROM treats_regra_faturamento trf
-                WHERE trf.cd_reg_fat = trc.cd_reg_fat
-                    AND trf.cd_lancamento = trc.cd_lancamento_fat
-                    AND trf.cd_prestador = trc.cd_prestador_repasse
-        )
+        WHERE trf.cd_pro_fat <> 'X0000000'
+          AND (
+              trc.cd_prestador_repasse = trf.cd_prestador
+              OR (trf.cd_prestador IS NULL AND rc.cd_itreg_fat_key IS NULL)
+          )
 
         UNION ALL
 
