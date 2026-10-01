@@ -82,7 +82,7 @@ models:
     description: "Fato de repasses médicos."
     columns:
       - name: sk_repasse_medico
-        description: "Chave única do item por regra, repasse, prestador e atividade médica"
+        description: "Chave única do item por regra, lançamento, atendimento, repasse, prestador e atividade médica"
         tests:
           - not_null
           - unique

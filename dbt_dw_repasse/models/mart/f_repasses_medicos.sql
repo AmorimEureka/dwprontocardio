@@ -61,7 +61,10 @@ SELECT
         COALESCE(cd_prestador_repasse::TEXT, ''),
         COALESCE(cd_ati_med::TEXT, ''),
         COALESCE(tp_regra, ''),
-        cd_itreg_key::TEXT
+        COALESCE(cd_itreg_key::TEXT, ''),
+        COALESCE(cd_atendimento::TEXT, ''),
+        COALESCE(cd_regra::TEXT, ''),
+        COALESCE(cd_lancamento::TEXT, '')
     ) AS sk_repasse_medico,
     mrt_repasses_medicos.*
 FROM mrt_repasses_medicos
