@@ -28,15 +28,33 @@ WITH source_int_repasses_medicos
                 - make_interval(days => {{ var('f_repasses_medicos_lookback_days', 90) }})
         {% endif %}
 ),
+source_keyed
+    AS (
+        SELECT
+            CONCAT_WS(
+                ':',
+                CASE WHEN cd_repasse IS NULL THEN 'REGRA' ELSE 'REPASSE' END,
+                COALESCE(cd_repasse::TEXT, ''),
+                COALESCE(cd_prestador_repasse::TEXT, ''),
+                COALESCE(cd_ati_med::TEXT, ''),
+                COALESCE(tp_regra, ''),
+                COALESCE(cd_itreg_key::TEXT, ''),
+                COALESCE(cd_atendimento::TEXT, ''),
+                COALESCE(cd_regra::TEXT, ''),
+                COALESCE(cd_lancamento::TEXT, '')
+            ) AS sk_repasse_medico,
+            sis.*
+        FROM source_int_repasses_medicos sis
+),
 source_incremental
     AS (
         SELECT
             sis.*
-        FROM source_int_repasses_medicos sis
+        FROM source_keyed sis
         {% if is_incremental() %}
         LEFT JOIN {{ this }} tgt
-            ON tgt.cd_itreg_key = sis.cd_itreg_key
-        WHERE tgt.cd_itreg_key IS NULL
+            ON tgt.sk_repasse_medico = sis.sk_repasse_medico
+        WHERE tgt.sk_repasse_medico IS NULL
             OR tgt.cd_repasse IS DISTINCT FROM sis.cd_repasse
             OR tgt.cd_remessa IS DISTINCT FROM sis.cd_remessa
             OR tgt.cd_convenio IS DISTINCT FROM sis.cd_convenio
@@ -54,17 +72,5 @@ mrt_repasses_medicos
         FROM source_incremental
 )
 SELECT
-    CONCAT_WS(
-        ':',
-        CASE WHEN cd_repasse IS NULL THEN 'REGRA' ELSE 'REPASSE' END,
-        COALESCE(cd_repasse::TEXT, ''),
-        COALESCE(cd_prestador_repasse::TEXT, ''),
-        COALESCE(cd_ati_med::TEXT, ''),
-        COALESCE(tp_regra, ''),
-        COALESCE(cd_itreg_key::TEXT, ''),
-        COALESCE(cd_atendimento::TEXT, ''),
-        COALESCE(cd_regra::TEXT, ''),
-        COALESCE(cd_lancamento::TEXT, '')
-    ) AS sk_repasse_medico,
-    mrt_repasses_medicos.*
+    *
 FROM mrt_repasses_medicos
