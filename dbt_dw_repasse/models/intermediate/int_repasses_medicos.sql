@@ -442,6 +442,7 @@ treats_repasse_regra_faturamento
         FROM treats_repasse_consolidado trc
         INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
         LEFT JOIN source_repasse_consolidado rc ON trf.cd_prestador IS NULL
+               AND trc.cd_repasse = rc.cd_repasse
                AND trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
                AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
                AND trc.cd_ati_med = rc.cd_ati_med
@@ -508,7 +509,8 @@ treats_repasse_regra_faturamento
 
         FROM treats_repasse_consolidado trc
         INNER JOIN treats_regra_faturamento trf ON trc.cd_reg_fat = trf.cd_reg_fat AND trc.cd_lancamento_fat = trf.cd_lancamento
-        LEFT JOIN source_repasse_consolidado rc ON trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
+        LEFT JOIN source_repasse_consolidado rc ON trc.cd_repasse = rc.cd_repasse
+               AND trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
                AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
                AND trc.cd_ati_med = rc.cd_ati_med
         WHERE trf.cd_pro_fat <> 'X0000000'
@@ -565,7 +567,8 @@ treats_repasse_regra_faturamento
             rc.vl_base_repassado
 
         FROM treats_repasse_consolidado trc
-        INNER JOIN source_repasse_consolidado rc ON trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
+        INNER JOIN source_repasse_consolidado rc ON trc.cd_repasse = rc.cd_repasse
+               AND trc.cd_reg_fat = rc.cd_reg_fat AND trc.cd_lancamento_fat = rc.cd_lanc_fat
                AND trc.cd_prestador_repasse = rc.cd_prestador_repasse
                AND trc.cd_ati_med = rc.cd_ati_med
         WHERE NOT EXISTS (
