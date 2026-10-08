@@ -394,4 +394,21 @@ dbt debug
 
 
 
+# Processos do portal ISSEC
+
+A DAG `extracao_processos_portal_issec` consulta diariamente o relatório de
+processos do Oracle APEX/ORDS e grava os dados de forma idempotente em
+`raw_issec_portal.processos`. Meses ausentes desde janeiro de 2026 são
+processados e as três competências mais recentes são reconsultadas para
+capturar publicações tardias.
+
+Configure no `.env` do Airflow, nunca no Git:
+
+```dotenv
+ISSEC_PORTAL_LOGIN=
+ISSEC_PORTAL_SENHA=
+ISSEC_PORTAL_URL=http://144.22.149.116:8080/ords/
+ISSEC_PORTAL_TIMEOUT=30
+ISSEC_PORTAL_WORKERS=4
+```
 
