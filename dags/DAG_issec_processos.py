@@ -31,7 +31,11 @@ from include.issec_portal import (
 def extracao_processos_portal_issec():
     @task
     def extrair_e_carregar():
-        pg_hook = PostgresHook(postgres_conn_id="postgres_prontocardio")
+        destination_conn_id = os.getenv(
+            "ISSEC_DESTINATION_CONN_ID",
+            "postgres_receita_certa",
+        )
+        pg_hook = PostgresHook(postgres_conn_id=destination_conn_id)
         pg_conn = pg_hook.get_connection(pg_hook.postgres_conn_id)
         os.environ["DESTINATION__CREDENTIALS"] = (
             f"postgresql://{pg_conn.login}:{pg_conn.password}"

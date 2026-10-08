@@ -410,5 +410,10 @@ ISSEC_PORTAL_SENHA=
 ISSEC_PORTAL_URL=http://144.22.149.116:8080/ords/
 ISSEC_PORTAL_TIMEOUT=30
 ISSEC_PORTAL_WORKERS=4
+ISSEC_DESTINATION_CONN_ID=postgres_receita_certa
 ```
 
+A conexão indicada por `ISSEC_DESTINATION_CONN_ID` deve apontar para o
+PostgreSQL oficial do Receita Certa. Ela é separada da conexão das cargas do
+DW para que `raw_issec_portal.processos` seja criada no mesmo banco consumido
+pela API.
